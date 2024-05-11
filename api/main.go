@@ -25,6 +25,7 @@ func main() {
 	log.Panic(server.ListenAndServe())
 }
 
+// initialiseServer creates a new http server with the provided configuration
 func initialiseServer(cfg apiConfig, mux *http.ServeMux) *http.Server {
 	mux.HandleFunc("GET /v1/readiness", cfg.getReadiness)
 
