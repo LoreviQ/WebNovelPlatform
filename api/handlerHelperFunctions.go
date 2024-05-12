@@ -8,6 +8,7 @@ import (
 	"time"
 )
 
+// respondWithJSON sends a JSON response with the provided status code and body
 func respondWithJSON[T any](w http.ResponseWriter, responseCode int, body T) {
 	w.Header().Set("Content-Type", "application/json")
 	data, err := json.Marshal(&body)
@@ -17,9 +18,15 @@ func respondWithJSON[T any](w http.ResponseWriter, responseCode int, body T) {
 		return
 	}
 	w.WriteHeader(responseCode)
-	w.Write(data)
+	_, err = w.Write(data)
+	if err != nil {
+		log.Printf("Error writing HTTP response: %s", err)
+		w.WriteHeader(500)
+		return
+	}
 }
 
+// respondWithError sends a JSON error response with the provided status code and error message
 func respondWithError(w http.ResponseWriter, responseCode int, errorMsg string) {
 	responseStruct := struct {
 		Error string `json:"error"`
@@ -33,7 +40,12 @@ func respondWithError(w http.ResponseWriter, responseCode int, errorMsg string) 
 		return
 	}
 	w.WriteHeader(responseCode)
-	w.Write(data)
+	_, err = w.Write(data)
+	if err != nil {
+		log.Printf("Error writing HTTP response: %s", err)
+		w.WriteHeader(500)
+		return
+	}
 }
 
 func decodeRequest[T any](w http.ResponseWriter, r *http.Request, _ T) (T, error) {
