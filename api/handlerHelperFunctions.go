@@ -8,6 +8,7 @@ import (
 	"time"
 )
 
+// respondWithJSON sends a JSON response with the provided status code and body
 func respondWithJSON[T any](w http.ResponseWriter, responseCode int, body T) {
 	w.Header().Set("Content-Type", "application/json")
 	data, err := json.Marshal(&body)
@@ -20,6 +21,7 @@ func respondWithJSON[T any](w http.ResponseWriter, responseCode int, body T) {
 	w.Write(data)
 }
 
+// respondWithError sends a JSON error response with the provided status code and error message
 func respondWithError(w http.ResponseWriter, responseCode int, errorMsg string) {
 	responseStruct := struct {
 		Error string `json:"error"`
