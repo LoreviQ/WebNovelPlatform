@@ -13,7 +13,10 @@ type apiConfig struct {
 }
 
 func main() {
-	godotenv.Load()
+	err := godotenv.Load()
+	if err != nil {
+		log.Printf("Error loading .env file: %s\n", err)
+	}
 	// Setup Config
 	cfg := apiConfig{
 		port: os.Getenv("PORT"),
@@ -30,8 +33,9 @@ func initialiseServer(cfg apiConfig, mux *http.ServeMux) *http.Server {
 	mux.HandleFunc("GET /v1/readiness", cfg.getReadiness)
 
 	server := &http.Server{
-		Addr:    ":" + cfg.port,
-		Handler: mux,
+		Addr:              ":" + cfg.port,
+		Handler:           mux,
+		ReadHeaderTimeout: 10,
 	}
 	return server
 }
