@@ -4,6 +4,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/joho/godotenv"
 )
@@ -35,8 +36,9 @@ func initialiseServer(cfg apiConfig, mux *http.ServeMux) *http.Server {
 	mux.HandleFunc("GET /v1/readiness", cfg.getReadiness)
 
 	server := &http.Server{
-		Addr:    ":" + cfg.port,
-		Handler: mux,
+		Addr:              ":" + cfg.port,
+		Handler:           mux,
+		ReadHeaderTimeout: 10 * time.Second,
 	}
 	return server
 }
