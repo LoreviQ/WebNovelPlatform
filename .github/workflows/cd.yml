@@ -33,4 +33,5 @@ jobs:
           version: '>= 363.0.0'
     
       - name: Submit Build
+        working-directory: ./api
         run: gcloud builds submit --tag europe-west2-docker.pkg.dev/webnovelapi/webnovelapi-ar-repo/webnovelapi:latest .
