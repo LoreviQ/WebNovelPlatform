@@ -22,7 +22,7 @@ func TestReadiness(t *testing.T) {
 	// Check the response body is "OK"
 
 	// Initialise Server
-	db, err := sql.Open("postgres", "postgres://postgres:postgres@localhost:5432/testDB?sslmode=disable")
+	db, err := sql.Open("postgres", "postgres://postgres:postgres@localhost:5432/testdb?sslmode=disable")
 	if err != nil {
 		log.Panicf("Error connecting to DB: %s\n", err)
 	}
@@ -81,7 +81,14 @@ func TestPostUser(t *testing.T) {
 	// Check the response body matches the created user
 
 	// Initialise Server
-	cfg := setupConfig()
+	db, err := sql.Open("postgres", "postgres://postgres:postgres@localhost:5432/testdb?sslmode=disable")
+	if err != nil {
+		log.Panicf("Error connecting to DB: %s\n", err)
+	}
+	cfg := apiConfig{
+		port: "8080",
+		DB:   database.New(db),
+	}
 	server := initialiseServer(cfg, http.NewServeMux())
 	go server.ListenAndServe()
 	defer server.Close()
@@ -94,7 +101,6 @@ func TestPostUser(t *testing.T) {
 	// Create a new request to the /v1/users endpoint
 	res := &http.Response{}
 	requestURL := fmt.Sprintf("http://localhost:%s/v1/users", cfg.port)
-	var err error
 	for i := 0; i < 5; i++ {
 		fmt.Printf("Attempt %d\n", i)
 		err = nil
