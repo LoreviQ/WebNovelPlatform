@@ -15,12 +15,8 @@ func TestReadiness(t *testing.T) {
 	// Check the response status code is 200
 	// Check the response body is "OK"
 
-	// Setup Config
-	cfg := apiConfig{
-		port: "8080",
-	}
-
 	// Initialise Server
+	cfg := setupConfig()
 	server := initialiseServer(cfg, http.NewServeMux())
 	go server.ListenAndServe()
 	defer server.Close()
