@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"os"
 	"testing"
+	"time"
 )
 
 func TestReadiness(t *testing.T) {
@@ -26,15 +26,27 @@ func TestReadiness(t *testing.T) {
 	defer server.Close()
 
 	// Create a new request to the /v1/readiness endpoint
+	res := &http.Response{}
 	requestURL := fmt.Sprintf("http://localhost:%s/v1/readiness", cfg.port)
-	req, err := http.NewRequest(http.MethodGet, requestURL, nil)
-	if err != nil {
-		fmt.Printf("client: could not create request: %s\n", err)
-		os.Exit(1)
+	var err error
+	for i := 0; i < 5; i++ {
+		fmt.Printf("Attempt %d\n", i)
+		err = nil
+		req, err := http.NewRequest(http.MethodGet, requestURL, nil)
+		if err != nil {
+			t.Fatalf("client: could not create request: %s\n", err)
+		}
+		res, err = http.DefaultClient.Do(req)
+		if err != nil {
+			fmt.Printf("could not send request: %v\n", err)
+		}
+		time.Sleep(time.Millisecond * 100)
+		if err == nil {
+			break
+		}
 	}
-	res, err := http.DefaultClient.Do(req)
 	if err != nil {
-		t.Fatalf("could not send request: %v", err)
+		t.Fatalf("could not send request: %v\n", err)
 	}
 
 	// Compare Response
