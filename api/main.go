@@ -9,7 +9,8 @@ import (
 
 	"github.com/LoreviQ/WebNovelPlatform/api/internal/database"
 	"github.com/joho/godotenv"
-	_ "github.com/lib/pq"
+
+	_ "github.com/tursodatabase/libsql-client-go/libsql"
 )
 
 type apiConfig struct {
@@ -18,19 +19,19 @@ type apiConfig struct {
 }
 
 func main() {
-	cfg := setupConfig()
+	cfg := setupConfig("DB_CONNECTION")
 	server := initialiseServer(cfg, http.NewServeMux())
 	// Serve Server
 	log.Printf("Serving on port: %s\n", cfg.port)
 	log.Panic(server.ListenAndServe())
 }
 
-func setupConfig() apiConfig {
+func setupConfig(dbConn string) apiConfig {
 	err := godotenv.Load()
 	if err != nil {
 		log.Panicf("Error loading .env file: %s\n", err)
 	}
-	db, err := sql.Open("postgres", os.Getenv("DB_CONNECTION"))
+	db, err := sql.Open("libsql", os.Getenv(dbConn))
 	if err != nil {
 		log.Panicf("Error connecting to DB: %s\n", err)
 	}
