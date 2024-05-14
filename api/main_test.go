@@ -2,12 +2,15 @@ package main
 
 import (
 	"bytes"
+	"database/sql"
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"testing"
 	"time"
 
+	"github.com/LoreviQ/WebNovelPlatform/api/internal/database"
 	"github.com/google/uuid"
 )
 
@@ -19,7 +22,14 @@ func TestReadiness(t *testing.T) {
 	// Check the response body is "OK"
 
 	// Initialise Server
-	cfg := setupConfig()
+	db, err := sql.Open("postgres", "postgres://postgres:postgres@localhost:5432/testDB?sslmode=disable")
+	if err != nil {
+		log.Panicf("Error connecting to DB: %s\n", err)
+	}
+	cfg := apiConfig{
+		port: "8080",
+		DB:   database.New(db),
+	}
 	server := initialiseServer(cfg, http.NewServeMux())
 	go server.ListenAndServe()
 	defer server.Close()
@@ -27,7 +37,6 @@ func TestReadiness(t *testing.T) {
 	// Create a new request to the /v1/readiness endpoint
 	res := &http.Response{}
 	requestURL := fmt.Sprintf("http://localhost:%s/v1/readiness", cfg.port)
-	var err error
 	for i := 0; i < 5; i++ {
 		fmt.Printf("Attempt %d\n", i)
 		err = nil
