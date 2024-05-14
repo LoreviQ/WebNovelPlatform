@@ -18,6 +18,14 @@ type apiConfig struct {
 }
 
 func main() {
+	cfg := setupConfig()
+	server := initialiseServer(cfg, http.NewServeMux())
+	// Serve Server
+	log.Printf("Serving on port: %s\n", cfg.port)
+	log.Panic(server.ListenAndServe())
+}
+
+func setupConfig() apiConfig {
 	err := godotenv.Load()
 	if err != nil {
 		log.Panicf("Error loading .env file: %s\n", err)
@@ -26,16 +34,10 @@ func main() {
 	if err != nil {
 		log.Panicf("Error connecting to DB: %s\n", err)
 	}
-	// Setup Config
-	cfg := apiConfig{
+	return apiConfig{
 		port: os.Getenv("PORT"),
 		DB:   database.New(db),
 	}
-	// Initialise Server
-	server := initialiseServer(cfg, http.NewServeMux())
-	// Serve Server
-	log.Printf("Serving on port: %s\n", cfg.port)
-	log.Panic(server.ListenAndServe())
 }
 
 // initialiseServer creates a new http server with the provided configuration
