@@ -1,29 +1,35 @@
 package main
 
 import (
+	"database/sql"
 	"log"
 	"net/http"
 	"os"
 	"time"
 
+	"github.com/LoreviQ/WebNovelPlatform/api/internal/database"
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 )
 
 type apiConfig struct {
 	port string
+	DB   *database.Queries
 }
 
 func main() {
 	err := godotenv.Load()
-	port := os.Getenv("PORT")
 	if err != nil {
-		port = "8080"
-		log.Printf("Error loading .env file: %s\n", err)
+		log.Panicf("Error loading .env file: %s\n", err)
+	}
+	db, err := sql.Open("postgres", os.Getenv("DB_CONNECTION"))
+	if err != nil {
+		log.Panicf("Error connecting to DB: %s\n", err)
 	}
 	// Setup Config
 	cfg := apiConfig{
-		port: port,
+		port: os.Getenv("PORT"),
+		DB:   database.New(db),
 	}
 	// Initialise Server
 	server := initialiseServer(cfg, http.NewServeMux())
