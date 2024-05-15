@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"net/http"
 	"time"
 
@@ -20,19 +21,20 @@ func (cfg *apiConfig) postUser(w http.ResponseWriter, r *http.Request) {
 
 	// CREATE USER
 	user, err := cfg.DB.CreateUser(r.Context(), database.CreateUserParams{
-		ID:        uuid.New(),
+		ID:        uuid.New().String(),
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 		Name:      request.Name,
 	})
 	if err != nil {
+		log.Printf("Error creating user: %s", err)
 		respondWithError(w, http.StatusInternalServerError, "Couldn't create user")
 		return
 	}
 
 	// RESPONSE
 	respondWithJSON(w, http.StatusOK, struct {
-		ID        uuid.UUID `json:"id"`
+		ID        string    `json:"id"`
 		CreatedAt time.Time `json:"created_at"`
 		UpdatedAt time.Time `json:"updated_at"`
 		Name      string    `json:"name"`
