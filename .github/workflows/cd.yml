@@ -8,6 +8,8 @@ jobs:
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
+    env:
+      DB_CONNECTION_TURSO: ${{ secrets.DB_CONNECTION_TURSO }}
     
     steps:
       - name: Check out code
@@ -35,6 +37,12 @@ jobs:
       - name: Submit Build
         working-directory: ./api
         run: gcloud builds submit --tag europe-west2-docker.pkg.dev/webnovelapi/webnovelapi-ar-repo/webnovelapi:latest .
+      
+      - name: install goose
+        run: go install github.com/pressly/goose/v3/cmd/goose@latest
+  
+      - name: Migrate DB
+        run: ./scripts/migrateup.sh
       
       - name: Deploy to Cloud Run
         run: gcloud run deploy webnovelapi --image europe-west2-docker.pkg.dev/webnovelapi/webnovelapi-ar-repo/webnovelapi:latest --region europe-west2 --allow-unauthenticated --project webnovelapi --max-instances=4
