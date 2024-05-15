@@ -2,13 +2,18 @@ package main
 
 import (
 	"bytes"
+	"database/sql"
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
+	"os"
 	"testing"
 	"time"
 
+	"github.com/LoreviQ/WebNovelPlatform/api/internal/database"
 	"github.com/google/uuid"
+	"github.com/joho/godotenv"
 )
 
 func TestReadiness(t *testing.T) {
@@ -19,7 +24,7 @@ func TestReadiness(t *testing.T) {
 	// Check the response body is "OK"
 
 	// Initialise Server
-	cfg := setupConfig("DB_CONNECTION_TEST")
+	cfg := setupConfigTest()
 	server := initialiseServer(cfg, http.NewServeMux())
 	go server.ListenAndServe()
 	defer server.Close()
@@ -29,7 +34,7 @@ func TestReadiness(t *testing.T) {
 	var err error
 	requestURL := fmt.Sprintf("http://localhost:%s/v1/readiness", cfg.port)
 	for i := 0; i < 5; i++ {
-		fmt.Printf("Attempt %d\n", i)
+		fmt.Printf("Attempt %d\n", i+1)
 		err = nil
 		req, err := http.NewRequest(http.MethodGet, requestURL, nil)
 		if err != nil {
@@ -73,7 +78,7 @@ func TestPostUser(t *testing.T) {
 
 	// Initialise Server
 
-	cfg := setupConfig("DB_CONNECTION_TEST")
+	cfg := setupConfigTest()
 	server := initialiseServer(cfg, http.NewServeMux())
 	go server.ListenAndServe()
 	defer server.Close()
@@ -88,7 +93,7 @@ func TestPostUser(t *testing.T) {
 	var err error
 	requestURL := fmt.Sprintf("http://localhost:%s/v1/users", cfg.port)
 	for i := 0; i < 5; i++ {
-		fmt.Printf("Attempt %d\n", i)
+		fmt.Printf("Attempt %d\n", i+1)
 		err = nil
 		req, err := http.NewRequest(http.MethodPost, requestURL, bytes.NewBuffer(body))
 		if err != nil {
@@ -123,5 +128,30 @@ func TestPostUser(t *testing.T) {
 	}
 	if response.Name != "Test User" {
 		t.Fatalf("expected response body \"OK\", got %q", response)
+	}
+}
+
+func setupConfigTest() apiConfig {
+	err := godotenv.Load()
+	if err != nil {
+		log.Panicf("Error loading .env file: %s\n", err)
+	}
+	db, err := sql.Open("libsql", os.Getenv("DB_CONNECTION_TEST"))
+	if err != nil {
+		log.Panicf("Error connecting to DB: %s\n", err)
+	}
+	// empty DB from previous tests
+	var tables = []string{
+		"users",
+	}
+	for _, table := range tables {
+		_, err := db.Exec(fmt.Sprintf("DELETE FROM %s;", table))
+		if err != nil {
+			log.Panicf("failed to truncate table %s", err)
+		}
+	}
+	return apiConfig{
+		port: os.Getenv("PORT"),
+		DB:   database.New(db),
 	}
 }

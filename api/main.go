@@ -19,19 +19,19 @@ type apiConfig struct {
 }
 
 func main() {
-	cfg := setupConfig("DB_CONNECTION")
+	cfg := setupConfig()
 	server := initialiseServer(cfg, http.NewServeMux())
 	// Serve Server
 	log.Printf("Serving on port: %s\n", cfg.port)
 	log.Panic(server.ListenAndServe())
 }
 
-func setupConfig(dbConn string) apiConfig {
+func setupConfig() apiConfig {
 	err := godotenv.Load()
 	if err != nil {
 		log.Panicf("Error loading .env file: %s\n", err)
 	}
-	db, err := sql.Open("libsql", os.Getenv(dbConn))
+	db, err := sql.Open("libsql", os.Getenv("DB_CONNECTION"))
 	if err != nil {
 		log.Panicf("Error connecting to DB: %s\n", err)
 	}
