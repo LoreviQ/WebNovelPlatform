@@ -1,8 +1,8 @@
 -- +goose Up
 CREATE TABLE users (
     id TEXT PRIMARY KEY,
-    created_at TIMESTAMP NOT NULL,
-    updated_at TIMESTAMP NOT NULL,
+    created_at TEXT NOT NULL,
+    updated_at TEXT NOT NULL,
     name TEXT NOT NULL
 );
 

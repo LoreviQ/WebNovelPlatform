@@ -22,8 +22,8 @@ func (cfg *apiConfig) postUser(w http.ResponseWriter, r *http.Request) {
 	// CREATE USER
 	user, err := cfg.DB.CreateUser(r.Context(), database.CreateUserParams{
 		ID:        uuid.New().String(),
-		CreatedAt: time.Now(),
-		UpdatedAt: time.Now(),
+		CreatedAt: time.Now().UTC().Format(time.RFC3339),
+		UpdatedAt: time.Now().UTC().Format(time.RFC3339),
 		Name:      request.Name,
 	})
 	if err != nil {
@@ -34,10 +34,10 @@ func (cfg *apiConfig) postUser(w http.ResponseWriter, r *http.Request) {
 
 	// RESPONSE
 	respondWithJSON(w, http.StatusOK, struct {
-		ID        string    `json:"id"`
-		CreatedAt time.Time `json:"created_at"`
-		UpdatedAt time.Time `json:"updated_at"`
-		Name      string    `json:"name"`
+		ID        string `json:"id"`
+		CreatedAt string `json:"created_at"`
+		UpdatedAt string `json:"updated_at"`
+		Name      string `json:"name"`
 	}{
 		ID:        user.ID,
 		CreatedAt: user.CreatedAt,

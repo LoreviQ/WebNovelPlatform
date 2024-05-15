@@ -4,13 +4,11 @@
 
 package database
 
-import (
-	"time"
-)
+import ()
 
 type User struct {
 	ID        string
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	CreatedAt string
+	UpdatedAt string
 	Name      string
 }

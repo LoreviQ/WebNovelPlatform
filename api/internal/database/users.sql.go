@@ -7,19 +7,18 @@ package database
 
 import (
 	"context"
-	"time"
 )
 
 const createUser = `-- name: CreateUser :one
 INSERT INTO users (id, created_at, updated_at, name)
-VALUES ($1, $2, $3, $4)
+VALUES (?, ?, ?, ?)
 RETURNING id, created_at, updated_at, name
 `
 
 type CreateUserParams struct {
 	ID        string
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	CreatedAt string
+	UpdatedAt string
 	Name      string
 }
 
