@@ -7,8 +7,10 @@ package database
 import ()
 
 type User struct {
-	ID        string
-	CreatedAt string
-	UpdatedAt string
-	Name      string
+	ID           string
+	CreatedAt    string
+	UpdatedAt    string
+	Name         string
+	Email        string
+	Passwordhash string
 }

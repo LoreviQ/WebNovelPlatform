@@ -83,7 +83,9 @@ func TestPostUser(t *testing.T) {
 
 	// JSON body
 	body := []byte(`{
-		"name": "Test User"
+		"name": "Test User",
+		"email": "test@test.com",
+		"password": "password"
 	}`)
 
 	// Create a new request to the /v1/users endpoint
@@ -119,6 +121,7 @@ func TestPostUser(t *testing.T) {
 		CreatedAt time.Time `json:"created_at"`
 		UpdatedAt time.Time `json:"updated_at"`
 		Name      string    `json:"name"`
+		Email     string    `json:"email"`
 	}
 	err = json.NewDecoder(res.Body).Decode(&response)
 	if err != nil {
