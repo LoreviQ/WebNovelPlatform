@@ -29,7 +29,13 @@ func main() {
 func setupConfig() apiConfig {
 	err := godotenv.Load()
 	if err != nil {
-		log.Panicf("Error loading .env file: %s\n", err)
+		log.Printf("Assuming default configuration - .env unreadable: %v", err)
+	}
+	envs := []string{"PORT", "DB_CONNECTION"}
+	for _, env := range envs {
+		if os.Getenv(env) == "" {
+			log.Fatalf("Environment variable %s is not set", env)
+		}
 	}
 	db, err := sql.Open("libsql", os.Getenv("DB_CONNECTION"))
 	if err != nil {
