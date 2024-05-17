@@ -7,11 +7,13 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"testing"
 	"time"
 
 	"github.com/LoreviQ/WebNovelPlatform/api/internal/database"
 	"github.com/google/uuid"
+	"github.com/joho/godotenv"
 )
 
 func TestReadiness(t *testing.T) {
@@ -133,7 +135,11 @@ func TestPostUser(t *testing.T) {
 }
 
 func setupConfigTest() apiConfig {
-	db, err := sql.Open("libsql", "libsql://webnoveldb-test-loreviq.turso.io?authToken=eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MTU3MjUzMTEsImlkIjoiMWExYjkzMzgtOTA0Yy00MDgwLWEyMDgtYjkyNzMzM2U5ODhmIn0.YnLPYEbLpi4US_QQ6XgHEcg-vgj2wjh8nflAZJoP3TdyqwEfsKXvqGZA4SLJ1YjqYmFM6Kr2NWzbW9b88P8RDg")
+	err := godotenv.Load()
+	if err != nil {
+		log.Printf("Assuming default configuration - .env unreadable: %v", err)
+	}
+	db, err := sql.Open("libsql", os.Getenv("DB_CONNECTION_TEST"))
 	if err != nil {
 		log.Panicf("Error connecting to DB: %s\n", err)
 	}
