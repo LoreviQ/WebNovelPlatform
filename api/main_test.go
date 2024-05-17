@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	"io"
 	"log"
 	"net/http"
 	"os"
@@ -23,35 +24,12 @@ func TestReadiness(t *testing.T) {
 	// Check the response status code is 200
 	// Check the response body is "OK"
 
-	// Initialise Server
-	cfg := setupConfigTest()
-	server := initialiseServer(cfg, http.NewServeMux())
-	go server.ListenAndServe()
-	defer server.Close()
+	cfg, teardownTest := setupTest()
+	defer teardownTest()
 
 	// Create a new request to the /v1/readiness endpoint
-	res := &http.Response{}
-	var err error
 	requestURL := fmt.Sprintf("http://localhost:%s/v1/readiness", cfg.port)
-	for i := 0; i < 5; i++ {
-		fmt.Printf("GET %s : Attempt %d\n", requestURL, i+1)
-		err = nil
-		req, err := http.NewRequest(http.MethodGet, requestURL, nil)
-		if err != nil {
-			t.Fatalf("client: could not create request: %s\n", err)
-		}
-		res, err = http.DefaultClient.Do(req)
-		if err != nil {
-			fmt.Printf("could not send request: %v\n", err)
-		}
-		time.Sleep(time.Millisecond * 100)
-		if err == nil {
-			break
-		}
-	}
-	if err != nil {
-		t.Fatalf("could not send request: %v\n", err)
-	}
+	res := loopSendRequest(requestURL, http.MethodGet, nil, t)
 
 	// Compare Response
 	if res.StatusCode != http.StatusOK {
@@ -60,7 +38,7 @@ func TestReadiness(t *testing.T) {
 	var response struct {
 		Status string `json:"status"`
 	}
-	err = json.NewDecoder(res.Body).Decode(&response)
+	err := json.NewDecoder(res.Body).Decode(&response)
 	if err != nil {
 		t.Fatalf("could not read response body: %v", err)
 	}
@@ -76,43 +54,19 @@ func TestPostUser(t *testing.T) {
 	// Check the response status code is 200
 	// Check the response body matches the created user
 
-	// Initialise Server
-
-	cfg := setupConfigTest()
-	server := initialiseServer(cfg, http.NewServeMux())
-	go server.ListenAndServe()
-	defer server.Close()
+	cfg, teardownTest := setupTest()
+	defer teardownTest()
 
 	// JSON body
-	body := []byte(`{
+	body := bytes.NewBuffer([]byte(`{
 		"name": "Test User",
 		"email": "test@test.com",
 		"password": "password"
-	}`)
+	}`))
 
 	// Create a new request to the POST /v1/users endpoint
-	res := &http.Response{}
-	var err error
 	requestURL := fmt.Sprintf("http://localhost:%s/v1/users", cfg.port)
-	for i := 0; i < 5; i++ {
-		fmt.Printf("POST %s : Attempt %d\n", requestURL, i+1)
-		err = nil
-		req, err := http.NewRequest(http.MethodPost, requestURL, bytes.NewBuffer(body))
-		if err != nil {
-			t.Fatalf("client: could not create request: %s\n", err)
-		}
-		res, err = http.DefaultClient.Do(req)
-		if err != nil {
-			fmt.Printf("could not send request: %v\n", err)
-		}
-		time.Sleep(time.Millisecond * 100)
-		if err == nil {
-			break
-		}
-	}
-	if err != nil {
-		t.Fatalf("could not send request: %v\n", err)
-	}
+	res := loopSendRequest(requestURL, http.MethodPost, body, t)
 
 	// Compare Response
 	if res.StatusCode != http.StatusOK {
@@ -125,7 +79,7 @@ func TestPostUser(t *testing.T) {
 		Name      string    `json:"name"`
 		Email     string    `json:"email"`
 	}
-	err = json.NewDecoder(res.Body).Decode(&response)
+	err := json.NewDecoder(res.Body).Decode(&response)
 	if err != nil {
 		t.Fatalf("could not read response body: %v", err)
 	}
@@ -141,11 +95,8 @@ func TestPostLogin(t *testing.T) {
 	// Check the response status code is 200
 	// Check the response body matches the loged in user and an access token is returned
 
-	// Initialise Server
-	cfg := setupConfigTest()
-	server := initialiseServer(cfg, http.NewServeMux())
-	go server.ListenAndServe()
-	defer server.Close()
+	cfg, teardownTest := setupTest()
+	defer teardownTest()
 
 	// Create a new user
 	body := []byte(`{
@@ -153,54 +104,16 @@ func TestPostLogin(t *testing.T) {
 		"email": "test@test.com",
 		"password": "password"
 		}`)
-	var err error
 	requestURL := fmt.Sprintf("http://localhost:%s/v1/users", cfg.port)
-	for i := 0; i < 5; i++ {
-		fmt.Printf("POST %s : Attempt %d\n", requestURL, i+1)
-		err = nil
-		req, err := http.NewRequest(http.MethodPost, requestURL, bytes.NewBuffer(body))
-		if err != nil {
-			t.Fatalf("client: could not create request: %s\n", err)
-		}
-		_, err = http.DefaultClient.Do(req)
-		if err != nil {
-			fmt.Printf("could not send request: %v\n", err)
-		}
-		time.Sleep(time.Millisecond * 100)
-		if err == nil {
-			break
-		}
-	}
-	if err != nil {
-		t.Fatalf("could not send request: %v\n", err)
-	}
+	loopSendRequest(requestURL, http.MethodPost, bytes.NewBuffer(body), t)
 
 	// Create a new request to the POST /v1/login endpoint
 	body = []byte(`{
 		"email": "test@test.com",
 		"password": "password"
 		}`)
-	res := &http.Response{}
 	requestURL = fmt.Sprintf("http://localhost:%s/v1/login", cfg.port)
-	for i := 0; i < 5; i++ {
-		fmt.Printf("POST %s : Attempt %d\n", requestURL, i+1)
-		err = nil
-		req, err := http.NewRequest(http.MethodPost, requestURL, bytes.NewBuffer(body))
-		if err != nil {
-			t.Fatalf("client: could not create request: %s\n", err)
-		}
-		res, err = http.DefaultClient.Do(req)
-		if err != nil {
-			fmt.Printf("could not send request: %v\n", err)
-		}
-		time.Sleep(time.Millisecond * 100)
-		if err == nil {
-			break
-		}
-	}
-	if err != nil {
-		t.Fatalf("could not send request: %v\n", err)
-	}
+	res := loopSendRequest(requestURL, http.MethodPost, bytes.NewBuffer(body), t)
 
 	// Compare Response
 	if res.StatusCode != http.StatusOK {
@@ -211,7 +124,7 @@ func TestPostLogin(t *testing.T) {
 		Email       string    `json:"email"`
 		AccessToken string    `json:"token"`
 	}
-	err = json.NewDecoder(res.Body).Decode(&response)
+	err := json.NewDecoder(res.Body).Decode(&response)
 	if err != nil {
 		t.Fatalf("could not read response body: %v", err)
 	}
@@ -220,6 +133,17 @@ func TestPostLogin(t *testing.T) {
 	}
 	if response.AccessToken == "" {
 		t.Fatalf("expected access token, got %q", response.AccessToken)
+	}
+}
+
+func setupTest() (apiConfig, func()) {
+	log.Println("setting up test...")
+	cfg := setupConfigTest()
+	server := initialiseServer(cfg, http.NewServeMux())
+	go server.ListenAndServe()
+	return cfg, func() {
+		log.Println("tearing down test...")
+		server.Close()
 	}
 }
 
@@ -251,4 +175,29 @@ func emptyDB(db *sql.DB) {
 			log.Panicf("failed to truncate table %s", err)
 		}
 	}
+}
+
+func loopSendRequest(requestURL, method string, body io.Reader, t *testing.T) *http.Response {
+	res := &http.Response{}
+	var err error
+	for i := 0; i < 5; i++ {
+		fmt.Printf("%s %s : Attempt %d\n", method, requestURL, i+1)
+		err = nil
+		req, err := http.NewRequest(method, requestURL, body)
+		if err != nil {
+			t.Fatalf("client: could not create request: %s\n", err)
+		}
+		res, err = http.DefaultClient.Do(req)
+		if err != nil {
+			fmt.Printf("could not send request: %v\n", err)
+		}
+		time.Sleep(time.Millisecond * 100)
+		if err == nil {
+			break
+		}
+	}
+	if err != nil {
+		t.Fatalf("could not send request: %v\n", err)
+	}
+	return res
 }
