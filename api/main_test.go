@@ -233,6 +233,15 @@ func setupConfigTest() apiConfig {
 		log.Panicf("Error connecting to DB: %s\n", err)
 	}
 	// empty DB from previous tests
+	emptyDB(db)
+	return apiConfig{
+		port:       "8080",
+		DB:         database.New(db),
+		JWT_Secret: []byte(os.Getenv("JWT_SECRET")),
+	}
+}
+
+func emptyDB(db *sql.DB) {
 	var tables = []string{
 		"users",
 	}
@@ -241,10 +250,5 @@ func setupConfigTest() apiConfig {
 		if err != nil {
 			log.Panicf("failed to truncate table %s", err)
 		}
-	}
-	return apiConfig{
-		port:       "8080",
-		DB:         database.New(db),
-		JWT_Secret: []byte(os.Getenv("JWT_SECRET")),
 	}
 }
