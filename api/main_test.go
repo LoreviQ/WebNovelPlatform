@@ -154,7 +154,8 @@ func setupConfigTest() apiConfig {
 		}
 	}
 	return apiConfig{
-		port: "8080",
-		DB:   database.New(db),
+		port:       "8080",
+		DB:         database.New(db),
+		JWT_Secret: []byte(os.Getenv("JWT_SECRET")),
 	}
 }
