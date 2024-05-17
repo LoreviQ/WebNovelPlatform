@@ -34,7 +34,7 @@ func TestReadiness(t *testing.T) {
 	var err error
 	requestURL := fmt.Sprintf("http://localhost:%s/v1/readiness", cfg.port)
 	for i := 0; i < 5; i++ {
-		fmt.Printf("Attempt %d\n", i+1)
+		fmt.Printf("GET %s : Attempt %d\n", requestURL, i+1)
 		err = nil
 		req, err := http.NewRequest(http.MethodGet, requestURL, nil)
 		if err != nil {
@@ -90,12 +90,12 @@ func TestPostUser(t *testing.T) {
 		"password": "password"
 	}`)
 
-	// Create a new request to the /v1/users endpoint
+	// Create a new request to the POST /v1/users endpoint
 	res := &http.Response{}
 	var err error
 	requestURL := fmt.Sprintf("http://localhost:%s/v1/users", cfg.port)
 	for i := 0; i < 5; i++ {
-		fmt.Printf("Attempt %d\n", i+1)
+		fmt.Printf("POST %s : Attempt %d\n", requestURL, i+1)
 		err = nil
 		req, err := http.NewRequest(http.MethodPost, requestURL, bytes.NewBuffer(body))
 		if err != nil {
@@ -131,6 +131,95 @@ func TestPostUser(t *testing.T) {
 	}
 	if response.Name != "Test User" {
 		t.Fatalf("expected response body \"OK\", got %q", response)
+	}
+}
+
+func TestPostLogin(t *testing.T) {
+	// Test the POST /v1/login endpoint
+	// Create a new request to the /v1/login endpoint
+	// Send the request
+	// Check the response status code is 200
+	// Check the response body matches the loged in user and an access token is returned
+
+	// Initialise Server
+	cfg := setupConfigTest()
+	server := initialiseServer(cfg, http.NewServeMux())
+	go server.ListenAndServe()
+	defer server.Close()
+
+	// Create a new user
+	body := []byte(`{
+		"name": "Test User",
+		"email": "test@test.com",
+		"password": "password"
+		}`)
+	var err error
+	requestURL := fmt.Sprintf("http://localhost:%s/v1/users", cfg.port)
+	for i := 0; i < 5; i++ {
+		fmt.Printf("POST %s : Attempt %d\n", requestURL, i+1)
+		err = nil
+		req, err := http.NewRequest(http.MethodPost, requestURL, bytes.NewBuffer(body))
+		if err != nil {
+			t.Fatalf("client: could not create request: %s\n", err)
+		}
+		_, err = http.DefaultClient.Do(req)
+		if err != nil {
+			fmt.Printf("could not send request: %v\n", err)
+		}
+		time.Sleep(time.Millisecond * 100)
+		if err == nil {
+			break
+		}
+	}
+	if err != nil {
+		t.Fatalf("could not send request: %v\n", err)
+	}
+
+	// Create a new request to the POST /v1/login endpoint
+	body = []byte(`{
+		"email": "test@test.com",
+		"password": "password"
+		}`)
+	res := &http.Response{}
+	requestURL = fmt.Sprintf("http://localhost:%s/v1/login", cfg.port)
+	for i := 0; i < 5; i++ {
+		fmt.Printf("POST %s : Attempt %d\n", requestURL, i+1)
+		err = nil
+		req, err := http.NewRequest(http.MethodPost, requestURL, bytes.NewBuffer(body))
+		if err != nil {
+			t.Fatalf("client: could not create request: %s\n", err)
+		}
+		res, err = http.DefaultClient.Do(req)
+		if err != nil {
+			fmt.Printf("could not send request: %v\n", err)
+		}
+		time.Sleep(time.Millisecond * 100)
+		if err == nil {
+			break
+		}
+	}
+	if err != nil {
+		t.Fatalf("could not send request: %v\n", err)
+	}
+
+	// Compare Response
+	if res.StatusCode != http.StatusOK {
+		t.Fatalf("expected status code 200, got %d", res.StatusCode)
+	}
+	var response struct {
+		ID          uuid.UUID `json:"id"`
+		Email       string    `json:"email"`
+		AccessToken string    `json:"token"`
+	}
+	err = json.NewDecoder(res.Body).Decode(&response)
+	if err != nil {
+		t.Fatalf("could not read response body: %v", err)
+	}
+	if response.Email != "test@test.com" {
+		t.Fatalf("expected response body \"OK\", got %q", response)
+	}
+	if response.AccessToken == "" {
+		t.Fatalf("expected access token, got %q", response.AccessToken)
 	}
 }
 

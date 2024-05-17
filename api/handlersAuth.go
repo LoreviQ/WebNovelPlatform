@@ -5,7 +5,6 @@ import (
 	"net/http"
 
 	"github.com/LoreviQ/WebNovelPlatform/api/internal/auth"
-	"golang.org/x/crypto/bcrypt"
 )
 
 func (cfg *apiConfig) postLogin(w http.ResponseWriter, r *http.Request) {
@@ -20,13 +19,7 @@ func (cfg *apiConfig) postLogin(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// AUTHENTICATE USER
-	hash, err := bcrypt.GenerateFromPassword([]byte(request.Password), 10)
-	if err != nil {
-		log.Printf("Error Generating password hash: %s", err)
-		w.WriteHeader(500)
-		return
-	}
-	user, err := auth.AuthenticateUser(request.Email, hash, cfg.DB)
+	user, err := auth.AuthenticateUser(request.Email, []byte(request.Password), cfg.DB)
 	if err != nil {
 		respondWithError(w, http.StatusUnauthorized, "Invalid email or password")
 		return
@@ -42,13 +35,13 @@ func (cfg *apiConfig) postLogin(w http.ResponseWriter, r *http.Request) {
 
 	// RESPONSE
 	type responseStruct struct {
-		Email       string `json:"email"`
 		ID          string `json:"id"`
+		Email       string `json:"email"`
 		AccessToken string `json:"token"`
 	}
 	respondWithJSON(w, 200, responseStruct{
-		Email:       user.Email,
 		ID:          user.ID,
+		Email:       user.Email,
 		AccessToken: accessToken,
 	})
 }

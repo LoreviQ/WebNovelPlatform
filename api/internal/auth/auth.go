@@ -10,7 +10,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-func AuthenticateUser(email string, passwordHash []byte, db *database.Queries) (*database.User, error) {
+func AuthenticateUser(email string, password []byte, db *database.Queries) (*database.User, error) {
 	// Authenticate user
 	// Check if the user exists
 	// Check if the password is correct
@@ -19,7 +19,7 @@ func AuthenticateUser(email string, passwordHash []byte, db *database.Queries) (
 	if err != nil {
 		return nil, fmt.Errorf("could not find user: %w", err)
 	}
-	if err := bcrypt.CompareHashAndPassword([]byte(user.Passwordhash), passwordHash); err != nil {
+	if err := bcrypt.CompareHashAndPassword([]byte(user.Passwordhash), password); err != nil {
 		return nil, fmt.Errorf("incorrect password: %w", err)
 	}
 	return &user, nil
