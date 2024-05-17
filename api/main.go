@@ -53,6 +53,7 @@ func setupConfig() apiConfig {
 func initialiseServer(cfg apiConfig, mux *http.ServeMux) *http.Server {
 	mux.HandleFunc("GET /v1/readiness", cfg.getReadiness)
 	mux.HandleFunc("POST /v1/users", cfg.postUser)
+	mux.HandleFunc("POST /v1/login", cfg.postLogin)
 
 	server := &http.Server{
 		Addr:              ":" + cfg.port,
