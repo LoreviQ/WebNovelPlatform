@@ -8,6 +8,8 @@ jobs:
   tests:
     name: Tests
     runs-on: ubuntu-latest
+    env:
+      DB_CONNECTION_TEST: ${{ secrets.DB_CONNECTION_TEST }}
   
     steps:
       - name: Check out code
