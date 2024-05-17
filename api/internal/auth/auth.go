@@ -7,6 +7,14 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
+func authenticateUser(email, password string) {
+	// Authenticate user
+	// Check if the user exists
+	// Check if the password is correct
+	// Returns an error if the user does not exist or the password is incorrect
+
+}
+
 func IssueAccessToken(userID int, secret []byte) (string, error) {
 	claims := jwt.RegisteredClaims{
 		Issuer:    "wnp-access",
