@@ -14,8 +14,9 @@ import (
 )
 
 type apiConfig struct {
-	port string
-	DB   *database.Queries
+	port       string
+	DB         *database.Queries
+	JWT_Secret []byte
 }
 
 func main() {
@@ -42,8 +43,9 @@ func setupConfig() apiConfig {
 		log.Panicf("Error connecting to DB: %s\n", err)
 	}
 	return apiConfig{
-		port: os.Getenv("PORT"),
-		DB:   database.New(db),
+		port:       os.Getenv("PORT"),
+		DB:         database.New(db),
+		JWT_Secret: []byte(os.Getenv("JWT_SECRET")),
 	}
 }
 
