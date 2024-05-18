@@ -2,6 +2,8 @@ package auth
 
 import (
 	"context"
+	"crypto/rand"
+	"encoding/hex"
 	"fmt"
 	"time"
 
@@ -60,4 +62,13 @@ func AuthenticateAccessToken(tokenString string, secret []byte) (string, error) 
 		return "", err
 	}
 	return subject, nil
+}
+
+func IssueRefreshToken() (string, error) {
+	token := make([]byte, 32)
+	_, err := rand.Read(token)
+	if err != nil {
+		return "", err
+	}
+	return hex.EncodeToString(token), nil
 }
