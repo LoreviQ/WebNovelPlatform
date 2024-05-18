@@ -53,3 +53,18 @@ func (q *Queries) GetTokenByToken(ctx context.Context, token string) (Token, err
 	)
 	return i, err
 }
+
+const revokeToken = `-- name: RevokeToken :exec
+UPDATE tokens SET valid = ?, revoked_at = ? WHERE token = ?
+`
+
+type RevokeTokenParams struct {
+	Valid     int64
+	RevokedAt sql.NullString
+	Token     string
+}
+
+func (q *Queries) RevokeToken(ctx context.Context, arg RevokeTokenParams) error {
+	_, err := q.db.ExecContext(ctx, revokeToken, arg.Valid, arg.RevokedAt, arg.Token)
+	return err
+}

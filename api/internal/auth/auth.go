@@ -78,8 +78,11 @@ func IssueRefreshToken(userID string, DB *database.Queries, ctx context.Context)
 		Token:     token,
 		Valid:     1,
 		CreatedAt: time.Now().UTC().Format(time.RFC3339),
-		RevokedAt: sql.NullString{},
-		Userid:    userID,
+		RevokedAt: sql.NullString{
+			String: "",
+			Valid:  false,
+		},
+		Userid: userID,
 	})
 	return token, nil
 }
@@ -108,4 +111,23 @@ func RefreshAccessToken(refreshToken string, DB *database.Queries, ctx context.C
 		return "", err
 	}
 	return IssueAccessToken(userID, secret)
+}
+
+func RevokeRefreshToken(tokenString string, DB *database.Queries, ctx context.Context) error {
+	token, err := DB.GetTokenByToken(ctx, tokenString)
+	if err != nil {
+		return fmt.Errorf("token not found")
+	}
+	if token.Valid == 0 {
+		return fmt.Errorf("token is invalid")
+	}
+	err = DB.RevokeToken(ctx, database.RevokeTokenParams{
+		Valid: 0,
+		RevokedAt: sql.NullString{
+			String: time.Now().UTC().Format(time.RFC3339),
+			Valid:  true,
+		},
+		Token: tokenString,
+	})
+	return err
 }
