@@ -17,6 +17,8 @@ import (
 	"github.com/joho/godotenv"
 )
 
+var ACCESS_TOKEN = ""
+
 func TestServerEndpoints(t *testing.T) {
 	// Initialises the server then sequentially tests the endpoints
 	teardownTest := setupTest()
@@ -25,6 +27,7 @@ func TestServerEndpoints(t *testing.T) {
 	t.Run("TEST: GET /v1/readiness", testReadiness)
 	t.Run("TEST: POST /v1/users", testPostUser)
 	t.Run("TEST: POST /v1/login", testPostLogin)
+	t.Run("TEST: PUT /v1/users", testPutUser)
 
 }
 
@@ -37,7 +40,7 @@ func testReadiness(t *testing.T) {
 
 	// Create a new request to the /v1/readiness endpoint
 	requestURL := "http://localhost:8080/v1/readiness"
-	res := loopSendRequest(requestURL, http.MethodGet, nil, t)
+	res := loopSendRequest(requestURL, http.MethodGet, nil, nil, t)
 
 	// Compare Response
 	if res.StatusCode != http.StatusOK {
@@ -71,7 +74,7 @@ func testPostUser(t *testing.T) {
 
 	// Create a new request to the POST /v1/users endpoint
 	requestURL := "http://localhost:8080/v1/users"
-	res := loopSendRequest(requestURL, http.MethodPost, body, t)
+	res := loopSendRequest(requestURL, http.MethodPost, body, nil, t)
 
 	// Compare Response
 	if res.StatusCode != http.StatusOK {
@@ -106,7 +109,7 @@ func testPostLogin(t *testing.T) {
 		"password": "password"
 		}`)
 	requestURL := "http://localhost:8080/v1/login"
-	res := loopSendRequest(requestURL, http.MethodPost, bytes.NewBuffer(body), t)
+	res := loopSendRequest(requestURL, http.MethodPost, bytes.NewBuffer(body), nil, t)
 
 	// Compare Response
 	if res.StatusCode != http.StatusOK {
@@ -126,6 +129,46 @@ func testPostLogin(t *testing.T) {
 	}
 	if response.AccessToken == "" {
 		t.Fatalf("expected access token, got %q", response.AccessToken)
+	}
+	ACCESS_TOKEN = response.AccessToken
+}
+
+func testPutUser(t *testing.T) {
+	// Test the PUT /v1/users endpoint
+	// Create a new request to the /v1/users endpoint
+	// Send the request
+	// Check the response status code is 200
+	// Check the response body matches the updated user
+
+	// JSON body
+	body := []byte(`{
+		"name": "Updated User",
+		"email": "test@test.com",
+		"password": "password"
+	}`)
+	requestURL := "http://localhost:8080/v1/users"
+	headers := map[string]string{
+		"AccessToken": ACCESS_TOKEN,
+	}
+	res := loopSendRequest(requestURL, http.MethodPut, bytes.NewBuffer(body), headers, t)
+
+	// Compare Response
+	if res.StatusCode != http.StatusOK {
+		t.Fatalf("expected status code 200, got %d", res.StatusCode)
+	}
+	var response struct {
+		ID        string `json:"id"`
+		CreatedAt string `json:"created_at"`
+		UpdatedAt string `json:"updated_at"`
+		Name      string `json:"name"`
+		Email     string `json:"email"`
+	}
+	err := json.NewDecoder(res.Body).Decode(&response)
+	if err != nil {
+		t.Fatalf("could not read response body: %v", err)
+	}
+	if response.Name != "Updated User" {
+		t.Fatalf("expected name \"Updated User\", got %q", response)
 	}
 }
 
@@ -170,7 +213,7 @@ func emptyDB(db *sql.DB) {
 	}
 }
 
-func loopSendRequest(requestURL, method string, body io.Reader, t *testing.T) *http.Response {
+func loopSendRequest(requestURL, method string, body io.Reader, headers map[string]string, t *testing.T) *http.Response {
 	res := &http.Response{}
 	var err error
 	for i := 0; i < 5; i++ {
@@ -179,6 +222,9 @@ func loopSendRequest(requestURL, method string, body io.Reader, t *testing.T) *h
 		req, err := http.NewRequest(method, requestURL, body)
 		if err != nil {
 			t.Fatalf("client: could not create request: %s\n", err)
+		}
+		for key, value := range headers {
+			req.Header.Set(key, value)
 		}
 		res, err = http.DefaultClient.Do(req)
 		if err != nil {

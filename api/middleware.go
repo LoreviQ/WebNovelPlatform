@@ -12,7 +12,7 @@ type authedHandler func(http.ResponseWriter, *http.Request, database.User)
 func (cfg *apiConfig) AuthMiddleware(handler authedHandler) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		// AUTH
-		email, err := auth.AuthenticateAccessToken(r.Header.Get("Authorization"), cfg.JWT_Secret)
+		email, err := auth.AuthenticateAccessToken(r.Header.Get("AccessToken"), cfg.JWT_Secret)
 		if err != nil {
 			respondWithError(w, http.StatusUnauthorized, err.Error())
 			return
