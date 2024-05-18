@@ -17,18 +17,26 @@ import (
 	"github.com/joho/godotenv"
 )
 
-func TestReadiness(t *testing.T) {
+func TestServerEndpoints(t *testing.T) {
+	// Initialises the server then sequentially tests the endpoints
+	teardownTest := setupTest()
+	defer teardownTest()
+
+	t.Run("TEST: GET /v1/readiness", testReadiness)
+	t.Run("TEST: POST /v1/users", testPostUser)
+	t.Run("TEST: POST /v1/login", testPostLogin)
+
+}
+
+func testReadiness(t *testing.T) {
 	// Test the GET /v1/readiness endpoint
 	// Create a new request to the /v1/readiness endpoint
 	// Send the request
 	// Check the response status code is 200
 	// Check the response body is "OK"
 
-	cfg, teardownTest := setupTest()
-	defer teardownTest()
-
 	// Create a new request to the /v1/readiness endpoint
-	requestURL := fmt.Sprintf("http://localhost:%s/v1/readiness", cfg.port)
+	requestURL := "http://localhost:8080/v1/readiness"
 	res := loopSendRequest(requestURL, http.MethodGet, nil, t)
 
 	// Compare Response
@@ -47,15 +55,12 @@ func TestReadiness(t *testing.T) {
 	}
 }
 
-func TestPostUser(t *testing.T) {
+func testPostUser(t *testing.T) {
 	// Test the POST /v1/users endpoint
 	// Create a new request to the /v1/users endpoint
 	// Send the request
 	// Check the response status code is 200
 	// Check the response body matches the created user
-
-	cfg, teardownTest := setupTest()
-	defer teardownTest()
 
 	// JSON body
 	body := bytes.NewBuffer([]byte(`{
@@ -65,7 +70,7 @@ func TestPostUser(t *testing.T) {
 	}`))
 
 	// Create a new request to the POST /v1/users endpoint
-	requestURL := fmt.Sprintf("http://localhost:%s/v1/users", cfg.port)
+	requestURL := "http://localhost:8080/v1/users"
 	res := loopSendRequest(requestURL, http.MethodPost, body, t)
 
 	// Compare Response
@@ -84,35 +89,23 @@ func TestPostUser(t *testing.T) {
 		t.Fatalf("could not read response body: %v", err)
 	}
 	if response.Name != "Test User" {
-		t.Fatalf("expected response body \"OK\", got %q", response)
+		t.Fatalf("expected name \"Test User\", got %q", response)
 	}
 }
 
-func TestPostLogin(t *testing.T) {
+func testPostLogin(t *testing.T) {
 	// Test the POST /v1/login endpoint
 	// Create a new request to the /v1/login endpoint
 	// Send the request
 	// Check the response status code is 200
 	// Check the response body matches the loged in user and an access token is returned
 
-	cfg, teardownTest := setupTest()
-	defer teardownTest()
-
-	// Create a new user
-	body := []byte(`{
-		"name": "Test User",
-		"email": "test@test.com",
-		"password": "password"
-		}`)
-	requestURL := fmt.Sprintf("http://localhost:%s/v1/users", cfg.port)
-	loopSendRequest(requestURL, http.MethodPost, bytes.NewBuffer(body), t)
-
 	// Create a new request to the POST /v1/login endpoint
-	body = []byte(`{
+	body := []byte(`{
 		"email": "test@test.com",
 		"password": "password"
 		}`)
-	requestURL = fmt.Sprintf("http://localhost:%s/v1/login", cfg.port)
+	requestURL := "http://localhost:8080/v1/login"
 	res := loopSendRequest(requestURL, http.MethodPost, bytes.NewBuffer(body), t)
 
 	// Compare Response
@@ -136,12 +129,12 @@ func TestPostLogin(t *testing.T) {
 	}
 }
 
-func setupTest() (apiConfig, func()) {
+func setupTest() func() {
 	log.Println("setting up test...")
 	cfg := setupConfigTest()
 	server := initialiseServer(cfg, http.NewServeMux())
 	go server.ListenAndServe()
-	return cfg, func() {
+	return func() {
 		log.Println("tearing down test...")
 		server.Close()
 	}
