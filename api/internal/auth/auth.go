@@ -66,14 +66,14 @@ func AuthenticateAccessToken(tokenString string, secret []byte) (string, error) 
 	return subject, nil
 }
 
-func IssueRefreshToken(userID string, DB *database.Queries) (string, error) {
+func IssueRefreshToken(userID string, DB *database.Queries, ctx context.Context) (string, error) {
 	tokenHex := make([]byte, 32)
 	_, err := rand.Read(tokenHex)
 	if err != nil {
 		return "", err
 	}
 	token := hex.EncodeToString(tokenHex)
-	DB.CreateToken(context.Background(), database.CreateTokenParams{
+	DB.CreateToken(ctx, database.CreateTokenParams{
 		ID:        uuid.New().String(),
 		Token:     token,
 		Valid:     1,
@@ -84,13 +84,20 @@ func IssueRefreshToken(userID string, DB *database.Queries) (string, error) {
 	return token, nil
 }
 
-func AuthenticateRefreshToken(token string, DB *database.Queries) (string, error) {
-	token, err := DB.GetTokenByToken(context.Background(), token)
+func AuthenticateRefreshToken(tokenString string, DB *database.Queries, ctx context.Context) (string, error) {
+	token, err := DB.GetTokenByToken(ctx, tokenString)
 	if err != nil {
 		return "", fmt.Errorf("token not found")
 	}
 	if token.Valid == 0 {
-		return "", fmt.Errorf("tokenen is invalid")
+		return "", fmt.Errorf("token is invalid")
+	}
+	createdAt, err := time.Parse(time.RFC3339, token.CreatedAt)
+	if err != nil {
+		return "", fmt.Errorf("error parsing token creation time")
+	}
+	if createdAt.Add(time.Hour * 24 * 60).Before(time.Now()) {
+		return "", fmt.Errorf("token is expired")
 	}
 	return token.Userid, nil
 }
