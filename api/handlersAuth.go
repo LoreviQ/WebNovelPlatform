@@ -26,7 +26,7 @@ func (cfg *apiConfig) postLogin(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// CREATE JWT TOKENS
-	accessToken, err := auth.IssueAccessToken(user.Name, cfg.JWT_Secret)
+	accessToken, err := auth.IssueAccessToken(user.Email, cfg.JWT_Secret)
 	if err != nil {
 		log.Printf("Error Creating Access Token: %s", err)
 		w.WriteHeader(500)
