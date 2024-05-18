@@ -41,6 +41,7 @@ func AuthenticateAccessToken(tokenString string, secret []byte) (string, error) 
 	// Checks the access token against the provided secret
 	// Returns the email if the token is valid
 	// Returns an error if the token is invalid
+
 	token, err := jwt.ParseWithClaims(tokenString, &jwt.RegisteredClaims{}, func(token *jwt.Token) (interface{}, error) {
 		return secret, nil
 	})

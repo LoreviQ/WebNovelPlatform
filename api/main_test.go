@@ -148,7 +148,7 @@ func testPutUser(t *testing.T) {
 	}`)
 	requestURL := "http://localhost:8080/v1/users"
 	headers := map[string]string{
-		"AccessToken": ACCESS_TOKEN,
+		"Authorization": fmt.Sprintf("Bearer %s", ACCESS_TOKEN),
 	}
 	res := loopSendRequest(requestURL, http.MethodPut, bytes.NewBuffer(body), headers, t)
 
