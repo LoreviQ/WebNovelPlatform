@@ -41,7 +41,7 @@ func AuthenticateAccessToken(tokenString string, secret []byte) (string, error) 
 	// Checks the access token against the provided secret
 	// Returns the email if the token is valid
 	// Returns an error if the token is invalid
-	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+	token, err := jwt.ParseWithClaims(tokenString, &jwt.RegisteredClaims{}, func(token *jwt.Token) (interface{}, error) {
 		return secret, nil
 	})
 	if err != nil {
@@ -50,12 +50,13 @@ func AuthenticateAccessToken(tokenString string, secret []byte) (string, error) 
 	if !token.Valid {
 		return "", fmt.Errorf("invalid token")
 	}
-	claims, ok := token.Claims.(jwt.RegisteredClaims)
-	if !ok {
-		return "", fmt.Errorf("invalid token claims")
-	}
-	if claims.Issuer != "wnp-access" {
+	issuer, err := token.Claims.GetIssuer()
+	if err != nil || issuer != "wnp-access" {
 		return "", fmt.Errorf("invalid token issuer")
 	}
-	return claims.Subject, nil
+	subject, err := token.Claims.GetSubject()
+	if err != nil {
+		return "", err
+	}
+	return subject, nil
 }

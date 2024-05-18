@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/LoreviQ/WebNovelPlatform/api/internal/auth"
@@ -14,6 +15,7 @@ func (cfg *apiConfig) AuthMiddleware(handler authedHandler) http.HandlerFunc {
 		// AUTH
 		email, err := auth.AuthenticateAccessToken(r.Header.Get("AccessToken"), cfg.JWT_Secret)
 		if err != nil {
+			log.Printf("Error authenticating access token: %s", err)
 			respondWithError(w, http.StatusUnauthorized, err.Error())
 			return
 		}
