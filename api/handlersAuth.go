@@ -58,7 +58,7 @@ func (cfg *apiConfig) postRefresh(w http.ResponseWriter, r *http.Request) {
 	// REFRESH ACCESS TOKEN
 	accessToken, err := auth.IssueAccessToken(refreshToken, cfg.JWT_Secret)
 	if err != nil {
-		respondWithError(w, http.StatusUnauthorized, "Invalid refresh token")
+		respondWithError(w, http.StatusUnauthorized, err.Error())
 		return
 	}
 
