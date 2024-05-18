@@ -6,3 +6,6 @@ RETURNING *;
 
 -- name: GetUserByEmail :one
 SELECT * FROM users WHERE email = ?;
+
+-- name: UpdateUser :one
+UPDATE users SET updated_at = ?, name = ?, email = ?, passwordhash = ? WHERE id = ? RETURNING *;

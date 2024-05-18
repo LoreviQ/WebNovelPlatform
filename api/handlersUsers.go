@@ -79,6 +79,7 @@ func (cfg *apiConfig) editUser(w http.ResponseWriter, r *http.Request, user data
 		return
 	}
 	updatedUser, err := cfg.DB.UpdateUser(r.Context(), database.UpdateUserParams{
+		ID:           user.ID,
 		UpdatedAt:    time.Now().UTC().Format(time.RFC3339),
 		Name:         request.Name,
 		Email:        request.Email,
