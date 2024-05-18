@@ -25,12 +25,12 @@ func AuthenticateUser(email string, password []byte, db *database.Queries) (*dat
 	return &user, nil
 }
 
-func IssueAccessToken(username string, secret []byte) (string, error) {
+func IssueAccessToken(email string, secret []byte) (string, error) {
 	claims := jwt.RegisteredClaims{
 		Issuer:    "wnp-access",
 		IssuedAt:  jwt.NewNumericDate(time.Now()),
 		ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour)),
-		Subject:   username,
+		Subject:   email,
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	signedToken, err := token.SignedString(secret)
@@ -39,7 +39,7 @@ func IssueAccessToken(username string, secret []byte) (string, error) {
 
 func AuthenticateAccessToken(tokenString string, secret []byte) (string, error) {
 	// Checks the access token against the provided secret
-	// Returns the username if the token is valid
+	// Returns the email if the token is valid
 	// Returns an error if the token is invalid
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		return secret, nil
