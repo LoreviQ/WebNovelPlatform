@@ -70,3 +70,21 @@ func (cfg *apiConfig) postRefresh(w http.ResponseWriter, r *http.Request) {
 		AccessToken: accessToken,
 	})
 }
+
+func (cfg *apiConfig) postRevoke(w http.ResponseWriter, r *http.Request) {
+	// GET REFRESH TOKEN FROM HEADER
+	header := r.Header.Get("Authorization")
+	if header == "" {
+		respondWithError(w, http.StatusUnauthorized, "No Authorization Header")
+		return
+	}
+	refreshToken := header[len("Bearer "):]
+
+	// REVOKE REFRESH TOKEN
+	err := auth.RevokeRefreshToken(refreshToken, cfg.DB, r.Context())
+	if err != nil {
+		respondWithError(w, http.StatusBadRequest, err.Error())
+		return
+	}
+	w.WriteHeader(200)
+}
