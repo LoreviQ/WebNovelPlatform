@@ -59,7 +59,7 @@ func (cfg *apiConfig) postUser(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-func (cfg *apiConfig) editUser(w http.ResponseWriter, r *http.Request, user database.User) {
+func (cfg *apiConfig) putUser(w http.ResponseWriter, r *http.Request, user database.User) {
 	// REQUEST
 	request, err := decodeRequest(w, r, struct {
 		Name     string `json:"name"`

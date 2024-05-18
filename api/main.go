@@ -54,6 +54,7 @@ func initialiseServer(cfg apiConfig, mux *http.ServeMux) *http.Server {
 	mux.HandleFunc("GET /v1/readiness", cfg.getReadiness)
 	mux.HandleFunc("POST /v1/users", cfg.postUser)
 	mux.HandleFunc("POST /v1/login", cfg.postLogin)
+	mux.HandleFunc("PUT /v1/users", cfg.AuthMiddleware(cfg.putUser))
 
 	server := &http.Server{
 		Addr:              ":" + cfg.port,
