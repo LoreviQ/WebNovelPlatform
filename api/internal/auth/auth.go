@@ -83,3 +83,14 @@ func IssueRefreshToken(userID string, DB *database.Queries) (string, error) {
 	})
 	return token, nil
 }
+
+func AuthenticateRefreshToken(token string, DB *database.Queries) (string, error) {
+	token, err := DB.GetTokenByToken(context.Background(), token)
+	if err != nil {
+		return "", fmt.Errorf("token not found")
+	}
+	if token.Valid == 0 {
+		return "", fmt.Errorf("tokenen is invalid")
+	}
+	return token.Userid, nil
+}
