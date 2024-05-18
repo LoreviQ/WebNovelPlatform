@@ -29,12 +29,12 @@ func AuthenticateUser(email string, password []byte, db *database.Queries) (*dat
 	return &user, nil
 }
 
-func IssueAccessToken(email string, secret []byte) (string, error) {
+func IssueAccessToken(userID string, secret []byte) (string, error) {
 	claims := jwt.RegisteredClaims{
 		Issuer:    "wnp-access",
 		IssuedAt:  jwt.NewNumericDate(time.Now()),
 		ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour)),
-		Subject:   email,
+		Subject:   userID,
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	signedToken, err := token.SignedString(secret)
@@ -43,7 +43,7 @@ func IssueAccessToken(email string, secret []byte) (string, error) {
 
 func AuthenticateAccessToken(tokenString string, secret []byte) (string, error) {
 	// Checks the access token against the provided secret
-	// Returns the email if the token is valid
+	// Returns the userID if the token is valid
 	// Returns an error if the token is invalid
 
 	token, err := jwt.ParseWithClaims(tokenString, &jwt.RegisteredClaims{}, func(token *jwt.Token) (interface{}, error) {
@@ -100,4 +100,12 @@ func AuthenticateRefreshToken(tokenString string, DB *database.Queries, ctx cont
 		return "", fmt.Errorf("token is expired")
 	}
 	return token.Userid, nil
+}
+
+func RefreshAccessToken(refreshToken string, DB *database.Queries, ctx context.Context, secret []byte) (string, error) {
+	userID, err := AuthenticateRefreshToken(refreshToken, DB, ctx)
+	if err != nil {
+		return "", err
+	}
+	return IssueAccessToken(userID, secret)
 }
