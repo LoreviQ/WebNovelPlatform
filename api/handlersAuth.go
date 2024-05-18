@@ -45,3 +45,28 @@ func (cfg *apiConfig) postLogin(w http.ResponseWriter, r *http.Request) {
 		AccessToken: accessToken,
 	})
 }
+
+func (cfg *apiConfig) postRefresh(w http.ResponseWriter, r *http.Request) {
+	// GET REFRESH TOKEN FROM HEADER
+	header := r.Header.Get("Authorization")
+	if header == "" {
+		respondWithError(w, http.StatusUnauthorized, "No Authorization Header")
+		return
+	}
+	refreshToken := header[len("Bearer "):]
+
+	// REFRESH ACCESS TOKEN
+	accessToken, err := auth.IssueAccessToken(refreshToken, cfg.JWT_Secret)
+	if err != nil {
+		respondWithError(w, http.StatusUnauthorized, "Invalid refresh token")
+		return
+	}
+
+	// RESPONSE
+	type responseStruct struct {
+		AccessToken string `json:"token"`
+	}
+	respondWithJSON(w, 200, responseStruct{
+		AccessToken: accessToken,
+	})
+}
