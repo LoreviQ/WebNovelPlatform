@@ -3,12 +3,14 @@ package auth
 import (
 	"context"
 	"crypto/rand"
+	"database/sql"
 	"encoding/hex"
 	"fmt"
 	"time"
 
 	"github.com/LoreviQ/WebNovelPlatform/api/internal/database"
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -64,11 +66,20 @@ func AuthenticateAccessToken(tokenString string, secret []byte) (string, error) 
 	return subject, nil
 }
 
-func IssueRefreshToken() (string, error) {
-	token := make([]byte, 32)
-	_, err := rand.Read(token)
+func IssueRefreshToken(userID string, DB *database.Queries) (string, error) {
+	tokenHex := make([]byte, 32)
+	_, err := rand.Read(tokenHex)
 	if err != nil {
 		return "", err
 	}
-	return hex.EncodeToString(token), nil
+	token := hex.EncodeToString(tokenHex)
+	DB.CreateToken(context.Background(), database.CreateTokenParams{
+		ID:        uuid.New().String(),
+		Token:     token,
+		Valid:     1,
+		CreatedAt: time.Now().UTC().Format(time.RFC3339),
+		RevokedAt: sql.NullString{},
+		Userid:    userID,
+	})
+	return token, nil
 }
