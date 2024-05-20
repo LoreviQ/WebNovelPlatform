@@ -25,18 +25,18 @@ func TestServerEndpoints(t *testing.T) {
 
 	t.Run("TEST: GET /v1/readiness", testReadiness)
 	t.Run("TEST: POST /v1/users", testPostUser)
-	t.Run("TEST: POST /v1/login", func(t *testing.T) {
-		testPostLogin(t)
-	})
-	t.Run("TEST: PUT /v1/users", func(t *testing.T) {
-		accessToken := testPostLogin(t)
+	t.Run("TEST: AUTH", func(t *testing.T) {
+		log.Print("Login")
+		accessToken, refreshToken := testPostLogin(t)
 		testPutUser(t, accessToken)
-	})
-	t.Run("TEST: PUT /v1/users (fail)", func(t *testing.T) {
-		accessToken := testPostLogin(t)
+		log.Print("Waiting for token to expire...")
 		time.Sleep(time.Second * 16)
 		testPutUserFail(t, accessToken)
+		log.Print("Refreshing token...")
+		updatedToken := testRefresh(t, refreshToken)
+		testPutUser(t, updatedToken)
 	})
+
 }
 
 func testReadiness(t *testing.T) {
@@ -104,7 +104,7 @@ func testPostUser(t *testing.T) {
 	}
 }
 
-func testPostLogin(t *testing.T) string {
+func testPostLogin(t *testing.T) (string, string) {
 	// Test the POST /v1/login endpoint
 	// Create a new request to the /v1/login endpoint
 	// Send the request
@@ -139,7 +139,7 @@ func testPostLogin(t *testing.T) string {
 	if response.AccessToken == "" {
 		t.Fatalf("expected access token, got %q", response.AccessToken)
 	}
-	return response.AccessToken
+	return response.AccessToken, response.RefreshToken
 }
 
 func testPutUser(t *testing.T, accessToken string) {
@@ -163,6 +163,7 @@ func testPutUser(t *testing.T, accessToken string) {
 
 	// Compare Response
 	if res.StatusCode != http.StatusOK {
+		logErrorResponse(res)
 		t.Fatalf("expected status code 200, got %d", res.StatusCode)
 	}
 	var response struct {
@@ -213,6 +214,38 @@ func testPutUserFail(t *testing.T, accessToken string) {
 	}
 }
 
+func testRefresh(t *testing.T, refreshToken string) string {
+	// Test the POST /v1/refresh endpoint
+	// Create a new request to the /v1/refresh endpoint
+	// Send the request
+	// Check the response status code is 200
+	// Check the response body matches the refreshed access token
+
+	// Create a new request to the POST /v1/refresh endpoint
+	requestURL := "http://localhost:8080/v1/refresh"
+	headers := map[string]string{
+		"Authorization": fmt.Sprintf("Bearer %s", refreshToken),
+	}
+	res := loopSendRequest(requestURL, http.MethodPost, nil, headers, t)
+
+	// Compare Response
+	if res.StatusCode != http.StatusOK {
+		logErrorResponse(res)
+		t.Fatalf("expected status code 200, got %d", res.StatusCode)
+	}
+	var response struct {
+		AccessToken string `json:"token"`
+	}
+	err := json.NewDecoder(res.Body).Decode(&response)
+	if err != nil {
+		t.Fatalf("could not read response body: %v", err)
+	}
+	if response.AccessToken == "" {
+		t.Fatalf("expected access token, got %q", response.AccessToken)
+	}
+	return response.AccessToken
+}
+
 func setupTest() func() {
 	log.Println("setting up test...")
 	cfg := setupConfigTest()
@@ -245,6 +278,7 @@ func setupConfigTest() apiConfig {
 
 func emptyDB(db *sql.DB) {
 	var tables = []string{
+		"tokens",
 		"users",
 	}
 	for _, table := range tables {
@@ -281,4 +315,15 @@ func loopSendRequest(requestURL, method string, body io.Reader, headers map[stri
 		t.Fatalf("could not send request: %v\n", err)
 	}
 	return res
+}
+
+func logErrorResponse(res *http.Response) {
+	var response struct {
+		Error string `json:"error"`
+	}
+	err := json.NewDecoder(res.Body).Decode(&response)
+	if err != nil {
+		log.Printf("could not read response body: %v", err)
+	}
+	log.Printf("Error: %s", response.Error)
 }
