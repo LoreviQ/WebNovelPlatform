@@ -124,9 +124,10 @@ func testPostLogin(t *testing.T) string {
 		t.Fatalf("expected status code 200, got %d", res.StatusCode)
 	}
 	var response struct {
-		ID          uuid.UUID `json:"id"`
-		Email       string    `json:"email"`
-		AccessToken string    `json:"token"`
+		ID           uuid.UUID `json:"id"`
+		Email        string    `json:"email"`
+		AccessToken  string    `json:"token"`
+		RefreshToken string    `json:"refresh"`
 	}
 	err := json.NewDecoder(res.Body).Decode(&response)
 	if err != nil {

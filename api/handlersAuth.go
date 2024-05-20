@@ -32,17 +32,25 @@ func (cfg *apiConfig) postLogin(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(500)
 		return
 	}
+	refreshToken, err := auth.IssueRefreshToken(user.ID, cfg.DB, r.Context())
+	if err != nil {
+		log.Printf("Error Creating Refresh Token: %s", err)
+		w.WriteHeader(500)
+		return
+	}
 
 	// RESPONSE
 	type responseStruct struct {
-		ID          string `json:"id"`
-		Email       string `json:"email"`
-		AccessToken string `json:"token"`
+		ID           string `json:"id"`
+		Email        string `json:"email"`
+		AccessToken  string `json:"token"`
+		RefreshToken string `json:"refresh"`
 	}
 	respondWithJSON(w, 200, responseStruct{
-		ID:          user.ID,
-		Email:       user.Email,
-		AccessToken: accessToken,
+		ID:           user.ID,
+		Email:        user.Email,
+		AccessToken:  accessToken,
+		RefreshToken: refreshToken,
 	})
 }
 
