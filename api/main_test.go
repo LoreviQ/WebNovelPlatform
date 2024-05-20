@@ -32,11 +32,11 @@ func TestServerEndpoints(t *testing.T) {
 		accessToken := testPostLogin(t)
 		testPutUser(t, accessToken)
 	})
-	/*t.Run("TEST: PUT /v1/users (fail)", func(t *testing.T) {
+	t.Run("TEST: PUT /v1/users (fail)", func(t *testing.T) {
 		accessToken := testPostLogin(t)
 		time.Sleep(time.Second * 16)
 		testPutUserFail(t, accessToken)
-	})*/
+	})
 }
 
 func testReadiness(t *testing.T) {
