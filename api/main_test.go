@@ -12,12 +12,11 @@ import (
 	"testing"
 	"time"
 
+	"github.com/LoreviQ/WebNovelPlatform/api/internal/auth"
 	"github.com/LoreviQ/WebNovelPlatform/api/internal/database"
 	"github.com/google/uuid"
 	"github.com/joho/godotenv"
 )
-
-var ACCESS_TOKEN = ""
 
 func TestServerEndpoints(t *testing.T) {
 	// Initialises the server then sequentially tests the endpoints
@@ -26,9 +25,18 @@ func TestServerEndpoints(t *testing.T) {
 
 	t.Run("TEST: GET /v1/readiness", testReadiness)
 	t.Run("TEST: POST /v1/users", testPostUser)
-	t.Run("TEST: POST /v1/login", testPostLogin)
-	t.Run("TEST: PUT /v1/users", testPutUser)
-
+	t.Run("TEST: POST /v1/login", func(t *testing.T) {
+		testPostLogin(t)
+	})
+	t.Run("TEST: PUT /v1/users", func(t *testing.T) {
+		accessToken := testPostLogin(t)
+		testPutUser(t, accessToken)
+	})
+	/*t.Run("TEST: PUT /v1/users (fail)", func(t *testing.T) {
+		accessToken := testPostLogin(t)
+		time.Sleep(time.Second * 16)
+		testPutUserFail(t, accessToken)
+	})*/
 }
 
 func testReadiness(t *testing.T) {
@@ -96,7 +104,7 @@ func testPostUser(t *testing.T) {
 	}
 }
 
-func testPostLogin(t *testing.T) {
+func testPostLogin(t *testing.T) string {
 	// Test the POST /v1/login endpoint
 	// Create a new request to the /v1/login endpoint
 	// Send the request
@@ -130,10 +138,10 @@ func testPostLogin(t *testing.T) {
 	if response.AccessToken == "" {
 		t.Fatalf("expected access token, got %q", response.AccessToken)
 	}
-	ACCESS_TOKEN = response.AccessToken
+	return response.AccessToken
 }
 
-func testPutUser(t *testing.T) {
+func testPutUser(t *testing.T, accessToken string) {
 	// Test the PUT /v1/users endpoint
 	// Create a new request to the /v1/users endpoint
 	// Send the request
@@ -148,7 +156,7 @@ func testPutUser(t *testing.T) {
 	}`)
 	requestURL := "http://localhost:8080/v1/users"
 	headers := map[string]string{
-		"Authorization": fmt.Sprintf("Bearer %s", ACCESS_TOKEN),
+		"Authorization": fmt.Sprintf("Bearer %s", accessToken),
 	}
 	res := loopSendRequest(requestURL, http.MethodPut, bytes.NewBuffer(body), headers, t)
 
@@ -169,6 +177,38 @@ func testPutUser(t *testing.T) {
 	}
 	if response.Name != "Updated User" {
 		t.Fatalf("expected name \"Updated User\", got %q", response)
+	}
+}
+
+func testPutUserFail(t *testing.T, accessToken string) {
+	// Test the PUT /v1/users endpoint
+	// Same as above but expecting it to fail since the access token has expired
+
+	// JSON body
+	body := []byte(`{
+		"name": "Updated User 2",
+		"email": "test@test.com",
+		"password": "password"
+	}`)
+	requestURL := "http://localhost:8080/v1/users"
+	headers := map[string]string{
+		"Authorization": fmt.Sprintf("Bearer %s", accessToken),
+	}
+	res := loopSendRequest(requestURL, http.MethodPut, bytes.NewBuffer(body), headers, t)
+
+	// Compare Response
+	if res.StatusCode != http.StatusUnauthorized {
+		t.Fatalf("expected status code 401, got %d", res.StatusCode)
+	}
+	var response struct {
+		Error string `json:"error"`
+	}
+	err := json.NewDecoder(res.Body).Decode(&response)
+	if err != nil {
+		t.Fatalf("could not read response body: %v", err)
+	}
+	if response.Error == "" {
+		t.Fatal("expected error message, got empty string")
 	}
 }
 
@@ -194,6 +234,7 @@ func setupConfigTest() apiConfig {
 	}
 	// empty DB from previous tests
 	emptyDB(db)
+	auth.TEST = true
 	return apiConfig{
 		port:       "8080",
 		DB:         database.New(db),

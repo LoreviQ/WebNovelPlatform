@@ -1,7 +1,6 @@
 package main
 
 import (
-	"log"
 	"net/http"
 
 	"github.com/LoreviQ/WebNovelPlatform/api/internal/auth"
@@ -21,17 +20,16 @@ func (cfg *apiConfig) AuthMiddleware(handler authedHandler) http.HandlerFunc {
 		token := header[len("Bearer "):]
 
 		// AUTHENTICATE ACCESS TOKEN
-		email, err := auth.AuthenticateAccessToken(token, cfg.JWT_Secret)
+		ID, err := auth.AuthenticateAccessToken(token, cfg.JWT_Secret)
 		if err != nil {
-			log.Printf("Error authenticating access token: %s", err)
 			respondWithError(w, http.StatusUnauthorized, err.Error())
 			return
 		}
 
-		// GET USER BY EMAIL
-		user, err := cfg.DB.GetUserByEmail(r.Context(), email)
+		// GET USER BY ID
+		user, err := cfg.DB.GetUserById(r.Context(), ID)
 		if err != nil {
-			respondWithError(w, http.StatusUnauthorized, "Invalid email")
+			respondWithError(w, http.StatusUnauthorized, "Invalid subject in token")
 			return
 		}
 		handler(w, r, user)

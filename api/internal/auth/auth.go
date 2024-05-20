@@ -14,6 +14,9 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+// To change behaviour so tesats can be completed in a reasonable time
+var TEST = false
+
 func AuthenticateUser(email string, password []byte, db *database.Queries) (*database.User, error) {
 	// Authenticate user
 	// Check if the user exists
@@ -30,10 +33,14 @@ func AuthenticateUser(email string, password []byte, db *database.Queries) (*dat
 }
 
 func IssueAccessToken(userID string, secret []byte) (string, error) {
+	duration := time.Hour
+	if TEST {
+		duration = time.Second * 15
+	}
 	claims := jwt.RegisteredClaims{
 		Issuer:    "wnp-access",
 		IssuedAt:  jwt.NewNumericDate(time.Now()),
-		ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour)),
+		ExpiresAt: jwt.NewNumericDate(time.Now().Add(duration)),
 		Subject:   userID,
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
