@@ -35,6 +35,9 @@ func TestServerEndpoints(t *testing.T) {
 		log.Print("Refreshing token...")
 		updatedToken := testRefresh(t, refreshToken)
 		testPutUser(t, updatedToken)
+		log.Print("Revoking token...")
+		testRevokeRefresh(t, refreshToken)
+		testRefreshFail(t, refreshToken)
 	})
 
 }
@@ -244,6 +247,44 @@ func testRefresh(t *testing.T, refreshToken string) string {
 		t.Fatalf("expected access token, got %q", response.AccessToken)
 	}
 	return response.AccessToken
+}
+
+func testRevokeRefresh(t *testing.T, refreshToken string) {
+	// Test the POST /v1/revoke endpoint
+	// Create a new request to the /v1/revoke endpoint
+	// Send the request
+	// Check the response status code is 200
+
+	// Create a new request to the POST /v1/revoke endpoint
+	requestURL := "http://localhost:8080/v1/revoke"
+	headers := map[string]string{
+		"Authorization": fmt.Sprintf("Bearer %s", refreshToken),
+	}
+	res := loopSendRequest(requestURL, http.MethodPost, nil, headers, t)
+
+	// Compare Response
+	if res.StatusCode != http.StatusOK {
+		logErrorResponse(res)
+		t.Fatalf("expected status code 200, got %d", res.StatusCode)
+	}
+}
+
+func testRefreshFail(t *testing.T, refreshToken string) {
+	// Test the POST /v1/refresh endpoint
+	// Same as above but expecting it to fail since the refresh token has already been revoked
+
+	// Create a new request to the POST /v1/revoke endpoint
+	requestURL := "http://localhost:8080/v1/refresh"
+	headers := map[string]string{
+		"Authorization": fmt.Sprintf("Bearer %s", refreshToken),
+	}
+	res := loopSendRequest(requestURL, http.MethodPost, nil, headers, t)
+
+	// Compare Response
+	if res.StatusCode != http.StatusUnauthorized {
+		logErrorResponse(res)
+		t.Fatalf("expected status code 401, got %d", res.StatusCode)
+	}
 }
 
 func setupTest() func() {
