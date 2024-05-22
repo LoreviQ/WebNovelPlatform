@@ -4,7 +4,18 @@
 
 package database
 
-import ()
+import (
+	"database/sql"
+)
+
+type Token struct {
+	ID        string
+	Token     string
+	Valid     int64
+	CreatedAt string
+	RevokedAt sql.NullString
+	Userid    string
+}
 
 type User struct {
 	ID           string

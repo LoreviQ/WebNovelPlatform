@@ -11,7 +11,7 @@ import (
 
 const createUser = `-- name: CreateUser :one
 INSERT INTO users (id, created_at, updated_at, name, email, passwordhash)
-VALUES (?, ?, ?, ?,?,?)
+VALUES (?, ?, ?, ?, ?, ?)
 RETURNING id, created_at, updated_at, name, email, passwordhash
 `
 
@@ -32,6 +32,74 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 		arg.Name,
 		arg.Email,
 		arg.Passwordhash,
+	)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.Name,
+		&i.Email,
+		&i.Passwordhash,
+	)
+	return i, err
+}
+
+const getUserByEmail = `-- name: GetUserByEmail :one
+SELECT id, created_at, updated_at, name, email, passwordhash FROM users WHERE email = ?
+`
+
+func (q *Queries) GetUserByEmail(ctx context.Context, email string) (User, error) {
+	row := q.db.QueryRowContext(ctx, getUserByEmail, email)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.Name,
+		&i.Email,
+		&i.Passwordhash,
+	)
+	return i, err
+}
+
+const getUserById = `-- name: GetUserById :one
+SELECT id, created_at, updated_at, name, email, passwordhash FROM users WHERE id = ?
+`
+
+func (q *Queries) GetUserById(ctx context.Context, id string) (User, error) {
+	row := q.db.QueryRowContext(ctx, getUserById, id)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.Name,
+		&i.Email,
+		&i.Passwordhash,
+	)
+	return i, err
+}
+
+const updateUser = `-- name: UpdateUser :one
+UPDATE users SET updated_at = ?, name = ?, email = ?, passwordhash = ? WHERE id = ? RETURNING id, created_at, updated_at, name, email, passwordhash
+`
+
+type UpdateUserParams struct {
+	UpdatedAt    string
+	Name         string
+	Email        string
+	Passwordhash string
+	ID           string
+}
+
+func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (User, error) {
+	row := q.db.QueryRowContext(ctx, updateUser,
+		arg.UpdatedAt,
+		arg.Name,
+		arg.Email,
+		arg.Passwordhash,
+		arg.ID,
 	)
 	var i User
 	err := row.Scan(

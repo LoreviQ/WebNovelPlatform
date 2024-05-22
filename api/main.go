@@ -14,8 +14,9 @@ import (
 )
 
 type apiConfig struct {
-	port string
-	DB   *database.Queries
+	port       string
+	DB         *database.Queries
+	JWT_Secret []byte
 }
 
 func main() {
@@ -42,8 +43,9 @@ func setupConfig() apiConfig {
 		log.Panicf("Error connecting to DB: %s\n", err)
 	}
 	return apiConfig{
-		port: os.Getenv("PORT"),
-		DB:   database.New(db),
+		port:       os.Getenv("PORT"),
+		DB:         database.New(db),
+		JWT_Secret: []byte(os.Getenv("JWT_SECRET")),
 	}
 }
 
@@ -51,6 +53,10 @@ func setupConfig() apiConfig {
 func initialiseServer(cfg apiConfig, mux *http.ServeMux) *http.Server {
 	mux.HandleFunc("GET /v1/readiness", cfg.getReadiness)
 	mux.HandleFunc("POST /v1/users", cfg.postUser)
+	mux.HandleFunc("POST /v1/login", cfg.postLogin)
+	mux.HandleFunc("PUT /v1/users", cfg.AuthMiddleware(cfg.putUser))
+	mux.HandleFunc("POST /v1/refresh", cfg.postRefresh)
+	mux.HandleFunc("POST /v1/revoke", cfg.postRevoke)
 
 	server := &http.Server{
 		Addr:              ":" + cfg.port,

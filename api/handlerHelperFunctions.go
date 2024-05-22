@@ -1,11 +1,9 @@
 package main
 
 import (
-	"database/sql"
 	"encoding/json"
 	"log"
 	"net/http"
-	"time"
 )
 
 // respondWithJSON sends a JSON response with the provided status code and body
@@ -57,11 +55,4 @@ func decodeRequest[T any](w http.ResponseWriter, r *http.Request, _ T) (T, error
 		return request, err
 	}
 	return request, nil
-}
-
-func convertNulltime(time sql.NullTime) *time.Time {
-	if time.Valid {
-		return &time.Time
-	}
-	return nil
 }

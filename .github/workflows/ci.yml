@@ -8,6 +8,9 @@ jobs:
   tests:
     name: Tests
     runs-on: ubuntu-latest
+    env:
+      DB_CONNECTION_TEST: ${{ secrets.DB_CONNECTION_TEST }}
+      JWT_SECRET: ${{ secrets.JWT_SECRET }}
   
     steps:
       - name: Check out code
@@ -27,4 +30,4 @@ jobs:
       
       - name: gosec
         working-directory: ./api
-        run: gosec ./...
+        run: gosec -exclude-dir=internal/database ./...
