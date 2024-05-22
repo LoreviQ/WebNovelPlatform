@@ -94,10 +94,16 @@ func (q *Queries) GetFictionById(ctx context.Context, id string) (Fiction, error
 
 const getFictionsByAuthorId = `-- name: GetFictionsByAuthorId :many
 SELECT id, title, authorid, description, created_at, updated_at, published_at, published FROM fictions WHERE authorid = ?
+LIMIT ?
 `
 
-func (q *Queries) GetFictionsByAuthorId(ctx context.Context, authorid string) ([]Fiction, error) {
-	rows, err := q.db.QueryContext(ctx, getFictionsByAuthorId, authorid)
+type GetFictionsByAuthorIdParams struct {
+	Authorid string
+	Limit    int64
+}
+
+func (q *Queries) GetFictionsByAuthorId(ctx context.Context, arg GetFictionsByAuthorIdParams) ([]Fiction, error) {
+	rows, err := q.db.QueryContext(ctx, getFictionsByAuthorId, arg.Authorid, arg.Limit)
 	if err != nil {
 		return nil, err
 	}
@@ -130,10 +136,11 @@ func (q *Queries) GetFictionsByAuthorId(ctx context.Context, authorid string) ([
 
 const getPublishedFictions = `-- name: GetPublishedFictions :many
 SELECT id, title, authorid, description, created_at, updated_at, published_at, published FROM fictions WHERE published = 1
+LIMIT ?
 `
 
-func (q *Queries) GetPublishedFictions(ctx context.Context) ([]Fiction, error) {
-	rows, err := q.db.QueryContext(ctx, getPublishedFictions)
+func (q *Queries) GetPublishedFictions(ctx context.Context, limit int64) ([]Fiction, error) {
+	rows, err := q.db.QueryContext(ctx, getPublishedFictions, limit)
 	if err != nil {
 		return nil, err
 	}

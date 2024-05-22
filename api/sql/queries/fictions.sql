@@ -7,7 +7,8 @@ RETURNING *;
 SELECT * FROM fictions WHERE id = ?;
 
 -- name: GetFictionsByAuthorId :many
-SELECT * FROM fictions WHERE authorid = ?;
+SELECT * FROM fictions WHERE authorid = ?
+LIMIT ?;
 
 -- name: UpdateFiction :one
 UPDATE fictions SET updated_at = ?, title = ?, description = ?, published_at = ?, published = ? 
@@ -21,4 +22,5 @@ UPDATE fictions SET published_at = ?, published = ? WHERE id = ? RETURNING *;
 DELETE FROM fictions WHERE id = ? RETURNING *;
 
 -- name: GetPublishedFictions :many
-SELECT * FROM fictions WHERE published = 1;
+SELECT * FROM fictions WHERE published = 1
+LIMIT ?;

@@ -8,7 +8,7 @@ import (
 
 func (cfg *apiConfig) getFictions(w http.ResponseWriter, r *http.Request) {
 	// GET FICTIONS
-	fictions, err := cfg.DB.GetPublishedFictions(r.Context())
+	fictions, err := cfg.DB.GetPublishedFictions(r.Context(), 20)
 	if err != nil {
 		log.Printf("Error getting fictions: %s", err)
 		respondWithError(w, http.StatusInternalServerError, "Couldn't get fictions")
