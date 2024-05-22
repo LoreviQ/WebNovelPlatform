@@ -80,7 +80,7 @@ func IssueRefreshToken(userID string, DB *database.Queries, ctx context.Context)
 		return "", err
 	}
 	token := hex.EncodeToString(tokenHex)
-	DB.CreateToken(ctx, database.CreateTokenParams{
+	err = DB.CreateToken(ctx, database.CreateTokenParams{
 		ID:        uuid.New().String(),
 		Token:     token,
 		Valid:     1,
@@ -91,6 +91,9 @@ func IssueRefreshToken(userID string, DB *database.Queries, ctx context.Context)
 		},
 		Userid: userID,
 	})
+	if err != nil {
+		return "", err
+	}
 	return token, nil
 }
 
