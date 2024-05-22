@@ -37,5 +37,5 @@ func (cfg *apiConfig) getFictions(w http.ResponseWriter, r *http.Request) {
 			PublishedAt: fiction.PublishedAt,
 		})
 	}
-	respondWithJSON(w, http.StatusOK, fictions)
+	respondWithJSON(w, http.StatusOK, responseSlice)
 }
