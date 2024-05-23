@@ -88,7 +88,7 @@ func testPostUser(t *testing.T) {
 	res := loopSendRequest(requestURL, http.MethodPost, body, nil, t)
 
 	// Compare Response
-	if res.StatusCode != http.StatusOK {
+	if res.StatusCode != http.StatusCreated {
 		t.Fatalf("expected status code 200, got %d", res.StatusCode)
 	}
 	var response struct {
@@ -320,6 +320,7 @@ func setupConfigTest() apiConfig {
 func emptyDB(db *sql.DB) {
 	var tables = []string{
 		"tokens",
+		"fictions",
 		"users",
 	}
 	for _, table := range tables {

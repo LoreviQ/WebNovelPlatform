@@ -114,7 +114,7 @@ func (cfg *apiConfig) postFiction(w http.ResponseWriter, r *http.Request, user d
 	}
 
 	// RESPONSE
-	respondWithJSON(w, http.StatusOK, struct {
+	respondWithJSON(w, http.StatusCreated, struct {
 		ID          string `json:"id"`
 		Title       string `json:"title"`
 		Authorid    string `json:"authorid"`
