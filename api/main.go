@@ -59,7 +59,7 @@ func initialiseServer(cfg apiConfig, mux *http.ServeMux) *http.Server {
 	mux.HandleFunc("POST /v1/revoke", cfg.postRevoke)
 	mux.HandleFunc("GET /v1/fictions", cfg.getFictions)
 	mux.HandleFunc("GET /v1/fictions/{id}", cfg.getFiction)
-	// mux.HandleFunc("POST /v1/fictions", cfg.AuthMiddleware(cfg.postFiction))
+	mux.HandleFunc("POST /v1/fictions", cfg.AuthMiddleware(cfg.postFiction))
 	// mux.HandleFunc("PUT /v1/fictions/{id}", cfg.AuthMiddleware(cfg.putFiction))
 	// mux.HandleFunc("DELETE /v1/fictions/{id}", cfg.AuthMiddleware(cfg.deleteFiction))
 	// mux.HandleFunc("GET /v1/users/{id}/fictions", cfg.getFictionsByUser)
