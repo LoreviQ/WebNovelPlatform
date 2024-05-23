@@ -14,14 +14,13 @@ func TestEndpoints(t *testing.T) {
 	teardownTest := setupTest()
 	defer teardownTest()
 
-	t.Run("getFictions", testGetFictions)
-	//t.Run("getFiction", testGetFiction)
-
 	t.Run("postFiction", func(t *testing.T) {
 		testPostUser(t)
 		accessToken, _ := testPostLogin(t)
 		testPostFiction(t, accessToken)
 	})
+	t.Run("getFictions", testGetFictions)
+	t.Run("getFiction", testGetFiction)
 }
 
 func testGetFictions(t *testing.T) {
@@ -56,7 +55,7 @@ func testGetFiction(t *testing.T) {
 	// Test the GET /v1/fictions/{id} endpoint
 
 	// Create a new request to the /v1/fictions/{id} endpoint
-	requestURL := "http://localhost:8080/v1/fictions/1"
+	requestURL := "http://localhost:8080/v1/fictions/the-great-gatsby"
 	res := loopSendRequest(requestURL, http.MethodGet, nil, nil, t)
 
 	// Compare Response
@@ -77,6 +76,12 @@ func testGetFiction(t *testing.T) {
 	err := json.NewDecoder(res.Body).Decode(&resBody)
 	if err != nil {
 		t.Fatalf("could not read response body: %v", err)
+	}
+	if resBody.ID != "the-great-gatsby" {
+		t.Errorf("expected ID the-great-gatsby, got %s", resBody.ID)
+	}
+	if resBody.Title != "The Great Gatsby" {
+		t.Errorf("expected title The Great Gatsby, got %s", resBody.Title)
 	}
 }
 
