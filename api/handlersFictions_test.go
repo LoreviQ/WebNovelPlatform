@@ -71,3 +71,25 @@ func testGetFiction(t *testing.T) {
 		t.Fatalf("could not read response body: %v", err)
 	}
 }
+
+func TestTitleToId(t *testing.T) {
+	// Test the titleToId function
+	tests := []struct {
+		name       string
+		title      string
+		expectedID string
+	}{
+		{name: "simple", title: "The Great Gatsby", expectedID: "the-great-gatsby"},
+		{name: "complex", title: "The Great Gatsby: Part 2", expectedID: "the-great-gatsby-par"},
+		{name: "empty", title: "", expectedID: ""},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			id := titleToID(tt.title)
+			if id != tt.expectedID {
+				t.Errorf("expected %s, got %s", tt.expectedID, id)
+			}
+		})
+	}
+}

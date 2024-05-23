@@ -2,7 +2,6 @@ package main
 
 import (
 	"database/sql"
-	"fmt"
 	"log"
 	"net/http"
 	"strings"
@@ -138,7 +137,7 @@ func titleToID(title string) string {
 	title = strings.ReplaceAll(title, " ", "-")
 	// remove all non-alphanumeric characters
 	title = strings.Map(func(r rune) rune {
-		if r >= 'a' && r <= 'z' || r >= '0' && r <= '9' {
+		if r >= 'a' && r <= 'z' || r >= '0' && r <= '9' || r == '-' {
 			return r
 		}
 		return -1
@@ -147,6 +146,6 @@ func titleToID(title string) string {
 	if len(title) > 20 {
 		title = title[:20]
 	}
-	fmt.Printf("Title: %s\n", title)
+
 	return title
 }
