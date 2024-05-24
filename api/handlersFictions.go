@@ -159,7 +159,7 @@ func (cfg *apiConfig) putFiction(w http.ResponseWriter, r *http.Request, user da
 	request, err := decodeRequest(w, r, struct {
 		Title       string `json:"title"`
 		Description string `json:"description"`
-		oldID       string `json:"oldID"`
+		OldID       string `json:"oldID"`
 	}{})
 	if err != nil {
 		respondWithError(w, http.StatusBadRequest, "failed to decode request body")
