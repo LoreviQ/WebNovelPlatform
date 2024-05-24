@@ -172,7 +172,7 @@ func (cfg *apiConfig) putFiction(w http.ResponseWriter, r *http.Request, user da
 		Title:       request.Title,
 		Description: request.Description,
 		ID:          titleToID(request.Title),
-		ID_2:        request.oldID,
+		ID_2:        request.OldID,
 	})
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, "Couldn't update fiction")
