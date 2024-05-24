@@ -14,10 +14,11 @@ func TestEndpoints(t *testing.T) {
 	teardownTest := setupTest()
 	defer teardownTest()
 
-	t.Run("postFiction", func(t *testing.T) {
+	t.Run("authed fiction tests", func(t *testing.T) {
 		testPostUser(t)
 		accessToken, _ := testPostLogin(t)
 		testPostFiction(t, accessToken)
+		testPutFiction(t, accessToken)
 	})
 	t.Run("getFictions", testGetFictions)
 	t.Run("getFiction", testGetFiction)
@@ -142,5 +143,43 @@ func TestTitleToId(t *testing.T) {
 				t.Errorf("expected %s, got %s", tt.expectedID, id)
 			}
 		})
+	}
+}
+
+func testPutFiction(t *testing.T, accessToken string) {
+	// Test the PUT /v1/fictions/{id} endpoint
+
+	// Create a new request to the /v1/fictions/{id} endpoint
+	body := bytes.NewBuffer([]byte(`{
+		"Title": "The Great Gatsby: Part 2",
+		"Description": "A book about a rich guy and his obsessive love"
+		}`))
+
+	requestURL := "http://localhost:8080/v1/fictions/the-great-gatsby"
+	headers := map[string]string{
+		"Authorization": fmt.Sprintf("Bearer %s", accessToken),
+	}
+	res := loopSendRequest(requestURL, http.MethodPut, body, headers, t)
+
+	// Compare Response
+	if res.StatusCode != http.StatusOK {
+		t.Errorf("Expected status code %d, got %d", http.StatusOK, res.StatusCode)
+	}
+	var response struct {
+		ID          string `json:"id"`
+		Title       string `json:"title"`
+		Authorid    string `json:"authorid"`
+		Description string `json:"description"`
+		CreatedAt   string `json:"created_at"`
+	}
+	err := json.NewDecoder(res.Body).Decode(&response)
+	if err != nil {
+		t.Fatalf("could not read response body: %v", err)
+	}
+	if response.ID != "the-great-gatsby-par" {
+		t.Errorf("expected ID the-great-gatsby-par, got %s", response.ID)
+	}
+	if response.Title != "The Great Gatsby: Part 2" {
+		t.Errorf("expected title The Great Gatsby: Part 2, got %s", response.Title)
 	}
 }

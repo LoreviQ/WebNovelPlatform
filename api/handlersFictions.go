@@ -159,10 +159,16 @@ func (cfg *apiConfig) putFiction(w http.ResponseWriter, r *http.Request, user da
 	request, err := decodeRequest(w, r, struct {
 		Title       string `json:"title"`
 		Description string `json:"description"`
-		OldID       string `json:"oldID"`
 	}{})
 	if err != nil {
 		respondWithError(w, http.StatusBadRequest, "failed to decode request body")
+		return
+	}
+
+	// PROCESS HEADERS
+	id := r.PathValue("id")
+	if id == "" {
+		respondWithError(w, http.StatusBadRequest, "No ID provided")
 		return
 	}
 
@@ -172,7 +178,7 @@ func (cfg *apiConfig) putFiction(w http.ResponseWriter, r *http.Request, user da
 		Title:       request.Title,
 		Description: request.Description,
 		ID:          titleToID(request.Title),
-		ID_2:        request.OldID,
+		ID_2:        id,
 	})
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, "Couldn't update fiction")
@@ -180,7 +186,7 @@ func (cfg *apiConfig) putFiction(w http.ResponseWriter, r *http.Request, user da
 	}
 
 	// RESPONSE
-	respondWithJSON(w, http.StatusCreated, struct {
+	respondWithJSON(w, http.StatusOK, struct {
 		ID          string `json:"id"`
 		Title       string `json:"title"`
 		Authorid    string `json:"authorid"`
