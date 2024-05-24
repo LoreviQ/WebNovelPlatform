@@ -11,7 +11,7 @@ SELECT * FROM fictions WHERE authorid = ?
 LIMIT ?;
 
 -- name: UpdateFiction :one
-UPDATE fictions SET updated_at = ?, title = ?, description = ?, published_at = ?, published = ? 
+UPDATE fictions SET updated_at = ?, title = ?, description = ?, id = ?
 WHERE id = ? 
 RETURNING *;
 

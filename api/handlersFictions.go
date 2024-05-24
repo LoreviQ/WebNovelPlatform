@@ -82,6 +82,8 @@ func (cfg *apiConfig) getFiction(w http.ResponseWriter, r *http.Request) {
 }
 
 // Post fiction handler
+//
+// Creates a new fiction from the request body
 func (cfg *apiConfig) postFiction(w http.ResponseWriter, r *http.Request, user database.User) {
 	// REQUEST
 	request, err := decodeRequest(w, r, struct {
@@ -108,7 +110,6 @@ func (cfg *apiConfig) postFiction(w http.ResponseWriter, r *http.Request, user d
 		Published: 0,
 	})
 	if err != nil {
-		log.Printf("Error creating fiction: %s", err)
 		respondWithError(w, http.StatusInternalServerError, "Couldn't create fiction")
 		return
 	}
@@ -148,4 +149,48 @@ func titleToID(title string) string {
 	}
 
 	return title
+}
+
+// Put Fiction Handler
+//
+// Updates a fiction from the request body
+func (cfg *apiConfig) putFiction(w http.ResponseWriter, r *http.Request, user database.User) {
+	// REQUEST
+	request, err := decodeRequest(w, r, struct {
+		Title       string `json:"title"`
+		Description string `json:"description"`
+		oldID       string `json:"oldID"`
+	}{})
+	if err != nil {
+		respondWithError(w, http.StatusBadRequest, "failed to decode request body")
+		return
+	}
+
+	// UPDATE FICTION
+	fiction, err := cfg.DB.UpdateFiction(r.Context(), database.UpdateFictionParams{
+		UpdatedAt:   time.Now().UTC().Format(time.RFC3339),
+		Title:       request.Title,
+		Description: request.Description,
+		ID:          titleToID(request.Title),
+		ID_2:        request.oldID,
+	})
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, "Couldn't update fiction")
+		return
+	}
+
+	// RESPONSE
+	respondWithJSON(w, http.StatusCreated, struct {
+		ID          string `json:"id"`
+		Title       string `json:"title"`
+		Authorid    string `json:"authorid"`
+		Description string `json:"description"`
+		CreatedAt   string `json:"created_at"`
+	}{
+		ID:          fiction.ID,
+		Title:       fiction.Title,
+		Authorid:    fiction.Authorid,
+		Description: fiction.Description,
+		CreatedAt:   fiction.CreatedAt,
+	})
 }

@@ -198,7 +198,7 @@ func (q *Queries) PublishFiction(ctx context.Context, arg PublishFictionParams) 
 }
 
 const updateFiction = `-- name: UpdateFiction :one
-UPDATE fictions SET updated_at = ?, title = ?, description = ?, published_at = ?, published = ? 
+UPDATE fictions SET updated_at = ?, title = ?, description = ?, id = ?
 WHERE id = ? 
 RETURNING id, title, authorid, description, created_at, updated_at, published_at, published
 `
@@ -207,9 +207,8 @@ type UpdateFictionParams struct {
 	UpdatedAt   string
 	Title       string
 	Description string
-	PublishedAt sql.NullString
-	Published   int64
 	ID          string
+	ID_2        string
 }
 
 func (q *Queries) UpdateFiction(ctx context.Context, arg UpdateFictionParams) (Fiction, error) {
@@ -217,9 +216,8 @@ func (q *Queries) UpdateFiction(ctx context.Context, arg UpdateFictionParams) (F
 		arg.UpdatedAt,
 		arg.Title,
 		arg.Description,
-		arg.PublishedAt,
-		arg.Published,
 		arg.ID,
+		arg.ID_2,
 	)
 	var i Fiction
 	err := row.Scan(
