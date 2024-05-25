@@ -9,21 +9,6 @@ import (
 	"testing"
 )
 
-func TestEndpoints(t *testing.T) {
-	// Initialises the server then sequentially tests the endpoints
-	teardownTest := setupTest()
-	defer teardownTest()
-
-	t.Run("authed fiction tests", func(t *testing.T) {
-		testPostUser(t)
-		accessToken, _ := testPostLogin(t)
-		testPostFiction(t, accessToken)
-		testPutFiction(t, accessToken)
-	})
-	t.Run("getFictions", testGetFictions)
-	t.Run("getFiction", testGetFiction)
-}
-
 func testGetFictions(t *testing.T) {
 	// Test the GET /v1/fictions endpoint
 

@@ -40,6 +40,14 @@ func TestServerEndpoints(t *testing.T) {
 		testRefreshFail(t, refreshToken)
 	})
 
+	t.Run("TEST: FICTIONS", func(t *testing.T) {
+		accessToken, _ := testPostLogin(t)
+		testPostFiction(t, accessToken)
+		testGetFiction(t)
+		testGetFictions(t)
+		testPutFiction(t, accessToken)
+	})
+
 }
 
 func testReadiness(t *testing.T) {
