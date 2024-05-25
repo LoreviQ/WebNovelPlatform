@@ -44,7 +44,7 @@ func (cfg *apiConfig) postUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// RESPONSE
-	respondWithJSON(w, http.StatusOK, struct {
+	respondWithJSON(w, http.StatusCreated, struct {
 		ID        string `json:"id"`
 		CreatedAt string `json:"created_at"`
 		UpdatedAt string `json:"updated_at"`

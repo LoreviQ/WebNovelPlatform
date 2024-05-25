@@ -8,6 +8,17 @@ import (
 	"database/sql"
 )
 
+type Fiction struct {
+	ID          string
+	Title       string
+	Authorid    string
+	Description string
+	CreatedAt   string
+	UpdatedAt   string
+	PublishedAt sql.NullString
+	Published   int64
+}
+
 type Token struct {
 	ID        string
 	Token     string

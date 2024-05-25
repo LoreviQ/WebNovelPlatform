@@ -40,6 +40,18 @@ func TestServerEndpoints(t *testing.T) {
 		testRefreshFail(t, refreshToken)
 	})
 
+	t.Run("TEST: FICTIONS", func(t *testing.T) {
+		accessToken, _ := testPostLogin(t)
+		testPostFiction(t, accessToken)
+		testGetFiction(t)
+		testGetFictions(t)
+		testPutFiction(t, accessToken)
+		testDeleteFiction(t, accessToken)
+		testGetFictionFail(t)
+		testPostFiction(t, accessToken)
+		testDeleteFictionFail(t)
+	})
+
 }
 
 func testReadiness(t *testing.T) {
@@ -88,7 +100,7 @@ func testPostUser(t *testing.T) {
 	res := loopSendRequest(requestURL, http.MethodPost, body, nil, t)
 
 	// Compare Response
-	if res.StatusCode != http.StatusOK {
+	if res.StatusCode != http.StatusCreated {
 		t.Fatalf("expected status code 200, got %d", res.StatusCode)
 	}
 	var response struct {
@@ -320,6 +332,7 @@ func setupConfigTest() apiConfig {
 func emptyDB(db *sql.DB) {
 	var tables = []string{
 		"tokens",
+		"fictions",
 		"users",
 	}
 	for _, table := range tables {
