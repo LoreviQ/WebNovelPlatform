@@ -1,4 +1,5 @@
 api/.env
 api/webnovelapi
+client/.env
 scripts/migratedown.sh
 scripts/migrateup_local.sh
