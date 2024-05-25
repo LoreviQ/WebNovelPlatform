@@ -48,6 +48,8 @@ func TestServerEndpoints(t *testing.T) {
 		testPutFiction(t, accessToken)
 		testDeleteFiction(t, accessToken)
 		testGetFictionFail(t)
+		testPostFiction(t, accessToken)
+		testDeleteFictionFail(t)
 	})
 
 }

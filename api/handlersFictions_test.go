@@ -7,6 +7,8 @@ import (
 	"fmt"
 	"net/http"
 	"testing"
+
+	"github.com/google/uuid"
 )
 
 func testGetFictions(t *testing.T) {
@@ -181,7 +183,7 @@ func testDeleteFiction(t *testing.T, accessToken string) {
 
 	// Compare Response
 	if res.StatusCode != http.StatusOK {
-		t.Errorf("Expected status code %d, got %d", http.StatusNoContent, res.StatusCode)
+		t.Errorf("Expected status code %d, got %d", http.StatusOK, res.StatusCode)
 	}
 }
 
@@ -209,4 +211,56 @@ func testGetFictionFail(t *testing.T) {
 	if resBody.Error != "Couldn't get fiction" {
 		t.Errorf("expected error Couldn't get fiction, got %s", resBody.Error)
 	}
+}
+
+func testDeleteFictionFail(t *testing.T) {
+	// Test the DELETE /v1/fictions/{id} endpoint
+	// Expected to fail since the user is not the author of the fiction
+
+	// Create a new user and log in as them
+	body := bytes.NewBuffer([]byte(`{
+		"name": "Fail User",
+		"email": "fail@test.com",
+		"password": "password"
+	}`))
+	loopSendRequest("http://localhost:8080/v1/users", http.MethodPost, body, nil, t)
+	body = bytes.NewBuffer([]byte(`{
+		"email": "fail@test.com",
+		"password": "password"
+	}`))
+	res := loopSendRequest("http://localhost:8080/v1/login", http.MethodPost, body, nil, t)
+	var responseAuth struct {
+		ID           uuid.UUID `json:"id"`
+		Email        string    `json:"email"`
+		AccessToken  string    `json:"token"`
+		RefreshToken string    `json:"refresh"`
+	}
+	err := json.NewDecoder(res.Body).Decode(&responseAuth)
+	if err != nil {
+		t.Fatalf("could not read response body: %v", err)
+	}
+
+	// Create a new request to the /v1/fictions/{id} endpoint
+	requestURL := "http://localhost:8080/v1/fictions/the-great-gatsby"
+	headers := map[string]string{
+		"Authorization": fmt.Sprintf("Bearer %s", responseAuth.AccessToken),
+	}
+	res = loopSendRequest(requestURL, http.MethodDelete, nil, headers, t)
+
+	// Compare Response
+	if res.StatusCode != http.StatusForbidden {
+		t.Errorf("Expected status code %d, got %d", http.StatusForbidden, res.StatusCode)
+	}
+
+	var responseErr struct {
+		Error string `json:"error"`
+	}
+	err = json.NewDecoder(res.Body).Decode(&responseErr)
+	if err != nil {
+		t.Fatalf("could not read response body: %v", err)
+	}
+	if responseErr.Error != "User is not the author of this fiction" {
+		t.Errorf("expected error %s, got %s", "User is not the author of this fiction", responseErr.Error)
+	}
+
 }
