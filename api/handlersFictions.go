@@ -55,7 +55,6 @@ func (cfg *apiConfig) getFiction(w http.ResponseWriter, r *http.Request) {
 	// GET FICTION
 	fiction, err := cfg.DB.GetFictionById(r.Context(), id)
 	if err != nil {
-		log.Printf("Error getting fiction: %s", err)
 		respondWithError(w, http.StatusInternalServerError, "Couldn't get fiction")
 		return
 	}

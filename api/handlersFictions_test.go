@@ -168,3 +168,45 @@ func testPutFiction(t *testing.T, accessToken string) {
 		t.Errorf("expected title The Great Gatsby: Part 2, got %s", response.Title)
 	}
 }
+
+func testDeleteFiction(t *testing.T, accessToken string) {
+	// Test the DELETE /v1/fictions/{id} endpoint
+
+	// Create a new request to the /v1/fictions/{id} endpoint
+	requestURL := "http://localhost:8080/v1/fictions/the-great-gatsby-par"
+	headers := map[string]string{
+		"Authorization": fmt.Sprintf("Bearer %s", accessToken),
+	}
+	res := loopSendRequest(requestURL, http.MethodDelete, nil, headers, t)
+
+	// Compare Response
+	if res.StatusCode != http.StatusOK {
+		t.Errorf("Expected status code %d, got %d", http.StatusNoContent, res.StatusCode)
+	}
+}
+
+func testGetFictionFail(t *testing.T) {
+	// Test the GET /v1/fictions/{id} endpoint
+	// Expected to fail since fiction has been deleted by testDeleteFiction
+
+	// Create a new request to the /v1/fictions/{id} endpoint
+	requestURL := "http://localhost:8080/v1/fictions/the-great-gatsby"
+	res := loopSendRequest(requestURL, http.MethodGet, nil, nil, t)
+
+	// Compare Response
+	if res.StatusCode != http.StatusInternalServerError {
+		t.Errorf("Expected status code %d, got %d", http.StatusInternalServerError, res.StatusCode)
+	}
+
+	type response struct {
+		Error string `json:"error"`
+	}
+	var resBody response
+	err := json.NewDecoder(res.Body).Decode(&resBody)
+	if err != nil {
+		t.Fatalf("could not read response body: %v", err)
+	}
+	if resBody.Error != "Couldn't get fiction" {
+		t.Errorf("expected error Couldn't get fiction, got %s", resBody.Error)
+	}
+}
