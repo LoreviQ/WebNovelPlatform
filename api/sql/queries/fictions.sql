@@ -7,7 +7,7 @@ RETURNING *;
 SELECT * FROM fictions WHERE id = ?;
 
 -- name: GetFictionsByAuthorId :many
-SELECT * FROM fictions WHERE authorid = ?
+SELECT * FROM fictions WHERE authorid = ? and published = 1
 LIMIT ?;
 
 -- name: UpdateFiction :one

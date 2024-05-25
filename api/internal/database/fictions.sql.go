@@ -82,7 +82,7 @@ func (q *Queries) GetFictionById(ctx context.Context, id string) (Fiction, error
 }
 
 const getFictionsByAuthorId = `-- name: GetFictionsByAuthorId :many
-SELECT id, title, authorid, description, created_at, updated_at, published_at, published FROM fictions WHERE authorid = ?
+SELECT id, title, authorid, description, created_at, updated_at, published_at, published FROM fictions WHERE authorid = ? and published = 1
 LIMIT ?
 `
 

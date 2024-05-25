@@ -243,3 +243,89 @@ func (cfg *apiConfig) deleteFiction(w http.ResponseWriter, r *http.Request, user
 	// RESPONSE
 	w.WriteHeader(http.StatusOK)
 }
+
+// Get Fictions By User Handler
+//
+// Returns all fictions published by the author with the provided ID
+func (cfg *apiConfig) getFictionsByUser(w http.ResponseWriter, r *http.Request) {
+	// PROCESS HEADERS
+	id := r.PathValue("id")
+	if id == "" {
+		respondWithError(w, http.StatusBadRequest, "No ID provided")
+		return
+	}
+
+	// GET FICTIONS
+	fictions, err := cfg.DB.GetFictionsByAuthorId(r.Context(), database.GetFictionsByAuthorIdParams{
+		Authorid: id,
+		Limit:    20,
+	})
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, "Couldn't get fictions")
+		return
+	}
+
+	// RESPONSE
+	type response struct {
+		ID          string         `json:"id"`
+		Title       string         `json:"title"`
+		Authorid    string         `json:"authorid"`
+		Description string         `json:"description"`
+		CreatedAt   string         `json:"created_at"`
+		UpdatedAt   string         `json:"updated_at"`
+		PublishedAt sql.NullString `json:"published_at"`
+	}
+	responseSlice := make([]response, 0, len(fictions))
+	for _, fiction := range fictions {
+		responseSlice = append(responseSlice, response{
+			ID:          fiction.ID,
+			Title:       fiction.Title,
+			Authorid:    fiction.Authorid,
+			Description: fiction.Description,
+			CreatedAt:   fiction.CreatedAt,
+			UpdatedAt:   fiction.UpdatedAt,
+			PublishedAt: fiction.PublishedAt,
+		})
+	}
+	respondWithJSON(w, http.StatusOK, responseSlice)
+}
+
+// Publish Fiction Handler
+//
+// Publishes the fiction with the provided ID
+func (cfg *apiConfig) publishFiction(w http.ResponseWriter, r *http.Request, user database.User) {
+	// PROCESS HEADERS
+	id := r.PathValue("id")
+	if id == "" {
+		respondWithError(w, http.StatusBadRequest, "No ID provided")
+		return
+	}
+
+	// CHECK USER IS AUTHOR
+	fiction, err := cfg.DB.GetFictionById(r.Context(), id)
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, "Couldn't get fiction")
+		return
+	}
+	if fiction.Authorid != user.ID {
+		respondWithError(w, http.StatusForbidden, "User is not the author of this fiction")
+		return
+	}
+
+	// PUBLISH FICTION
+	fiction, err = cfg.DB.PublishFiction(r.Context(), database.PublishFictionParams{
+		PublishedAt: sql.NullString{
+			String: time.Now().UTC().Format(time.RFC3339),
+			Valid:  true,
+		},
+		Published: 1,
+		ID:        id,
+	})
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, "Couldn't publish fiction")
+		return
+	}
+
+	// RESPONSE
+	w.WriteHeader(http.StatusOK)
+}
