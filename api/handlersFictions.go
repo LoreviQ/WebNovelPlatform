@@ -172,8 +172,19 @@ func (cfg *apiConfig) putFiction(w http.ResponseWriter, r *http.Request, user da
 		return
 	}
 
+	// CHECK USER IS AUTHOR
+	fiction, err := cfg.DB.GetFictionById(r.Context(), id)
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, "Couldn't get fiction")
+		return
+	}
+	if fiction.Authorid != user.ID {
+		respondWithError(w, http.StatusForbidden, "User is not the author of this fiction")
+		return
+	}
+
 	// UPDATE FICTION
-	fiction, err := cfg.DB.UpdateFiction(r.Context(), database.UpdateFictionParams{
+	fiction, err = cfg.DB.UpdateFiction(r.Context(), database.UpdateFictionParams{
 		UpdatedAt:   time.Now().UTC().Format(time.RFC3339),
 		Title:       request.Title,
 		Description: request.Description,
@@ -199,4 +210,37 @@ func (cfg *apiConfig) putFiction(w http.ResponseWriter, r *http.Request, user da
 		Description: fiction.Description,
 		CreatedAt:   fiction.CreatedAt,
 	})
+}
+
+// Delete Fiction Handler
+//
+// Deletes the fiction with the provided ID
+func (cfg *apiConfig) deleteFiction(w http.ResponseWriter, r *http.Request, user database.User) {
+	// PROCESS HEADERS
+	id := r.PathValue("id")
+	if id == "" {
+		respondWithError(w, http.StatusBadRequest, "No ID provided")
+		return
+	}
+
+	// CHECK USER IS AUTHOR
+	fiction, err := cfg.DB.GetFictionById(r.Context(), id)
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, "Couldn't get fiction")
+		return
+	}
+	if fiction.Authorid != user.ID {
+		respondWithError(w, http.StatusForbidden, "User is not the author of this fiction")
+		return
+	}
+
+	// DELETE FICTION
+	err = cfg.DB.DeleteFiction(r.Context(), id)
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, "Couldn't delete fiction")
+		return
+	}
+
+	// RESPONSE
+	w.WriteHeader(http.StatusOK)
 }

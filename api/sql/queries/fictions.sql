@@ -18,8 +18,8 @@ RETURNING *;
 -- name: PublishFiction :one
 UPDATE fictions SET published_at = ?, published = ? WHERE id = ? RETURNING *;
 
--- name: DeleteFiction :one
-DELETE FROM fictions WHERE id = ? RETURNING *;
+-- name: DeleteFiction :exec
+DELETE FROM fictions WHERE id = ?;
 
 -- name: GetPublishedFictions :many
 SELECT * FROM fictions WHERE published = 1

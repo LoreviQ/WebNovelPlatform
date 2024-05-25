@@ -52,24 +52,13 @@ func (q *Queries) CreateFiction(ctx context.Context, arg CreateFictionParams) (F
 	return i, err
 }
 
-const deleteFiction = `-- name: DeleteFiction :one
-DELETE FROM fictions WHERE id = ? RETURNING id, title, authorid, description, created_at, updated_at, published_at, published
+const deleteFiction = `-- name: DeleteFiction :exec
+DELETE FROM fictions WHERE id = ?
 `
 
-func (q *Queries) DeleteFiction(ctx context.Context, id string) (Fiction, error) {
-	row := q.db.QueryRowContext(ctx, deleteFiction, id)
-	var i Fiction
-	err := row.Scan(
-		&i.ID,
-		&i.Title,
-		&i.Authorid,
-		&i.Description,
-		&i.CreatedAt,
-		&i.UpdatedAt,
-		&i.PublishedAt,
-		&i.Published,
-	)
-	return i, err
+func (q *Queries) DeleteFiction(ctx context.Context, id string) error {
+	_, err := q.db.ExecContext(ctx, deleteFiction, id)
+	return err
 }
 
 const getFictionById = `-- name: GetFictionById :one
