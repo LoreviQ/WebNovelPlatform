@@ -78,3 +78,6 @@ jobs:
       - name: Submit Build
         working-directory: ./client
         run: gcloud builds submit --tag europe-west2-docker.pkg.dev/webnovelapi/webnovelclient-ar-repo/webnovelclient:latest .
+
+      - name: Deploy to Cloud Run
+        run: gcloud run deploy webnovelclient --image europe-west2-docker.pkg.dev/webnovelapi/webnovelclient-ar-repo/webnovelclient:latest --region europe-west2 --allow-unauthenticated --project webnovelapi --max-instances=4
