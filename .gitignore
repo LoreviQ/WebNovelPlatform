@@ -4,3 +4,4 @@ client/.env
 client/webnovelclient
 scripts/migratedown.sh
 scripts/migrateup_local.sh
+client/public
