@@ -8,7 +8,7 @@
 //
 
 window.addEventListener("DOMContentLoaded", (event) => {
-    const apiBaseUrl = "http://localhost:8080"; // Change this to your actual API base URL
+    const apiBaseUrl = "https://webnovelapi-y5hewbdc4a-nw.a.run.app"; // Change this to your actual API base URL
 
     // Toggle the side navigation
     const sidebarToggle = document.body.querySelector("#sidebarToggle");
