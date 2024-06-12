@@ -8,6 +8,8 @@
 //
 
 window.addEventListener("DOMContentLoaded", (event) => {
+    const apiBaseUrl = "http://localhost:8080"; // Change this to your actual API base URL
+
     // Toggle the side navigation
     const sidebarToggle = document.body.querySelector("#sidebarToggle");
     if (sidebarToggle) {
@@ -49,9 +51,8 @@ window.addEventListener("DOMContentLoaded", (event) => {
             email: email,
             password: password,
         };
-        console.log("sending request to localhost:8080/v1/users");
         // Make AJAX POST request
-        fetch("http://localhost:8080/v1/users", {
+        fetch(apiBaseUrl + "/v1/users", {
             // Replace with your actual API endpoint
             method: "POST",
             headers: {
@@ -60,18 +61,19 @@ window.addEventListener("DOMContentLoaded", (event) => {
             body: JSON.stringify(postData),
         })
             .then((response) => {
-                console.log("Response received:", response);
-                return response.json();
-            })
-            .then((data) => {
-                if (data.success) {
-                    alert("Account created successfully!");
+                // Check if the response status is 201 (Created)
+                if (response.status === 201) {
+                    return response.json();
                 } else {
-                    alert(
-                        "Failed to create account. " +
-                            (data.message || "Please try again.")
+                    throw new Error(
+                        "Failed to create account: " + response.statusText
                     );
                 }
+            })
+            .then((data) => {
+                console.log("Response data:", data);
+                alert("Account created successfully!");
+                form.reset();
             })
             .catch((error) => {
                 console.error("Error creating account:", error);
