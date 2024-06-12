@@ -65,9 +65,11 @@ func initialiseServer(cfg apiConfig, mux *http.ServeMux) *http.Server {
 	mux.HandleFunc("GET /v1/users/{id}/fictions", cfg.getFictionsByUser)
 	mux.HandleFunc("PUT /v1/fictions/{id}/publish", cfg.AuthMiddleware(cfg.publishFiction))
 
+	corsMux := cfg.CorsMiddleware(mux)
+
 	server := &http.Server{
 		Addr:              ":" + cfg.port,
-		Handler:           mux,
+		Handler:           corsMux,
 		ReadHeaderTimeout: 10 * time.Second,
 	}
 	return server

@@ -49,9 +49,9 @@ window.addEventListener("DOMContentLoaded", (event) => {
             email: email,
             password: password,
         };
-
+        console.log("sending request to localhost:8080/v1/users");
         // Make AJAX POST request
-        fetch("https://webnovelapi-y5hewbdc4a-nw.a.run.app/v1/users", {
+        fetch("http://localhost:8080/v1/users", {
             // Replace with your actual API endpoint
             method: "POST",
             headers: {
@@ -59,11 +59,13 @@ window.addEventListener("DOMContentLoaded", (event) => {
             },
             body: JSON.stringify(postData),
         })
-            .then((response) => response.json())
+            .then((response) => {
+                console.log("Response received:", response);
+                return response.json();
+            })
             .then((data) => {
                 if (data.success) {
                     alert("Account created successfully!");
-                    form.reset(); // Clear the form
                 } else {
                     alert(
                         "Failed to create account. " +
