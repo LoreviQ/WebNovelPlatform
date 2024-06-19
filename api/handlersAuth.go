@@ -5,7 +5,18 @@ import (
 	"net/http"
 
 	"github.com/LoreviQ/WebNovelPlatform/api/internal/auth"
+	"github.com/LoreviQ/WebNovelPlatform/api/internal/database"
 )
+
+func (cfg *apiConfig) getLogin(w http.ResponseWriter, r *http.Request, user database.User) {
+	// RESPONSE
+	type responseStruct struct {
+		ID string `json:"id"`
+	}
+	respondWithJSON(w, 200, responseStruct{
+		ID: user.ID,
+	})
+}
 
 func (cfg *apiConfig) postLogin(w http.ResponseWriter, r *http.Request) {
 	// REQUEST

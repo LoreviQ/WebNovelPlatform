@@ -125,7 +125,7 @@ func TestTitleToId(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			id := titleToID(tt.title)
+			id := urlify(tt.title)
 			if id != tt.expectedID {
 				t.Errorf("expected %s, got %s", tt.expectedID, id)
 			}

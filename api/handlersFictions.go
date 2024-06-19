@@ -96,7 +96,7 @@ func (cfg *apiConfig) postFiction(w http.ResponseWriter, r *http.Request, user d
 
 	// CREATE FICTION
 	fiction, err := cfg.DB.CreateFiction(r.Context(), database.CreateFictionParams{
-		ID:          titleToID(request.Title),
+		ID:          urlify(request.Title),
 		Title:       request.Title,
 		Authorid:    user.ID,
 		Description: request.Description,
@@ -130,24 +130,24 @@ func (cfg *apiConfig) postFiction(w http.ResponseWriter, r *http.Request, user d
 }
 
 // Convert title to ID
-func titleToID(title string) string {
+func urlify(inputString string) string {
 	// convert title to lowercase
-	title = strings.ToLower(title)
+	inputString = strings.ToLower(inputString)
 	// replace spaces with hyphens
-	title = strings.ReplaceAll(title, " ", "-")
+	inputString = strings.ReplaceAll(inputString, " ", "-")
 	// remove all non-alphanumeric characters
-	title = strings.Map(func(r rune) rune {
+	inputString = strings.Map(func(r rune) rune {
 		if r >= 'a' && r <= 'z' || r >= '0' && r <= '9' || r == '-' {
 			return r
 		}
 		return -1
-	}, title)
+	}, inputString)
 	// return the first 20 characters
-	if len(title) > 20 {
-		title = title[:20]
+	if len(inputString) > 20 {
+		inputString = inputString[:20]
 	}
 
-	return title
+	return inputString
 }
 
 // Put Fiction Handler
@@ -187,7 +187,7 @@ func (cfg *apiConfig) putFiction(w http.ResponseWriter, r *http.Request, user da
 		UpdatedAt:   time.Now().UTC().Format(time.RFC3339),
 		Title:       request.Title,
 		Description: request.Description,
-		ID:          titleToID(request.Title),
+		ID:          urlify(request.Title),
 		ID_2:        id,
 	})
 	if err != nil {

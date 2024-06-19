@@ -52,18 +52,27 @@ func setupConfig() apiConfig {
 // initialiseServer creates a new http server with the provided configuration
 func initialiseServer(cfg apiConfig, mux *http.ServeMux) *http.Server {
 	mux.HandleFunc("GET /v1/readiness", cfg.getReadiness)
-	mux.HandleFunc("POST /v1/users", cfg.postUser)
+
 	mux.HandleFunc("POST /v1/login", cfg.postLogin)
+	mux.HandleFunc("GET /v1/login", cfg.AuthMiddleware(cfg.getLogin))
+
+	mux.HandleFunc("POST /v1/users", cfg.postUser)
 	mux.HandleFunc("PUT /v1/users", cfg.AuthMiddleware(cfg.putUser))
+
+	mux.HandleFunc("GET /v1/users/{id}/fictions", cfg.getFictionsByUser)
+
 	mux.HandleFunc("GET /v1/refresh", cfg.getRefresh)
 	mux.HandleFunc("POST /v1/refresh", cfg.postRefresh)
+
 	mux.HandleFunc("POST /v1/revoke", cfg.postRevoke)
+
 	mux.HandleFunc("GET /v1/fictions", cfg.getFictions)
-	mux.HandleFunc("GET /v1/fictions/{id}", cfg.getFiction)
 	mux.HandleFunc("POST /v1/fictions", cfg.AuthMiddleware(cfg.postFiction))
+
+	mux.HandleFunc("GET /v1/fictions/{id}", cfg.getFiction)
 	mux.HandleFunc("PUT /v1/fictions/{id}", cfg.AuthMiddleware(cfg.putFiction))
 	mux.HandleFunc("DELETE /v1/fictions/{id}", cfg.AuthMiddleware(cfg.deleteFiction))
-	mux.HandleFunc("GET /v1/users/{id}/fictions", cfg.getFictionsByUser)
+
 	mux.HandleFunc("PUT /v1/fictions/{id}/publish", cfg.AuthMiddleware(cfg.publishFiction))
 
 	corsMux := cfg.CorsMiddleware(mux)
