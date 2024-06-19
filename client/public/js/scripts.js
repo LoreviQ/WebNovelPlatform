@@ -10,7 +10,6 @@ const apiBaseUrl = "https://webnovelapi-y5hewbdc4a-nw.a.run.app"; // Change this
 
 window.addEventListener("DOMContentLoaded", async (event) => {
     const loggedIn = await isAuthenticated();
-    console.log(loggedIn);
 
     // Toggle the side navigation
     const sidebarToggle = document.body.querySelector("#sidebarToggle");
@@ -56,4 +55,10 @@ async function isAuthenticated() {
         }
     }
     return false;
+}
+
+function logout() {
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+    window.location.reload();
 }
