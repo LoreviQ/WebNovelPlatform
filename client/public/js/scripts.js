@@ -41,9 +41,8 @@ window.addEventListener("DOMContentLoaded", async (event) => {
 });
 
 async function isAuthenticated() {
-    const accessToken = localStorage.getItem("accessToken");
     const refreshToken = localStorage.getItem("refreshToken");
-    if (accessToken && refreshToken) {
+    if (refreshToken) {
         const response = await fetch(apiBaseUrl + "/v1/refresh", {
             method: "GET",
             headers: {
