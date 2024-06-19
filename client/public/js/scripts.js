@@ -8,7 +8,10 @@
 //
 const apiBaseUrl = "https://webnovelapi-y5hewbdc4a-nw.a.run.app"; // Change this to your actual API base URL
 
-window.addEventListener("DOMContentLoaded", (event) => {
+window.addEventListener("DOMContentLoaded", async (event) => {
+    const loggedIn = await isAuthenticated();
+    console.log(loggedIn);
+
     // Toggle the side navigation
     const sidebarToggle = document.body.querySelector("#sidebarToggle");
     if (sidebarToggle) {
@@ -24,6 +27,17 @@ window.addEventListener("DOMContentLoaded", (event) => {
                 document.body.classList.contains("sb-sidenav-toggled")
             );
         });
+    }
+
+    //update navbar based on authentication status
+    if (loggedIn) {
+        document.getElementById("logoutLink").style.display = "block";
+        document.getElementById("registerLink").style.display = "none";
+        document.getElementById("loginLink").style.display = "none";
+    } else {
+        document.getElementById("logoutLink").style.display = "none";
+        document.getElementById("registerLink").style.display = "block";
+        document.getElementById("loginLink").style.display = "block";
     }
 });
 
