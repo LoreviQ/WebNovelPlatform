@@ -57,7 +57,14 @@ async function isAuthenticated() {
     return false;
 }
 
-function logout() {
+async function logout() {
+    const refreshToken = localStorage.getItem("refreshToken");
+    fetch(apiBaseUrl + "/v1/revoke", {
+        method: "POST",
+        headers: {
+            Authorization: "Bearer " + refreshToken,
+        },
+    });
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
     window.location.reload();
