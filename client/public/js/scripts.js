@@ -6,10 +6,9 @@
 //
 // Scripts
 //
+const apiBaseUrl = "https://webnovelapi-y5hewbdc4a-nw.a.run.app"; // Change this to your actual API base URL
 
 window.addEventListener("DOMContentLoaded", (event) => {
-    const apiBaseUrl = "https://webnovelapi-y5hewbdc4a-nw.a.run.app"; // Change this to your actual API base URL
-
     // Toggle the side navigation
     const sidebarToggle = document.body.querySelector("#sidebarToggle");
     if (sidebarToggle) {
@@ -27,3 +26,20 @@ window.addEventListener("DOMContentLoaded", (event) => {
         });
     }
 });
+
+async function isAuthenticated() {
+    const accessToken = localStorage.getItem("accessToken");
+    const refreshToken = localStorage.getItem("refreshToken");
+    if (accessToken && refreshToken) {
+        const response = await fetch(apiBaseUrl + "/v1/refresh", {
+            method: "GET",
+            headers: {
+                Authorization: "Bearer " + refreshToken,
+            },
+        });
+        if (response.status === 200) {
+            return true;
+        }
+    }
+    return false;
+}
