@@ -41,9 +41,9 @@ window.addEventListener("DOMContentLoaded", function () {
                 }
             })
             .then((data) => {
-                console.log("Response data:", data);
-                alert("Logged in successfully!");
-                loginForm.reset();
+                localStorage.setItem("accessToken", data.token);
+                localStorage.setItem("refreshToken", data.refresh);
+                window.location.href = "/"; // Redirect to the home page
             })
             .catch((error) => {
                 console.error("Error logging in:", error);
