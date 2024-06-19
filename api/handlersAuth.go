@@ -54,6 +54,24 @@ func (cfg *apiConfig) postLogin(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
+func (cfg *apiConfig) getRefresh(w http.ResponseWriter, r *http.Request) {
+	// GET REFRESH TOKEN FROM HEADER
+	header := r.Header.Get("Authorization")
+	if header == "" {
+		respondWithError(w, http.StatusUnauthorized, "No Authorization Header")
+		return
+	}
+	refreshToken := header[len("Bearer "):]
+
+	// Checks if the refresh token is valid
+	_, err := auth.AuthenticateRefreshToken(refreshToken, cfg.DB, r.Context())
+	if err != nil {
+		w.WriteHeader(http.StatusUnauthorized)
+	} else {
+		w.WriteHeader(http.StatusOK)
+	}
+}
+
 func (cfg *apiConfig) postRefresh(w http.ResponseWriter, r *http.Request) {
 	// GET REFRESH TOKEN FROM HEADER
 	header := r.Header.Get("Authorization")
