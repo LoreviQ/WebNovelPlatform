@@ -135,15 +135,33 @@ function toggleTheme() {
 }
 
 function setDarkTheme() {
-    const themeIcon = document.getElementById("themeIcon");
     localStorage.setItem("theme", "dark");
+
+    const themeIcon = document.getElementById("themeIcon");
     themeIcon.classList.remove("fa-moon");
     themeIcon.classList.add("fa-sun");
+
+    const sidenav = document.getElementById("sidenavAccordion");
+    sidenav.classList.remove("sb-sidenav-dark");
+    sidenav.classList.add("sb-sidenav-light");
+
+    const mainBody = document.getElementById("layoutSidenav_content");
+    mainBody.classList.remove("sb-sidenav-dark");
+    mainBody.classList.add("sb-sidenav-light");
 }
 
 function setLightTheme() {
-    const themeIcon = document.getElementById("themeIcon");
     localStorage.setItem("theme", "light");
+
+    const themeIcon = document.getElementById("themeIcon");
     themeIcon.classList.remove("fa-sun");
     themeIcon.classList.add("fa-moon");
+
+    const sidenav = document.getElementById("sidenavAccordion");
+    sidenav.classList.remove("sb-sidenav-light");
+    sidenav.classList.add("sb-sidenav-dark");
+
+    const mainBody = document.getElementById("layoutSidenav_content");
+    mainBody.classList.remove("sb-sidenav-light");
+    mainBody.classList.add("sb-sidenav-dark");
 }
