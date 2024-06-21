@@ -38,6 +38,14 @@ window.addEventListener("DOMContentLoaded", async (event) => {
         document.getElementById("navbarDropdown").style.display = "none";
         document.getElementById("loginButton").style.display = "block";
     }
+
+    // Set the theme
+    const theme = localStorage.getItem("theme");
+    if (!theme || theme === "dark") {
+        setDarkTheme(); //default theme
+    } else {
+        setLightTheme();
+    }
 });
 
 async function getUser() {
@@ -115,4 +123,26 @@ async function getLoggedInUser(accessToken) {
             return null;
         }
     }
+}
+
+function toggleTheme() {
+    const theme = localStorage.getItem("theme");
+    const themeIcon = document.getElementById("themeIcon");
+    if (theme === "light") {
+        setDarkTheme();
+    } else {
+        setLightTheme();
+    }
+}
+
+function setDarkTheme() {
+    localStorage.setItem("theme", "dark");
+    themeIcon.classList.remove("fa-moon");
+    themeIcon.classList.add("fa-sun");
+}
+
+function setLightTheme() {
+    localStorage.setItem("theme", "light");
+    themeIcon.classList.remove("fa-sun");
+    themeIcon.classList.add("fa-moon");
 }
