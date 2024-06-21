@@ -10,6 +10,11 @@ app.set("view engine", "ejs");
 app.use(express.static(path.join(__dirname, "public")));
 
 // Serve User Pages Based on url
+app.get("/user/:userId", (req, res) => {
+    const userId = req.params.userId;
+    res.render("user", { userId: userId });
+});
+
 app.get("/user/:userId/fictions", (req, res) => {
     const userId = req.params.userId;
     res.render("user_fictions", { userId: userId });

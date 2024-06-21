@@ -31,6 +31,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
     if (loggedIn) {
         var user = await getUser();
         document.getElementById("userStatus").textContent = user.name;
+        document.getElementById("profileLink").href = "/user/" + user.id;
         document.getElementById("fictionsLink").href =
             "/user/" + user.id + "/fictions";
     } else {
