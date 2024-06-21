@@ -12,12 +12,18 @@ app.use(express.static(path.join(__dirname, "public")));
 // Serve User Pages Based on url
 app.get("/user/:userId", (req, res) => {
     const userId = req.params.userId;
-    res.render("user", { userId: userId });
+    res.render("template", {
+        mainComponent: "components/user.ejs",
+        userId: "userId",
+    });
 });
 
 app.get("/user/:userId/fictions", (req, res) => {
     const userId = req.params.userId;
-    res.render("user_fictions", { userId: userId });
+    res.render("template", {
+        mainComponent: "components/user.ejs",
+        userId: userId,
+    });
 });
 
 // Serve HTML files without the .html extension
@@ -26,9 +32,9 @@ app.get("/:page", (req, res) => {
     res.sendFile(path.join(__dirname, "public", `${page}.html`));
 });
 
-// Catch-all route to serve index.html for any other route
+// Catch-all route to serve index for any other route
 app.get("*", (req, res) => {
-    res.render("index");
+    res.render("template", { mainComponent: "components/index.ejs" });
 });
 
 app.listen(PORT, () => {
