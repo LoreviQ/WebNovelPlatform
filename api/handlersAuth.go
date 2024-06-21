@@ -11,10 +11,14 @@ import (
 func (cfg *apiConfig) getLogin(w http.ResponseWriter, r *http.Request, user database.User) {
 	// RESPONSE
 	type responseStruct struct {
-		ID string `json:"id"`
+		ID    string `json:"id"`
+		Name  string `json:"name"`
+		Email string `json:"email"`
 	}
 	respondWithJSON(w, 200, responseStruct{
-		ID: user.ID,
+		ID:    user.ID,
+		Name:  user.Name,
+		Email: user.Email,
 	})
 }
 
