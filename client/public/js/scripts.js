@@ -28,37 +28,33 @@ window.addEventListener("DOMContentLoaded", async (event) => {
         });
     }
 
-    //update navbar based on authentication status
+    //update elements based on authentication status
+    const fictionsLink = document.getElementById("fictionsLink");
     if (loggedIn) {
+        var user = await getUser();
         document.getElementById("logoutLink").style.display = "block";
         document.getElementById("registerLink").style.display = "none";
         document.getElementById("loginLink").style.display = "none";
+        document.getElementById("userStatus").textContent = user.name;
+        fictionsLink.href = "/user/" + user.id + "/fictions";
     } else {
         document.getElementById("logoutLink").style.display = "none";
         document.getElementById("registerLink").style.display = "block";
         document.getElementById("loginLink").style.display = "block";
-    }
-
-    // Update fictions link destination based on authentication status
-    const fictionsLink = document.getElementById("fictionsLink");
-    if (fictionsLink) {
-        if (loggedIn) {
-            var accessToken = localStorage.getItem("accessToken");
-            var userId = await getLoggedInUser(accessToken);
-            if (!userId) {
-                accessToken = await refreshToken();
-                userId = await getLoggedInUser(accessToken);
-            }
-            if (userId) {
-                fictionsLink.href = "/user/" + userId + "/fictions";
-            } else {
-                fictionsLink.href = "/login";
-            }
-        } else {
-            fictionsLink.href = "/login";
-        }
+        document.getElementById("loginStatusText").style.display = "none";
+        fictionsLink.href = "/login";
     }
 });
+
+async function getUser() {
+    var accessToken = localStorage.getItem("accessToken");
+    var user = await getLoggedInUser(accessToken);
+    if (!user.id) {
+        accessToken = await refreshToken();
+        user = await getLoggedInUser(accessToken);
+    }
+    return user;
+}
 
 async function isAuthenticated() {
     const refreshToken = localStorage.getItem("refreshToken");
@@ -106,7 +102,7 @@ async function refreshToken() {
     return false;
 }
 
-// Returns UID of logged in user
+// Returns json of logged in user
 async function getLoggedInUser(accessToken) {
     if (accessToken) {
         const response = await fetch(apiBaseUrl + "/v1/login", {
@@ -117,7 +113,7 @@ async function getLoggedInUser(accessToken) {
         });
         if (response.status === 200) {
             body = await response.json();
-            return body.id;
+            return body;
         } else {
             return null;
         }
