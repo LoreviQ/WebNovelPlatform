@@ -11025,6 +11025,7 @@ body {
 .sb-sidenav-dark {
   background-color: #212529;
   color: rgba(255, 255, 255, 0.5);
+  border-right: 1px solid #343a40; /* divider color */
 }
 .sb-sidenav-dark .sb-sidenav-menu .sb-sidenav-menu-heading {
   color: rgba(255, 255, 255, 0.25);
@@ -11054,6 +11055,7 @@ body {
 .sb-sidenav-light {
   background-color: #f8f9fa;
   color: #212529;
+  border-right: 1px solid #e9ecef; /* divider color */
 }
 .sb-sidenav-light .sb-sidenav-menu .sb-sidenav-menu-heading {
   color: #adb5bd;
