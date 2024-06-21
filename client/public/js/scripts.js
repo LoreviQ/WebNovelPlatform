@@ -9,8 +9,6 @@
 const apiBaseUrl = "https://webnovelapi-y5hewbdc4a-nw.a.run.app"; // Change this to your actual API base URL
 
 window.addEventListener("DOMContentLoaded", async (event) => {
-    const loggedIn = await isAuthenticated();
-
     // Toggle the side navigation
     const sidebarToggle = document.body.querySelector("#sidebarToggle");
     if (sidebarToggle) {
@@ -29,20 +27,15 @@ window.addEventListener("DOMContentLoaded", async (event) => {
     }
 
     //update elements based on authentication status
-    const fictionsLink = document.getElementById("fictionsLink");
+    const loggedIn = await isAuthenticated();
     if (loggedIn) {
         var user = await getUser();
-        document.getElementById("logoutLink").style.display = "block";
-        document.getElementById("registerLink").style.display = "none";
-        document.getElementById("loginLink").style.display = "none";
         document.getElementById("userStatus").textContent = user.name;
-        fictionsLink.href = "/user/" + user.id + "/fictions";
+        document.getElementById("fictionsLink").href =
+            "/user/" + user.id + "/fictions";
     } else {
-        document.getElementById("logoutLink").style.display = "none";
-        document.getElementById("registerLink").style.display = "block";
-        document.getElementById("loginLink").style.display = "block";
-        document.getElementById("loginStatusText").style.display = "none";
-        fictionsLink.href = "/login";
+        document.getElementById("navbarDropdown").style.display = "none";
+        document.getElementById("loginButton").style.display = "block";
     }
 });
 
@@ -56,9 +49,12 @@ async function getUser() {
     return user;
 }
 
-async function isAuthenticated() {
+async function isAuthenticated(checkValid = false) {
     const refreshToken = localStorage.getItem("refreshToken");
     if (refreshToken) {
+        if (!checkValid) {
+            return true;
+        }
         const response = await fetch(apiBaseUrl + "/v1/refresh", {
             method: "GET",
             headers: {
