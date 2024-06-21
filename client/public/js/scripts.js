@@ -127,7 +127,6 @@ async function getLoggedInUser(accessToken) {
 
 function toggleTheme() {
     const theme = localStorage.getItem("theme");
-    const themeIcon = document.getElementById("themeIcon");
     if (theme === "light") {
         setDarkTheme();
     } else {
@@ -136,12 +135,14 @@ function toggleTheme() {
 }
 
 function setDarkTheme() {
+    const themeIcon = document.getElementById("themeIcon");
     localStorage.setItem("theme", "dark");
     themeIcon.classList.remove("fa-moon");
     themeIcon.classList.add("fa-sun");
 }
 
 function setLightTheme() {
+    const themeIcon = document.getElementById("themeIcon");
     localStorage.setItem("theme", "light");
     themeIcon.classList.remove("fa-sun");
     themeIcon.classList.add("fa-moon");
