@@ -27,7 +27,7 @@ app.get("/user/:userId/fictions", (req, res) => {
     });
 });
 
-// Serve HTML files without the .html extension
+// Automatically serve EJS or HTML files based on the URL
 app.get("/:page", async (req, res) => {
     const page = req.params.page;
     const ejsFilePath = path.join(__dirname, "views", "pages", `${page}.ejs`);
