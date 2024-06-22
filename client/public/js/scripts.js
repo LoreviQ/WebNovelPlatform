@@ -8,14 +8,14 @@
 //
 const apiBaseUrl = "https://webnovelapi-y5hewbdc4a-nw.a.run.app"; // Change this to your actual API base URL
 
+if (localStorage.getItem("sb|sidebar-toggle") === "true") {
+    document.body.classList.toggle("sb-sidenav-toggled");
+}
+
 window.addEventListener("DOMContentLoaded", async (event) => {
     // Toggle the side navigation
     const sidebarToggle = document.body.querySelector("#sidebarToggle");
     if (sidebarToggle) {
-        // Uncomment Below to persist sidebar toggle between refreshes
-        // if (localStorage.getItem('sb|sidebar-toggle') === 'true') {
-        //     document.body.classList.toggle('sb-sidenav-toggled');
-        // }
         sidebarToggle.addEventListener("click", (event) => {
             event.preventDefault();
             document.body.classList.toggle("sb-sidenav-toggled");
