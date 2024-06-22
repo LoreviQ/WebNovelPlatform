@@ -13,7 +13,7 @@ app.use(express.static(path.join(__dirname, "public")));
 app.get("/user/:userId", (req, res) => {
     const userId = req.params.userId;
     res.render("template", {
-        mainComponent: "components/user.ejs",
+        mainComponent: "pages/user.ejs",
         userId: "userId",
     });
 });
@@ -21,7 +21,7 @@ app.get("/user/:userId", (req, res) => {
 app.get("/user/:userId/fictions", (req, res) => {
     const userId = req.params.userId;
     res.render("template", {
-        mainComponent: "components/user.ejs",
+        mainComponent: "pages/user.ejs",
         userId: userId,
     });
 });
@@ -29,12 +29,12 @@ app.get("/user/:userId/fictions", (req, res) => {
 // Serve HTML files without the .html extension
 app.get("/:page", (req, res) => {
     const page = req.params.page;
-    res.sendFile(path.join(__dirname, "public", `${page}.html`));
+    res.render("template", { mainComponent: `pages/${page}.ejs` });
 });
 
 // Catch-all route to serve index for any other route
 app.get("*", (req, res) => {
-    res.render("template", { mainComponent: "components/index.ejs" });
+    res.render("template", { mainComponent: "pages/index.ejs" });
 });
 
 app.listen(PORT, () => {
