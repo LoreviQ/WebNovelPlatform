@@ -1,3 +1,4 @@
+const fs = require("fs").promises;
 const express = require("express");
 const path = require("path");
 
@@ -27,13 +28,30 @@ app.get("/user/:userId/fictions", (req, res) => {
 });
 
 // Serve HTML files without the .html extension
-app.get("/:page", (req, res) => {
+app.get("/:page", async (req, res) => {
     const page = req.params.page;
-    res.render("template", { mainComponent: `pages/${page}.ejs` });
+    const ejsFilePath = path.join(__dirname, "views", "pages", `${page}.ejs`);
+    const htmlFilePath = path.join(__dirname, "public", `${page}.html`);
+    try {
+        // Check if the EJS file exists using fs.access
+        await fs.access(ejsFilePath);
+        res.render("template", {
+            mainComponent: ejsFilePath,
+        });
+    } catch (e) {
+        // If the EJS file does not exist, check for the HTML file
+        try {
+            await fs.access(htmlFilePath);
+            res.sendFile(htmlFilePath);
+        } catch (e) {
+            // If neither file exists, handle the error (e.g., send a 404 response)
+            res.sendFile("public/404.html", { root: __dirname });
+        }
+    }
 });
 
-// Catch-all route to serve index for any other route
-app.get("*", (req, res) => {
+// Serve the index page
+app.get("/", (req, res) => {
     res.render("template", { mainComponent: "pages/index.ejs" });
 });
 
