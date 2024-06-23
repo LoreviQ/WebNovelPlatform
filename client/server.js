@@ -15,7 +15,7 @@ app.get("/user/:userId", (req, res) => {
     const userId = req.params.userId;
     res.render("template", {
         mainComponent: "pages/user.ejs",
-        userId: "userId",
+        userId: userId,
     });
 });
 
