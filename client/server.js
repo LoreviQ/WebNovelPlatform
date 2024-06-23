@@ -20,7 +20,7 @@ app.get("/user/:userId", async (req, res) => {
         console.log(userData);
         res.render("template", {
             mainComponent: "pages/user.ejs",
-            userData: "userData",
+            userData: userData,
         });
     } catch (e) {
         console.error("Failed to fetch user data:", e);
