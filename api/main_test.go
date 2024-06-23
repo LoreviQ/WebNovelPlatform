@@ -24,7 +24,10 @@ func TestServerEndpoints(t *testing.T) {
 	defer teardownTest()
 
 	t.Run("TEST: GET /v1/readiness", testReadiness)
-	t.Run("TEST: POST /v1/users", testPostUser)
+	t.Run("TEST: USERS", func(t *testing.T) {
+		uid := testPostUser(t)
+		testGetUser(t, uid)
+	})
 	t.Run("TEST: AUTH", func(t *testing.T) {
 		log.Print("Login")
 		accessToken, refreshToken := testPostLogin(t)
@@ -81,7 +84,7 @@ func testReadiness(t *testing.T) {
 	}
 }
 
-func testPostUser(t *testing.T) {
+func testPostUser(t *testing.T) uuid.UUID {
 	// Test the POST /v1/users endpoint
 	// Create a new request to the /v1/users endpoint
 	// Send the request
@@ -101,6 +104,38 @@ func testPostUser(t *testing.T) {
 
 	// Compare Response
 	if res.StatusCode != http.StatusCreated {
+		t.Fatalf("expected status code 200, got %d", res.StatusCode)
+	}
+	var response struct {
+		ID        uuid.UUID `json:"id"`
+		CreatedAt time.Time `json:"created_at"`
+		UpdatedAt time.Time `json:"updated_at"`
+		Name      string    `json:"name"`
+		Email     string    `json:"email"`
+	}
+	err := json.NewDecoder(res.Body).Decode(&response)
+	if err != nil {
+		t.Fatalf("could not read response body: %v", err)
+	}
+	if response.Name != "Test User" {
+		t.Fatalf("expected name \"Test User\", got %q", response)
+	}
+	return response.ID
+}
+
+func testGetUser(t *testing.T, uid uuid.UUID) {
+	// Test the GET /v1/users/{id} endpoint
+	// Create a new request to the /v1/users/{id} endpoint
+	// Send the request
+	// Check the response status code is 200
+	// Check the response body matches the created user
+
+	// Create a new request to the GET /v1/users/{id} endpoint
+	requestURL := fmt.Sprintf("http://localhost:8080/v1/users/%s", uid)
+	res := loopSendRequest(requestURL, http.MethodGet, nil, nil, t)
+
+	// Compare Response
+	if res.StatusCode != http.StatusOK {
 		t.Fatalf("expected status code 200, got %d", res.StatusCode)
 	}
 	var response struct {
