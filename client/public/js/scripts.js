@@ -119,10 +119,9 @@ async function getLoggedInUser(accessToken) {
         if (response.status === 200) {
             body = await response.json();
             return body;
-        } else {
-            return null;
         }
     }
+    return null;
 }
 
 function toggleTheme() {

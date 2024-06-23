@@ -10,6 +10,34 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+// GET USER
+func (cfg *apiConfig) getUser(w http.ResponseWriter, r *http.Request) {
+	// GET USER
+	userID := r.URL.Query().Get("id")
+	user, err := cfg.DB.GetUserById(r.Context(), userID)
+	if err != nil {
+		log.Printf("Error getting user: %s", err)
+		respondWithError(w, http.StatusInternalServerError, "Couldn't get user")
+		return
+	}
+
+	// RESPONSE
+	respondWithJSON(w, http.StatusOK, struct {
+		ID        string `json:"id"`
+		CreatedAt string `json:"created_at"`
+		UpdatedAt string `json:"updated_at"`
+		Name      string `json:"name"`
+		Email     string `json:"email"`
+	}{
+		ID:        user.ID,
+		CreatedAt: user.CreatedAt,
+		UpdatedAt: user.UpdatedAt,
+		Name:      user.Name,
+		Email:     user.Email,
+	})
+
+}
+
 func (cfg *apiConfig) postUser(w http.ResponseWriter, r *http.Request) {
 	// REQUEST
 	request, err := decodeRequest(w, r, struct {

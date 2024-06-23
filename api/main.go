@@ -53,9 +53,10 @@ func setupConfig() apiConfig {
 func initialiseServer(cfg apiConfig, mux *http.ServeMux) *http.Server {
 	mux.HandleFunc("GET /v1/readiness", cfg.getReadiness)
 
-	mux.HandleFunc("POST /v1/login", cfg.postLogin)
 	mux.HandleFunc("GET /v1/login", cfg.AuthMiddleware(cfg.getLogin))
+	mux.HandleFunc("POST /v1/login", cfg.postLogin)
 
+	mux.HandleFunc("GET /v1/users/{id}", cfg.getUser)
 	mux.HandleFunc("POST /v1/users", cfg.postUser)
 	mux.HandleFunc("PUT /v1/users", cfg.AuthMiddleware(cfg.putUser))
 
