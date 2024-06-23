@@ -1,9 +1,11 @@
 const fs = require("fs").promises;
 const express = require("express");
 const path = require("path");
+const { stat } = require("fs");
 
 const app = express();
 const PORT = process.env.PORT || 8000;
+const apiBaseUrl = "https://webnovelapi-y5hewbdc4a-nw.a.run.app"; // Change this to your actual API base URL
 
 app.set("view engine", "ejs");
 
@@ -11,12 +13,19 @@ app.set("view engine", "ejs");
 app.use(express.static(path.join(__dirname, "public")));
 
 // Serve User Pages Based on url
-app.get("/user/:userId", (req, res) => {
+app.get("/user/:userId", async (req, res) => {
     const userId = req.params.userId;
-    res.render("template", {
-        mainComponent: "pages/user.ejs",
-        userId: userId,
-    });
+    try {
+        const userData = await getUserByUID(userId);
+        console.log(userData);
+        res.render("template", {
+            mainComponent: "pages/user.ejs",
+            userData: "userData",
+        });
+    } catch (e) {
+        console.error("Failed to fetch user data:", e);
+        sendError(res, 500);
+    }
 });
 
 app.get("/user/:userId/fictions", (req, res) => {
@@ -45,7 +54,7 @@ app.get("/:page", async (req, res) => {
             res.sendFile(htmlFilePath);
         } catch (e) {
             // If neither file exists, handle the error (e.g., send a 404 response)
-            res.sendFile("public/404.html", { root: __dirname });
+            sendError(res, 404);
         }
     }
 });
@@ -58,3 +67,27 @@ app.get("/", (req, res) => {
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });
+
+function sendError(res, status) {
+    if (status) {
+        try {
+            res.sendFile(`public/${status}.html`, { root: __dirname });
+        } catch (e) {
+            res.status(status).send("An error occurred");
+        }
+    } else {
+        res.status(status).send("An error occurred");
+    }
+}
+
+// Returns json of user by uid
+async function getUserByUID(uid) {
+    const response = await fetch(apiBaseUrl + "/v1/users/" + uid, {
+        method: "GET",
+    });
+    if (response.status === 200) {
+        body = await response.json();
+        return body;
+    }
+    return null;
+}

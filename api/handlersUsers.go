@@ -13,7 +13,8 @@ import (
 // GET USER
 func (cfg *apiConfig) getUser(w http.ResponseWriter, r *http.Request) {
 	// GET USER
-	userID := r.URL.Query().Get("id")
+	userID := r.PathValue("id")
+	log.Print(userID)
 	user, err := cfg.DB.GetUserById(r.Context(), userID)
 	if err != nil {
 		log.Printf("Error getting user: %s", err)
