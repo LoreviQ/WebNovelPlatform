@@ -51,7 +51,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
 async function getUser() {
     var accessToken = localStorage.getItem("accessToken");
     var user = await getLoggedInUser(accessToken);
-    if (!user.id) {
+    if (!user) {
         accessToken = await refreshToken();
         user = await getLoggedInUser(accessToken);
     }
