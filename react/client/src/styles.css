@@ -10969,10 +10969,12 @@ body {
   width: 225px;
   margin: 0;
 }
-.sb-topnav.navbar-dark #sidebarToggle {
+.sb-topnav.navbar-dark #sidebarToggle,
+.sb-topnav.navbar-dark #themeToggle { /* Add #themeToggle to apply styles */
   color: rgba(255, 255, 255, 0.5);
 }
-.sb-topnav.navbar-light #sidebarToggle {
+.sb-topnav.navbar-light #sidebarToggle,
+.sb-topnav.navbar-light #themeToggle { /* Add #themeToggle to apply styles */
   color: #212529;
 }
 
