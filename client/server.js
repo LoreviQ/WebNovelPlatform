@@ -1,19 +1,14 @@
 const express = require("express");
 const session = require("express-session");
-const fs = require("fs");
 const fs_p = require("fs").promises;
-const https = require("https");
-const http = require("http");
 const path = require("path");
 const axios = require("axios");
 require("dotenv").config();
 
 const app = express();
 const httpApp = express();
-const https_cert = process.env.https_cert || fs.readFileSync("server.cert");
-const https_key = process.env.https_key || fs.readFileSync("server.key");
 const HTTP_PORT = process.env.HTTP_PORT || 8880;
-const HTTPS_PORT = process.env.PORT || 8000;
+const PORT = process.env.PORT || 8000;
 const apiBaseUrl = process.env.API_URL || "localhost:8080"; // Change this to your actual API base URL
 
 app.set("view engine", "ejs");
@@ -127,27 +122,39 @@ app.get("/", (req, res) => {
     });
 });
 
-https
-    .createServer(
-        {
-            key: https_key,
-            cert: https_cert,
-        },
-        app
-    )
-    .listen(HTTPS_PORT, function () {
-        console.log(`Server is running on https://localhost:${HTTPS_PORT}`);
+if (process.env.K_SERVICE) {
+    // Cloud Run detected, set up for HTTP
+    app.listen(PORT, () => {
+        console.log(`Application listening on port ${PORT}`);
+    });
+} else {
+    // Host seperate endpoints for https and http if running locally
+    const https = require("https");
+    const http = require("http");
+    const fs = require("fs");
+
+    https
+        .createServer(
+            {
+                key: fs.readFileSync("server.key"),
+                cert: fs.readFileSync("server.cert"),
+            },
+            app
+        )
+        .listen(PORT, function () {
+            console.log(`Server is running on https://localhost:${PORT}`);
+        });
+
+    httpApp.get("*", function (req, res) {
+        const hostWithoutPort = req.headers.host.split(":")[0];
+        const httpsUrl = `https://${hostWithoutPort}:${PORT}${req.url}`;
+        res.redirect(httpsUrl);
     });
 
-httpApp.get("*", function (req, res) {
-    const hostWithoutPort = req.headers.host.split(":")[0];
-    const httpsUrl = `https://${hostWithoutPort}:${HTTPS_PORT}${req.url}`;
-    res.redirect(httpsUrl);
-});
-
-http.createServer(httpApp).listen(HTTP_PORT, function () {
-    `HTTP server running on http://localhost:${HTTP_PORT} and redirecting to HTTPS on port ${HTTPS_PORT}`;
-});
+    http.createServer(httpApp).listen(HTTP_PORT, function () {
+        `HTTP server running on http://localhost:${HTTP_PORT} and redirecting to HTTPS on port ${PORT}`;
+    });
+}
 
 function sendError(res, status) {
     if (status) {
