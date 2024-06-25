@@ -10,6 +10,8 @@ require("dotenv").config();
 
 const app = express();
 const httpApp = express();
+const https_cert = process.env.https_cert || fs.readFileSync("server.cert");
+const https_key = process.env.https_key || fs.readFileSync("server.key");
 const HTTP_PORT = process.env.HTTP_PORT || 8880;
 const HTTPS_PORT = process.env.PORT || 8000;
 const apiBaseUrl = process.env.API_URL || "localhost:8080"; // Change this to your actual API base URL
@@ -128,8 +130,8 @@ app.get("/", (req, res) => {
 https
     .createServer(
         {
-            key: fs.readFileSync("server.key"),
-            cert: fs.readFileSync("server.cert"),
+            key: https_key,
+            cert: https_cert,
         },
         app
     )
