@@ -1,7 +1,7 @@
 <div class="container-fluid px-4">
     <div style="display: flex; align-items: center;">
         <img class="mt-4 me-4" src="/assets/img/profile-default.webp" alt="ProfilePicture">
-        <h1 class="mt-4">User ID: <%= userData.name %></h1>
+        <h1 class="mt-4">User ID: <%= pageData.name %></h1>
     </div>
     <hr>
     <ul class="nav nav-tabs" id="userTab" role="tablist">
@@ -17,9 +17,9 @@
     <div class="tab-content" id="userTabContent">
         <div class="tab-pane fade show active" id="profile" role="tabpanel" aria-labelledby="profile-tab">
             <ul class="list-group list-group-flush">
-                <li class="list-group-item">Date Joined: <%= userData.created_at %></li>
-                <li class="list-group-item">Last Active: <%= userData.updated_at %></li>
-                <li class="list-group-item">Email: <%= userData.email %></li>
+                <li class="list-group-item">Date Joined: <%= pageData.created_at %></li>
+                <li class="list-group-item">Last Active: <%= pageData.updated_at %></li>
+                <li class="list-group-item">Email: <%= pageData.email %></li>
             </ul>
         </div>
         <div class="tab-pane fade" id="settings" role="tabpanel" aria-labelledby="settings-tab">

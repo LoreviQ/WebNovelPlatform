@@ -61,13 +61,19 @@ app.post("/logout", (req, res) => {
 app.get("/user/:userId", async (req, res) => {
     var userId = req.params.userId;
     if (userId === "me") {
+        if (!req.session.user) {
+            res.redirect("/login");
+            return;
+        }
         res.redirect("/user/" + req.session.user.id);
+        return;
     }
-    const userData = await getUserByUID(userId);
+    const pageData = await getUserByUID(userId);
     try {
         res.render("template", {
             mainComponent: "pages/user.ejs",
-            userData: userData,
+            userData: req.session.user,
+            pageData: pageData,
         });
     } catch (e) {
         console.error("Failed to fetch user data:", e);
@@ -77,13 +83,7 @@ app.get("/user/:userId", async (req, res) => {
 
 app.get("/user/:userId/fictions", (req, res) => {
     var userId = req.params.userId;
-    if (userId === "currentUser") {
-        userId = req.session.user.id;
-    }
-    res.render("template", {
-        mainComponent: "pages/user.ejs",
-        userId: userId,
-    });
+    res.redirect("/user/" + userId);
 });
 
 // Automatically serve EJS or HTML files based on the URL
