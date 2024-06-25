@@ -30,13 +30,14 @@ app.use(express.json());
 
 //login endpoint
 app.post("/login", async (req, res) => {
-    console.log(req.body);
+    console.log("Attempting login...");
     try {
         const response = await axios.post(apiBaseUrl + "/v1/login", {
             email: req.body.email,
             password: req.body.password,
         });
         if (response.status === 200) {
+            console.log(response.data);
             req.session.user = response.data;
             res.status(200).send("Login successful");
         } else {
@@ -134,10 +135,10 @@ async function getUserByUID(uid) {
 }
 
 function attachJwt(req, res, next) {
-    if (req.session.jwt) {
+    if (req.session.user.token) {
         axios.defaults.headers.common[
             "Authorization"
-        ] = `Bearer ${req.session.jwt}`;
+        ] = `Bearer ${req.session.user.token}`;
     }
     next();
 }

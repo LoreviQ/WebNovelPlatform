@@ -58,12 +58,14 @@ func (cfg *apiConfig) postLogin(w http.ResponseWriter, r *http.Request) {
 	type responseStruct struct {
 		ID           string `json:"id"`
 		Email        string `json:"email"`
+		Name         string `json:"name"`
 		AccessToken  string `json:"token"`
 		RefreshToken string `json:"refresh"`
 	}
 	respondWithJSON(w, 200, responseStruct{
 		ID:           user.ID,
 		Email:        user.Email,
+		Name:         user.Name,
 		AccessToken:  accessToken,
 		RefreshToken: refreshToken,
 	})
