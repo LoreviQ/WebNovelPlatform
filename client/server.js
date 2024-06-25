@@ -84,6 +84,12 @@ app.get("/user/:userId/fictions", (req, res) => {
 // Automatically serve EJS or HTML files based on the URL
 app.get("/:page", async (req, res) => {
     const page = req.params.page;
+    // Check if the requested URL has a file extension
+    if (/\.\w+$/.test(page)) {
+        // If a file extension exists, skip to the next middleware
+        return res.status(404).send("Not found");
+    }
+
     const ejsFilePath = path.join(__dirname, "views", "pages", `${page}.ejs`);
     const htmlFilePath = path.join(__dirname, "public", `${page}.html`);
     try {
