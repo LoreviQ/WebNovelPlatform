@@ -55,19 +55,29 @@ func (cfg *apiConfig) postLogin(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// RESPONSE
-	type responseStruct struct {
-		ID           string `json:"id"`
-		Email        string `json:"email"`
-		Name         string `json:"name"`
+	type userData struct {
+		ID    string `json:"id"`
+		Name  string `json:"name"`
+		Email string `json:"email"`
+	}
+	type authData struct {
 		AccessToken  string `json:"token"`
 		RefreshToken string `json:"refresh"`
 	}
+	type responseStruct struct {
+		UserData userData `json:"user"`
+		AuthData authData `json:"auth"`
+	}
 	respondWithJSON(w, 200, responseStruct{
-		ID:           user.ID,
-		Email:        user.Email,
-		Name:         user.Name,
-		AccessToken:  accessToken,
-		RefreshToken: refreshToken,
+		UserData: userData{
+			ID:    user.ID,
+			Name:  user.Name,
+			Email: user.Email,
+		},
+		AuthData: authData{
+			AccessToken:  accessToken,
+			RefreshToken: refreshToken,
+		},
 	})
 }
 

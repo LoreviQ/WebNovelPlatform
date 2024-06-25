@@ -7,8 +7,6 @@ import (
 	"fmt"
 	"net/http"
 	"testing"
-
-	"github.com/google/uuid"
 )
 
 func testGetFictions(t *testing.T) {
@@ -230,10 +228,15 @@ func testDeleteFictionFail(t *testing.T) {
 	}`))
 	res := loopSendRequest("http://localhost:8080/v1/login", http.MethodPost, body, nil, t)
 	var responseAuth struct {
-		ID           uuid.UUID `json:"id"`
-		Email        string    `json:"email"`
-		AccessToken  string    `json:"token"`
-		RefreshToken string    `json:"refresh"`
+		UserData struct {
+			ID    string `json:"id"`
+			Name  string `json:"name"`
+			Email string `json:"email"`
+		} `json:"user"`
+		AuthData struct {
+			AccessToken  string `json:"token"`
+			RefreshToken string `json:"refresh"`
+		} `json:"auth"`
 	}
 	err := json.NewDecoder(res.Body).Decode(&responseAuth)
 	if err != nil {
@@ -243,7 +246,7 @@ func testDeleteFictionFail(t *testing.T) {
 	// Create a new request to the /v1/fictions/{id} endpoint
 	requestURL := "http://localhost:8080/v1/fictions/the-great-gatsby"
 	headers := map[string]string{
-		"Authorization": fmt.Sprintf("Bearer %s", responseAuth.AccessToken),
+		"Authorization": fmt.Sprintf("Bearer %s", responseAuth.AuthData.AccessToken),
 	}
 	res = loopSendRequest(requestURL, http.MethodDelete, nil, headers, t)
 

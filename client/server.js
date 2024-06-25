@@ -40,7 +40,9 @@ app.post("/login", async (req, res) => {
             password: req.body.password,
         });
         if (response.status === 200) {
-            req.session.user = response.data;
+            console.log(response.data);
+            req.session.user = response.data.user;
+            req.session.auth = response.data.auth;
             res.status(200).send("Login successful");
         } else {
             res.status(401).send("Login failed");

@@ -174,22 +174,27 @@ func testPostLogin(t *testing.T) (string, string) {
 		t.Fatalf("expected status code 200, got %d", res.StatusCode)
 	}
 	var response struct {
-		ID           uuid.UUID `json:"id"`
-		Email        string    `json:"email"`
-		AccessToken  string    `json:"token"`
-		RefreshToken string    `json:"refresh"`
+		UserData struct {
+			ID    string `json:"id"`
+			Name  string `json:"name"`
+			Email string `json:"email"`
+		} `json:"user"`
+		AuthData struct {
+			AccessToken  string `json:"token"`
+			RefreshToken string `json:"refresh"`
+		} `json:"auth"`
 	}
 	err := json.NewDecoder(res.Body).Decode(&response)
 	if err != nil {
 		t.Fatalf("could not read response body: %v", err)
 	}
-	if response.Email != "test@test.com" {
+	if response.UserData.Email != "test@test.com" {
 		t.Fatalf("expected response body \"OK\", got %q", response)
 	}
-	if response.AccessToken == "" {
-		t.Fatalf("expected access token, got %q", response.AccessToken)
+	if response.AuthData.AccessToken == "" {
+		t.Fatalf("expected access token, got %q", response.AuthData.AccessToken)
 	}
-	return response.AccessToken, response.RefreshToken
+	return response.AuthData.AccessToken, response.AuthData.RefreshToken
 }
 
 func testPutUser(t *testing.T, accessToken string) {
