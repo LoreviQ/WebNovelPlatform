@@ -28,13 +28,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
 
     //update elements based on authentication status
     const loggedIn = await isAuthenticated();
-    if (loggedIn) {
-        var user = await getUser();
-        document.getElementById("userStatus").textContent = user.name;
-        document.getElementById("profileLink").href = "/user/" + user.id;
-        document.getElementById("fictionsLink").href =
-            "/user/" + user.id + "/fictions";
-    } else {
+    if (!loggedIn) {
         document.getElementById("navbarDropdown").style.display = "none";
         document.getElementById("loginButton").style.display = "block";
     }
@@ -47,16 +41,6 @@ window.addEventListener("DOMContentLoaded", async (event) => {
         setLightTheme();
     }
 });
-
-async function getUser() {
-    var accessToken = localStorage.getItem("accessToken");
-    var user = await getLoggedInUser(accessToken);
-    if (!user) {
-        accessToken = await refreshToken();
-        user = await getLoggedInUser(accessToken);
-    }
-    return user;
-}
 
 async function isAuthenticated(checkValid = false) {
     const refreshToken = localStorage.getItem("refreshToken");

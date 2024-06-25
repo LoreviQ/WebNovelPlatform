@@ -40,7 +40,6 @@ app.post("/login", async (req, res) => {
             password: req.body.password,
         });
         if (response.status === 200) {
-            console.log(response.data);
             req.session.user = response.data;
             res.status(200).send("Login successful");
         } else {
@@ -59,9 +58,12 @@ app.post("/logout", (req, res) => {
 
 // Serve User Pages Based on url
 app.get("/user/:userId", async (req, res) => {
-    const userId = req.params.userId;
+    var userId = req.params.userId;
+    if (userId === "me") {
+        userId = req.session.user.id;
+    }
+    const userData = await getUserByUID(userId);
     try {
-        const userData = await getUserByUID(userId);
         res.render("template", {
             mainComponent: "pages/user.ejs",
             userData: userData,
@@ -73,7 +75,10 @@ app.get("/user/:userId", async (req, res) => {
 });
 
 app.get("/user/:userId/fictions", (req, res) => {
-    const userId = req.params.userId;
+    var userId = req.params.userId;
+    if (userId === "currentUser") {
+        userId = req.session.user.id;
+    }
     res.render("template", {
         mainComponent: "pages/user.ejs",
         userId: userId,
