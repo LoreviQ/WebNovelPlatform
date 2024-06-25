@@ -1,7 +1,10 @@
 const fs = require("fs").promises;
 const express = require("express");
+const session = require("express-session");
 const path = require("path");
+const axios = require("axios");
 const { stat } = require("fs");
+require("dotenv").config();
 
 const app = express();
 const PORT = process.env.PORT || 8000;
@@ -9,8 +12,46 @@ const apiBaseUrl = "https://webnovelapi-y5hewbdc4a-nw.a.run.app"; // Change this
 
 app.set("view engine", "ejs");
 
+// Use the express-session middleware
+app.use(
+    session({
+        secret: process.env.SESSION_SECRET,
+        resave: false,
+        saveUninitialized: true,
+        cookie: { secure: true, httpOnly: true },
+    })
+);
+
 // Serve static files from the 'public' directory
 app.use(express.static(path.join(__dirname, "public")));
+
+// Middleware to parse JSON bodies
+app.use(express.json());
+
+//login endpoint
+app.post("/login", async (req, res) => {
+    console.log(req.body);
+    try {
+        const response = await axios.post(apiBaseUrl + "/v1/login", {
+            email: req.body.email,
+            password: req.body.password,
+        });
+        if (response.status === 200) {
+            req.session.user = response.data;
+            res.status(200).send("Login successful");
+        } else {
+            res.status(401).send("Login failed");
+        }
+    } catch (e) {
+        console.error("Failed to login:", e);
+        res.status(500).send("An error occurred");
+    }
+});
+
+app.post("/logout", (req, res) => {
+    req.session.destroy();
+    res.redirect("/");
+});
 
 // Serve User Pages Based on url
 app.get("/user/:userId", async (req, res) => {
@@ -90,4 +131,13 @@ async function getUserByUID(uid) {
         return body;
     }
     return null;
+}
+
+function attachJwt(req, res, next) {
+    if (req.session.jwt) {
+        axios.defaults.headers.common[
+            "Authorization"
+        ] = `Bearer ${req.session.jwt}`;
+    }
+    next();
 }
