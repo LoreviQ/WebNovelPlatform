@@ -60,7 +60,7 @@ app.post("/logout", (req, res) => {
 app.get("/user/:userId", async (req, res) => {
     var userId = req.params.userId;
     if (userId === "me") {
-        userId = req.session.user.id;
+        res.redirect("/user/" + req.session.user.id);
     }
     const userData = await getUserByUID(userId);
     try {
