@@ -1,9 +1,11 @@
-const fs = require("fs").promises;
 const express = require("express");
 const session = require("express-session");
+const fs = require("fs");
+const fs_p = require("fs").promises;
+const https = require("https");
 const path = require("path");
 const axios = require("axios");
-const { stat } = require("fs");
+const e = require("express");
 require("dotenv").config();
 
 const app = express();
@@ -18,7 +20,7 @@ app.use(
         secret: process.env.SESSION_SECRET,
         resave: false,
         saveUninitialized: true,
-        cookie: { secure: true, httpOnly: true },
+        cookie: { secure: false, httpOnly: true },
     })
 );
 
@@ -30,7 +32,6 @@ app.use(express.json());
 
 //login endpoint
 app.post("/login", async (req, res) => {
-    console.log("Attempting login...");
     try {
         const response = await axios.post(apiBaseUrl + "/v1/login", {
             email: req.body.email,
@@ -85,17 +86,18 @@ app.get("/:page", async (req, res) => {
     const htmlFilePath = path.join(__dirname, "public", `${page}.html`);
     try {
         // Check if the EJS file exists using fs.access
-        await fs.access(ejsFilePath);
+        await fs_p.access(ejsFilePath);
         res.render("template", {
             mainComponent: ejsFilePath,
         });
     } catch (e) {
         // If the EJS file does not exist, check for the HTML file
         try {
-            await fs.access(htmlFilePath);
+            await fs_p.access(htmlFilePath);
             res.sendFile(htmlFilePath);
         } catch (e) {
             // If neither file exists, handle the error (e.g., send a 404 response)
+            console.error("Failed to find page:", e);
             sendError(res, 404);
         }
     }
@@ -106,9 +108,17 @@ app.get("/", (req, res) => {
     res.render("template", { mainComponent: "pages/index.ejs" });
 });
 
-app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
-});
+https
+    .createServer(
+        {
+            key: fs.readFileSync("server.key"),
+            cert: fs.readFileSync("server.cert"),
+        },
+        app
+    )
+    .listen(PORT, function () {
+        console.log(`Server is running on https://localhost:${PORT}`);
+    });
 
 function sendError(res, status) {
     if (status) {
