@@ -40,7 +40,6 @@ app.post("/login", async (req, res) => {
             password: req.body.password,
         });
         if (response.status === 200) {
-            console.log(response.data);
             req.session.user = response.data.user;
             req.session.auth = response.data.auth;
             res.status(200).send("Login successful");
@@ -176,7 +175,7 @@ function attachJwt(req, res, next) {
     if (req.session.user.token) {
         axios.defaults.headers.common[
             "Authorization"
-        ] = `Bearer ${req.session.user.token}`;
+        ] = `Bearer ${req.session.auth.token}`;
     }
     next();
 }

@@ -26,13 +26,6 @@ window.addEventListener("DOMContentLoaded", async (event) => {
         });
     }
 
-    //update elements based on authentication status
-    const loggedIn = await isAuthenticated();
-    if (!loggedIn) {
-        document.getElementById("navbarDropdown").style.display = "none";
-        document.getElementById("loginButton").style.display = "block";
-    }
-
     // Set the theme
     const theme = localStorage.getItem("theme");
     if (!theme || theme === "dark") {
@@ -41,25 +34,6 @@ window.addEventListener("DOMContentLoaded", async (event) => {
         setLightTheme();
     }
 });
-
-async function isAuthenticated(checkValid = false) {
-    const refreshToken = localStorage.getItem("refreshToken");
-    if (refreshToken) {
-        if (!checkValid) {
-            return true;
-        }
-        const response = await fetch(apiBaseUrl + "/v1/refresh", {
-            method: "GET",
-            headers: {
-                Authorization: "Bearer " + refreshToken,
-            },
-        });
-        if (response.status === 200) {
-            return true;
-        }
-    }
-    return false;
-}
 
 async function logout() {
     const refreshToken = localStorage.getItem("refreshToken");
