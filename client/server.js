@@ -62,7 +62,6 @@ app.get("/user/:userId", async (req, res) => {
     const userId = req.params.userId;
     try {
         const userData = await getUserByUID(userId);
-        console.log(userData);
         res.render("template", {
             mainComponent: "pages/user.ejs",
             userData: userData,
@@ -97,6 +96,7 @@ app.get("/:page", async (req, res) => {
         await fs_p.access(ejsFilePath);
         res.render("template", {
             mainComponent: ejsFilePath,
+            userData: req.session.user,
         });
     } catch (e) {
         // If the EJS file does not exist, check for the HTML file
@@ -113,7 +113,10 @@ app.get("/:page", async (req, res) => {
 
 // Serve the index page
 app.get("/", (req, res) => {
-    res.render("template", { mainComponent: "pages/index.ejs" });
+    res.render("template", {
+        mainComponent: "pages/index.ejs",
+        userData: req.session.user,
+    });
 });
 
 https

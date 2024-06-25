@@ -70,7 +70,7 @@
         </div>
         <div class="sb-sidenav-footer">
             <div class="small" id="loginStatusText">Logged in as:</div>
-            <div id="userStatus">Not logged in</div>
+            <div id="userStatus"><%= typeof userData !== 'undefined' ? userData.name || 'Not logged in' : 'Not logged in' %></div>
         </div>
     </nav>
 </div>
