@@ -35,53 +35,6 @@ window.addEventListener("DOMContentLoaded", async (event) => {
     }
 });
 
-async function logout() {
-    const refreshToken = localStorage.getItem("refreshToken");
-    fetch(apiBaseUrl + "/v1/revoke", {
-        method: "POST",
-        headers: {
-            Authorization: "Bearer " + refreshToken,
-        },
-    });
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
-    window.location.reload();
-}
-
-async function refreshToken() {
-    const refreshToken = localStorage.getItem("refreshToken");
-    if (refreshToken) {
-        const response = await fetch(apiBaseUrl + "/v1/refresh", {
-            method: "POST",
-            headers: {
-                Authorization: "Bearer " + refreshToken,
-            },
-        });
-        if (response.status === 200) {
-            body = await response.json();
-            return body.token;
-        }
-    }
-    return false;
-}
-
-// Returns json of logged in user
-async function getLoggedInUser(accessToken) {
-    if (accessToken) {
-        const response = await fetch(apiBaseUrl + "/v1/login", {
-            method: "GET",
-            headers: {
-                Authorization: "Bearer " + accessToken,
-            },
-        });
-        if (response.status === 200) {
-            body = await response.json();
-            return body;
-        }
-    }
-    return null;
-}
-
 function toggleTheme() {
     const theme = localStorage.getItem("theme");
     if (theme === "light") {
