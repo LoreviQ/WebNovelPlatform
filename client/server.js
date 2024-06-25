@@ -3,13 +3,15 @@ const session = require("express-session");
 const fs = require("fs");
 const fs_p = require("fs").promises;
 const https = require("https");
+const http = require("http");
 const path = require("path");
 const axios = require("axios");
-const e = require("express");
 require("dotenv").config();
 
 const app = express();
-const PORT = process.env.PORT || 8000;
+const httpApp = express();
+const HTTP_PORT = process.env.HTTP_PORT || 8880;
+const HTTPS_PORT = process.env.PORT || 8000;
 const apiBaseUrl = "https://webnovelapi-y5hewbdc4a-nw.a.run.app"; // Change this to your actual API base URL
 
 app.set("view engine", "ejs");
@@ -116,9 +118,19 @@ https
         },
         app
     )
-    .listen(PORT, function () {
-        console.log(`Server is running on https://localhost:${PORT}`);
+    .listen(HTTPS_PORT, function () {
+        console.log(`Server is running on https://localhost:${HTTPS_PORT}`);
     });
+
+httpApp.get("*", function (req, res) {
+    const hostWithoutPort = req.headers.host.split(":")[0];
+    const httpsUrl = `https://${hostWithoutPort}:${HTTPS_PORT}${req.url}`;
+    res.redirect(httpsUrl);
+});
+
+http.createServer(httpApp).listen(HTTP_PORT, function () {
+    `HTTP server running on http://localhost:${HTTP_PORT} and redirecting to HTTPS on port ${HTTPS_PORT}`;
+});
 
 function sendError(res, status) {
     if (status) {
