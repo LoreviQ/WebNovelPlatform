@@ -12,7 +12,7 @@ const app = express();
 const httpApp = express();
 const HTTP_PORT = process.env.HTTP_PORT || 8880;
 const HTTPS_PORT = process.env.PORT || 8000;
-const apiBaseUrl = "https://webnovelapi-y5hewbdc4a-nw.a.run.app"; // Change this to your actual API base URL
+const apiBaseUrl = process.env.API_URL || "localhost:8080"; // Change this to your actual API base URL
 
 app.set("view engine", "ejs");
 
