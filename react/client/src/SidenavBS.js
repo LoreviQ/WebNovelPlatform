@@ -130,6 +130,14 @@ function MySideNav() {
                                 </Collapse>
                             </nav>
                         </Collapse>
+                        <a className="nav-link" href="/charts">
+                            <FontAwesomeIcon className="sb-nav-link-icon" icon="fa-chart-area" />
+                            Charts
+                        </a>
+                        <a className="nav-link" href="/tables">
+                            <FontAwesomeIcon className="sb-nav-link-icon" icon="fa-table" />
+                            Tables
+                        </a>
                     </Nav>
                 </div>
                 <div className="sb-sidenav-footer">
