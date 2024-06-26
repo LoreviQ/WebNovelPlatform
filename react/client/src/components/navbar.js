@@ -69,7 +69,7 @@ function MyNavbar() {
             <Button variant="link" size="sm" id="themeToggle" className="me-3" onClick={localToggleTheme}>
                 <FontAwesomeIcon icon={theme === "dark" ? "fa-moon" : "fa-sun"} id="themeIcon" />
             </Button>
-            <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
+            <ul className="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
                 {user ? (
                     <Dropdown>
                         <Dropdown.Toggle as={CustomToggle} id="dropdown-basic" drop="down-centered"></Dropdown.Toggle>
