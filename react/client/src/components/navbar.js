@@ -1,16 +1,22 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import Navbar from "react-bootstrap/Navbar";
 import Form from "react-bootstrap/Form";
 import FormControl from "react-bootstrap/FormControl";
 import Button from "react-bootstrap/Button";
 import InputGroup from "react-bootstrap/InputGroup";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBars, faSearch, faMoon } from "@fortawesome/free-solid-svg-icons";
+import { toggleTheme } from "../utils/theme";
 
-function MyNavbar({ userData, toggleTheme, logout }) {
+function MyNavbar({ userData, logout }) {
     const toggleSidebar = () => {
         const isToggled = document.body.classList.toggle("sb-sidenav-toggled");
         localStorage.setItem("sb|sidebar-toggle", isToggled);
+    };
+    const [theme, setTheme] = useState("dark");
+
+    const localToggleTheme = () => {
+        var newTheme = toggleTheme();
+        setTheme(newTheme);
     };
 
     return (
@@ -25,7 +31,7 @@ function MyNavbar({ userData, toggleTheme, logout }) {
                 id="sidebarToggle"
                 onClick={toggleSidebar}
             >
-                <FontAwesomeIcon icon={faBars} />
+                <FontAwesomeIcon icon={"fa-bars"} />
             </Button>
             <Form className="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
                 <InputGroup>
@@ -36,12 +42,12 @@ function MyNavbar({ userData, toggleTheme, logout }) {
                         aria-describedby="btnNavbarSearch"
                     />
                     <Button id="btnNavbarSearch" type="button">
-                        <FontAwesomeIcon icon={faSearch} />
+                        <FontAwesomeIcon icon={"fa-search"} />
                     </Button>
                 </InputGroup>
             </Form>
-            <Button variant="link" size="sm" id="themeToggle" className="me-3" onClick={toggleTheme}>
-                <FontAwesomeIcon icon={faMoon} />
+            <Button variant="link" size="sm" id="themeToggle" className="me-3" onClick={localToggleTheme}>
+                <FontAwesomeIcon icon={theme === "dark" ? "fa-moon" : "fa-sun"} id="themeIcon" />
             </Button>
             {userData ? (
                 "placeholder"
