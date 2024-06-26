@@ -1,13 +1,13 @@
 import React from "react";
 import MyNavbar from "./Navbar";
-import SideNav from "./Sidenav";
+import MySideNav from "./SidenavBS";
 
 function App() {
     return (
         <body className="sb-nav-fixed">
             <MyNavbar />
             <div id="layoutSidenav">
-                <SideNav />
+                <MySideNav />
                 <div id="layoutSidenav_content" className="sb-sidenav-dark">
                     <main>{/* Placeholder for dynamic main component */}</main>
                     {/* Placeholder for Footer component */}

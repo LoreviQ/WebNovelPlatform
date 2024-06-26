@@ -3,7 +3,7 @@ import React, { useState } from "react";
 // For example, if using FontAwesome icons:
 // import { FaTachometerAlt, FaBook, FaColumns, FaBookOpen, FaAngleDown } from 'react-icons/fa';
 
-const SideNav = () => {
+const MySideNav = () => {
     return (
         <div id="layoutSidenav_nav">
             <nav
@@ -60,4 +60,4 @@ const SideNav = () => {
     );
 };
 
-export default SideNav;
+export default MySideNav;
