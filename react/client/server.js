@@ -11,6 +11,13 @@ const httpApp = express();
 const PORT = process.env.PORT || 3000;
 const apiBaseUrl = process.env.API_URL || "localhost:8080";
 
+app.use(
+    cors({
+        origin: "http://localhost:3000", // Your React app's URL
+        credentials: true, // Allow cookies to be sent with requests
+    })
+);
+
 // Use the express-session middleware
 app.use(
     session({
@@ -44,9 +51,9 @@ app.post("/login", async (req, res) => {
         if (response.status === 200) {
             req.session.user = data.user;
             req.session.auth = data.auth;
-            res.status(200).send("Login successful");
+            res.status(200).send({ authenticated: true });
         } else {
-            res.status(401).send("Login failed");
+            res.status(401).send({ authenticated: false });
         }
     } catch (e) {
         console.error("Failed to login:", e);
@@ -57,6 +64,7 @@ app.post("/login", async (req, res) => {
 //logout endpoint
 app.post("/logout", (req, res) => {
     req.session.destroy();
+    res.send({ authenticated: false });
     res.redirect("/");
 });
 

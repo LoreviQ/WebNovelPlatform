@@ -8,6 +8,29 @@ function Login() {
         document.title = "Login | WebNovelPlatform";
         initTheme();
     }, []);
+
+    const login = async (email, password) => {
+        try {
+            const response = await fetch(apiBaseUrl + "/v1/login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ email: email, password: password }),
+            });
+            const data = await response.json();
+            if (response.ok) {
+                localStorage.setItem("user", JSON.stringify(data.user));
+                localStorage.setItem("auth", JSON.stringify(data.auth)); // Assuming the token is in data.token
+            } else {
+                // Handle login error (e.g., invalid credentials)
+                console.error("Login failed:", data.message);
+            }
+        } catch (error) {
+            console.error("Login request failed:", error);
+        }
+    };
+
     return (
         <>
             <MyHead />

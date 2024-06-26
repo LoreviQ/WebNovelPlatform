@@ -4,6 +4,7 @@ const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
     const [user, setUser] = useState(null);
+    const apiBaseUrl = process.env.API_URL;
 
     useEffect(() => {
         // Check local storage or cookie for existing login session
@@ -13,18 +14,14 @@ export function AuthProvider({ children }) {
         }
     }, []);
 
-    const login = async (username, password) => {
-        // Call backend API to authenticate
-        // On success, set user and store in local storage
-    };
-
     const logout = () => {
         // Clear session from backend and local storage
         setUser(null);
         localStorage.removeItem("user");
+        localStorage.removeItem("auth");
     };
 
-    return <AuthContext.Provider value={{ user, login, logout }}>{children}</AuthContext.Provider>;
+    return <AuthContext.Provider value={{ user, logout }}>{children}</AuthContext.Provider>;
 }
 
 const PrivateRoute = ({ component: Component, ...rest }) => {

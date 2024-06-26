@@ -3,6 +3,7 @@ import ReactDOM from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import App from "./App";
 import * as Pages from "./pages";
+import { AuthProvider } from "./utils/auth";
 
 import "./css/styles.css";
 
@@ -20,7 +21,14 @@ function AppRouter() {
                 <Route path="/" element={<App Page={Pages.Index} />} />
                 <Route path="index" element={<App Page={Pages.Index} />} />
                 <Route path="home" element={<App Page={Pages.Index} />} />
-                <Route path="login" element={<Pages.Login />} />
+                <Route
+                    path="login"
+                    element={
+                        <AuthProvider>
+                            <Pages.Login />
+                        </AuthProvider>
+                    }
+                />
                 <Route path="401" element={<App Page={Pages.Error} pageProps={{ statusCode: 401 }} />} />
                 <Route path="403" element={<App Page={Pages.Error} pageProps={{ statusCode: 403 }} />} />
                 <Route path="404" element={<App Page={Pages.Error} pageProps={{ statusCode: 404 }} />} />
