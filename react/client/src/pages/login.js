@@ -13,11 +13,14 @@ function Login() {
     const { login } = useAuth();
 
     const loginButton = async (event) => {
-        console.log("loginButton");
         event.preventDefault();
         const email = document.getElementById("inputEmail").value;
         const password = document.getElementById("inputPassword").value;
-        await login(email, password);
+        if (await login(email, password)) {
+            window.location.href = "/";
+        } else {
+            alert("Invalid Username or Password.");
+        }
     };
 
     return (

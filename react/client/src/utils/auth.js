@@ -4,7 +4,7 @@ const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
     const [user, setUser] = useState(null);
-    const apiBaseUrl = "https://webnovelapi-y5hewbdc4a-nw.a.run.app";
+    const apiBaseUrl = process.env.API_URL || "https://webnovelapi-y5hewbdc4a-nw.a.run.app";
 
     useEffect(() => {
         // Check local storage or cookie for existing login session
@@ -26,13 +26,16 @@ export function AuthProvider({ children }) {
             const data = await response.json();
             if (response.ok) {
                 localStorage.setItem("user", JSON.stringify(data.user));
-                localStorage.setItem("auth", JSON.stringify(data.auth)); // Assuming the token is in data.token
+                localStorage.setItem("auth", JSON.stringify(data.auth));
+                setUser(data.user);
+                return true;
             } else {
-                // Handle login error (e.g., invalid credentials)
                 console.error("Login failed:", data.message);
+                return false;
             }
         } catch (error) {
             console.error("Login request failed:", error);
+            return false;
         }
     };
 
