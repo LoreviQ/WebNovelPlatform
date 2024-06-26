@@ -12,15 +12,11 @@ const toggleTheme = () => {
 };
 
 const applyTheme = (theme) => {
-    const sidenav = document.getElementById("sidenavAccordion");
-    const mainBody = document.getElementById("layoutSidenav_content");
-    if (theme === "dark") {
-        sidenav.classList.replace("sb-sidenav-light", "sb-sidenav-dark");
-        mainBody.classList.replace("sb-sidenav-light", "sb-sidenav-dark");
-    } else {
-        sidenav.classList.replace("sb-sidenav-dark", "sb-sidenav-light");
-        mainBody.classList.replace("sb-sidenav-dark", "sb-sidenav-light");
-    }
+    const themeClass = theme === "dark" ? "sb-sidenav-dark" : "sb-sidenav-light";
+    const oppositeThemeClass = theme === "dark" ? "sb-sidenav-light" : "sb-sidenav-dark";
+    document.querySelectorAll(`.${oppositeThemeClass}`).forEach((el) => {
+        el.classList.replace(oppositeThemeClass, themeClass);
+    });
 };
 
 export { initTheme, toggleTheme, applyTheme };
