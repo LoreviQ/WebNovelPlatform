@@ -46,7 +46,7 @@ function Login() {
                                                             type="email"
                                                             placeholder="name@example.com"
                                                         />
-                                                        <label for="inputEmail">Email address</label>
+                                                        <label htmlFor="inputEmail">Email address</label>
                                                     </div>
                                                     <div className="form-floating mb-3">
                                                         <input
@@ -55,7 +55,7 @@ function Login() {
                                                             type="password"
                                                             placeholder="Password"
                                                         />
-                                                        <label for="inputPassword">Password</label>
+                                                        <label htmlFor="inputPassword">Password</label>
                                                     </div>
                                                     <div className="form-check mb-3">
                                                         <input
@@ -64,7 +64,10 @@ function Login() {
                                                             type="checkbox"
                                                             value=""
                                                         />
-                                                        <label className="form-check-label" for="inputRememberPassword">
+                                                        <label
+                                                            className="form-check-label"
+                                                            htmlFor="inputRememberPassword"
+                                                        >
                                                             Remember Password
                                                         </label>
                                                     </div>
