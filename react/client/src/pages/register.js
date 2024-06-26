@@ -48,7 +48,7 @@ function RegisterAuthed() {
             });
             await response.json();
             console.log("Response:", response);
-            if (response.created) {
+            if (response.status === 201) {
                 window.location.href = "/login";
             } else {
                 throw new Error("Failed to create account: " + response.statusText);
