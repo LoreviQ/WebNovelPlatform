@@ -1,9 +1,11 @@
 import React, { useEffect } from "react";
 import MyFooter from "../components/footer";
+import { initTheme } from "../utils/theme";
 
 function Login() {
     useEffect(() => {
         document.title = "Login | WebNovelPlatform";
+        initTheme();
     }, []);
     return (
         <body className="sb-sidenav-dark">

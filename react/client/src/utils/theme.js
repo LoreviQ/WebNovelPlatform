@@ -14,19 +14,12 @@ const toggleTheme = () => {
 const applyTheme = (theme) => {
     const sidenav = document.getElementById("sidenavAccordion");
     const mainBody = document.getElementById("layoutSidenav_content");
-    const themeIcon = document.getElementById("themeIcon");
     if (theme === "dark") {
         sidenav.classList.replace("sb-sidenav-light", "sb-sidenav-dark");
         mainBody.classList.replace("sb-sidenav-light", "sb-sidenav-dark");
-        if (themeIcon) {
-            themeIcon.classList.replace("fa-sun", "fa-moon");
-        }
     } else {
         sidenav.classList.replace("sb-sidenav-dark", "sb-sidenav-light");
         mainBody.classList.replace("sb-sidenav-dark", "sb-sidenav-light");
-        if (themeIcon) {
-            themeIcon.classList.replace("fa-moon", "fa-sun");
-        }
     }
 };
 
