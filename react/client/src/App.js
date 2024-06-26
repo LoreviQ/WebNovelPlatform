@@ -3,6 +3,8 @@ import MyNavbar from "./Navbar";
 import MySideNav from "./Sidenav";
 import MyFooter from "./Footer";
 
+import "./styles.css";
+
 function App() {
     return (
         <body className="sb-nav-fixed">
