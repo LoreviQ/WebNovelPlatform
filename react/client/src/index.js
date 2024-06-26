@@ -14,6 +14,10 @@ function AppRouter() {
                 <Route path="/" element={<App Page={Index} />} />
                 <Route path="index" element={<App Page={Index} />} />
                 <Route path="home" element={<App Page={Index} />} />
+                <Route path="401" element={<App Page={Error} pageProps={{ statusCode: 401 }} />} />
+                <Route path="403" element={<App Page={Error} pageProps={{ statusCode: 403 }} />} />
+                <Route path="404" element={<App Page={Error} pageProps={{ statusCode: 404 }} />} />
+                <Route path="500" element={<App Page={Error} pageProps={{ statusCode: 500 }} />} />
                 <Route path="*" element={<App Page={Error} pageProps={{ statusCode: 404 }} />} />
             </Routes>
         </BrowserRouter>
