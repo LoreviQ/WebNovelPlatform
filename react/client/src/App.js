@@ -1,6 +1,6 @@
 import React from "react";
 import MyNavbar from "./Navbar";
-import MySideNav from "./SidenavBS";
+import MySideNav from "./Sidenav";
 
 function App() {
     return (
