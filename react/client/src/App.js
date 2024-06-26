@@ -1,18 +1,20 @@
 import React from "react";
-import MyNavbar from "./Navbar";
-import MySideNav from "./Sidenav";
-import MyFooter from "./Footer";
+import MyNavbar from "./components/navbar";
+import MySideNav from "./components/sidenav";
+import MyFooter from "./components/footer";
 
-import "./styles.css";
+import "./css/styles.css";
 
-function App() {
+function App({ Page }) {
     return (
         <body className="sb-nav-fixed">
             <MyNavbar />
             <div id="layoutSidenav">
                 <MySideNav />
                 <div id="layoutSidenav_content" className="sb-sidenav-dark">
-                    <main>{/* Placeholder for dynamic main component */}</main>
+                    <main>
+                        <Page />
+                    </main>
                     <MyFooter />
                 </div>
             </div>
