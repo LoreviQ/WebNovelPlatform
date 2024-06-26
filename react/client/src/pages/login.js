@@ -65,7 +65,7 @@ function Login() {
                                             </div>
                                             <div className="card-footer text-center py-3">
                                                 <div className="small">
-                                                    <a href="register">Need an account? Sign up!</a>
+                                                    <a href="/register">Need an account? Sign up!</a>
                                                 </div>
                                             </div>
                                         </div>
