@@ -4,6 +4,7 @@ import Form from "react-bootstrap/Form";
 import FormControl from "react-bootstrap/FormControl";
 import Button from "react-bootstrap/Button";
 import InputGroup from "react-bootstrap/InputGroup";
+import Dropdown from "react-bootstrap/Dropdown";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { toggleTheme } from "../utils/theme";
 import { useAuth } from "../utils/auth";
@@ -20,6 +21,23 @@ function MyNavbar() {
         var newTheme = toggleTheme();
         setTheme(newTheme);
     };
+
+    const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
+        <a
+            className="nav-link dropdown-toggle"
+            id="navbarDropdown"
+            role="button"
+            aria-expanded="false"
+            ref={ref}
+            onClick={(e) => {
+                e.preventDefault();
+                onClick(e);
+            }}
+        >
+            {children}
+            <FontAwesomeIcon icon={"fa-user"} />
+        </a>
+    ));
 
     return (
         <Navbar bg="dark" variant="dark" expand="lg" className="sb-topnav navbar navbar-expand navbar-dark bg-dark">
@@ -51,13 +69,24 @@ function MyNavbar() {
             <Button variant="link" size="sm" id="themeToggle" className="me-3" onClick={localToggleTheme}>
                 <FontAwesomeIcon icon={theme === "dark" ? "fa-moon" : "fa-sun"} id="themeIcon" />
             </Button>
-            {user ? (
-                "placeholder"
-            ) : (
-                <Button variant="primary" href="/login" className="me-3">
-                    Log In
-                </Button>
-            )}
+            <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
+                {user ? (
+                    <Dropdown>
+                        <Dropdown.Toggle as={CustomToggle} id="dropdown-basic" drop="down-centered"></Dropdown.Toggle>
+
+                        <Dropdown.Menu align="end">
+                            <Dropdown.Item href="/user/me">My Profile</Dropdown.Item>
+                            <Dropdown.Item href="/settings">Settings</Dropdown.Item>
+                            <Dropdown.Divider />
+                            <Dropdown.Item onClick={logout}>Logout</Dropdown.Item>
+                        </Dropdown.Menu>
+                    </Dropdown>
+                ) : (
+                    <Button variant="primary" href="/login" className="me-3">
+                        Log In
+                    </Button>
+                )}
+            </ul>
         </Navbar>
     );
 }
