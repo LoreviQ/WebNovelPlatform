@@ -81,7 +81,7 @@ function LoginAuthed() {
                                                         </label>
                                                     </div>
                                                     <div className="d-flex align-items-center justify-content-between mt-4 mb-0">
-                                                        <a className="small" href="password">
+                                                        <a className="small" href="/forgotpassword">
                                                             Forgot Password?
                                                         </a>
                                                         <button
