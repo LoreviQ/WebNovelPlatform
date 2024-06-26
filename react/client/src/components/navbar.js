@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Navbar from "react-bootstrap/Navbar";
 import Form from "react-bootstrap/Form";
 import FormControl from "react-bootstrap/FormControl";
@@ -8,13 +8,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faSearch, faMoon } from "@fortawesome/free-solid-svg-icons";
 
 function MyNavbar({ userData, toggleTheme, logout }) {
+    const toggleSidebar = () => {
+        const isToggled = document.body.classList.toggle("sb-sidenav-toggled");
+        localStorage.setItem("sb|sidebar-toggle", isToggled);
+    };
+
     return (
-        <Navbar
-            bg="dark"
-            variant="dark"
-            expand="lg"
-            className="sb-topnav navbar navbar-expand navbar-dark bg-dark"
-        >
+        <Navbar bg="dark" variant="dark" expand="lg" className="sb-topnav navbar navbar-expand navbar-dark bg-dark">
             <Navbar.Brand className="ps-3" href="/">
                 WebNovelPlatform
             </Navbar.Brand>
@@ -23,6 +23,7 @@ function MyNavbar({ userData, toggleTheme, logout }) {
                 size="sm"
                 className="order-1 order-lg-0 me-4 me-lg-0"
                 id="sidebarToggle"
+                onClick={toggleSidebar}
             >
                 <FontAwesomeIcon icon={faBars} />
             </Button>
@@ -39,13 +40,7 @@ function MyNavbar({ userData, toggleTheme, logout }) {
                     </Button>
                 </InputGroup>
             </Form>
-            <Button
-                variant="link"
-                size="sm"
-                id="themeToggle"
-                className="me-3"
-                onClick={toggleTheme}
-            >
+            <Button variant="link" size="sm" id="themeToggle" className="me-3" onClick={toggleTheme}>
                 <FontAwesomeIcon icon={faMoon} />
             </Button>
             {userData ? (

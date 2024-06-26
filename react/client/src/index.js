@@ -7,6 +7,13 @@ import Index from "./pages/index";
 
 import "./css/styles.css";
 
+const isSidebarToggled = localStorage.getItem("sb|sidebar-toggle") === "true";
+if (isSidebarToggled) {
+    document.body.classList.add("sb-sidenav-toggled");
+} else {
+    document.body.classList.remove("sb-sidenav-toggled");
+}
+
 function AppRouter() {
     return (
         <BrowserRouter>
