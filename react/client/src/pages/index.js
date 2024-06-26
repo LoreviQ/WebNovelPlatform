@@ -11,3 +11,4 @@ export default Index;
 export { default as Error } from "./error";
 export { default as Index } from "./index";
 export { default as Login } from "./login";
+export { default as Register } from "./register";
