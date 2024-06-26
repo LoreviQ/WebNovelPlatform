@@ -4,7 +4,7 @@ const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
     const [user, setUser] = useState(null);
-    const apiBaseUrl = process.env.API_URL;
+    const apiBaseUrl = "https://webnovelapi-y5hewbdc4a-nw.a.run.app";
 
     useEffect(() => {
         // Check local storage or cookie for existing login session
@@ -14,6 +14,28 @@ export function AuthProvider({ children }) {
         }
     }, []);
 
+    const login = async (email, password) => {
+        try {
+            const response = await fetch(apiBaseUrl + "/v1/login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ email: email, password: password }),
+            });
+            const data = await response.json();
+            if (response.ok) {
+                localStorage.setItem("user", JSON.stringify(data.user));
+                localStorage.setItem("auth", JSON.stringify(data.auth)); // Assuming the token is in data.token
+            } else {
+                // Handle login error (e.g., invalid credentials)
+                console.error("Login failed:", data.message);
+            }
+        } catch (error) {
+            console.error("Login request failed:", error);
+        }
+    };
+
     const logout = () => {
         // Clear session from backend and local storage
         setUser(null);
@@ -21,7 +43,7 @@ export function AuthProvider({ children }) {
         localStorage.removeItem("auth");
     };
 
-    return <AuthContext.Provider value={{ user, logout }}>{children}</AuthContext.Provider>;
+    return <AuthContext.Provider value={{ user, login, logout }}>{children}</AuthContext.Provider>;
 }
 
 const PrivateRoute = ({ component: Component, ...rest }) => {

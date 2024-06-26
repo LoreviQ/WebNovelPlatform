@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import MyFooter from "../components/footer";
 import MyHead from "../components/head";
 import { initTheme } from "../utils/theme";
+import { useAuth } from "../utils/auth";
 
 function Login() {
     useEffect(() => {
@@ -9,32 +10,20 @@ function Login() {
         initTheme();
     }, []);
 
-    const login = async (email, password) => {
-        try {
-            const response = await fetch(apiBaseUrl + "/v1/login", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ email: email, password: password }),
-            });
-            const data = await response.json();
-            if (response.ok) {
-                localStorage.setItem("user", JSON.stringify(data.user));
-                localStorage.setItem("auth", JSON.stringify(data.auth)); // Assuming the token is in data.token
-            } else {
-                // Handle login error (e.g., invalid credentials)
-                console.error("Login failed:", data.message);
-            }
-        } catch (error) {
-            console.error("Login request failed:", error);
-        }
+    const { login } = useAuth();
+
+    const loginButton = async (event) => {
+        console.log("loginButton");
+        event.preventDefault();
+        const email = document.getElementById("inputEmail").value;
+        const password = document.getElementById("inputPassword").value;
+        await login(email, password);
     };
 
     return (
         <>
             <MyHead />
-            <body className="sb-sidenav-dark">
+            <div className="sb-sidenav-dark">
                 <div id="layoutAuthentication">
                     <div id="layoutAuthentication_content">
                         <main>
@@ -80,7 +69,11 @@ function Login() {
                                                         <a className="small" href="password">
                                                             Forgot Password?
                                                         </a>
-                                                        <button className="btn btn-primary btn-block" type="submit">
+                                                        <button
+                                                            className="btn btn-primary btn-block"
+                                                            type="submit"
+                                                            onClick={loginButton}
+                                                        >
                                                             Login
                                                         </button>
                                                     </div>
@@ -99,7 +92,7 @@ function Login() {
                     </div>
                     <MyFooter />
                 </div>
-            </body>
+            </div>
         </>
     );
 }
