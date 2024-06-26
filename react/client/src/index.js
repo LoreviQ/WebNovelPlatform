@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import App from "./App";
-import Error from "./components/error";
+import Error from "./pages/error";
 import Index from "./pages/index";
 
 import "./css/styles.css";

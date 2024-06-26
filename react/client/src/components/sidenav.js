@@ -33,31 +33,6 @@ function MySideNav() {
                             Dashboard
                         </a>
                         <a
-                            className={`nav-link ${!openSegments.layouts ? "collapsed" : ""}`}
-                            onClick={() => toggleSegment("layouts")}
-                            aria-expanded={openSegments.layouts}
-                            aria-controls="collapseLayouts"
-                        >
-                            <FontAwesomeIcon className="sb-nav-link-icon" icon="fa-columns" />
-                            Layouts
-                            <FontAwesomeIcon className="sb-sidenav-collapse-arrow" icon="fa-angle-down" />
-                        </a>
-                        <Collapse
-                            in={openSegments.layouts}
-                            id="collapseLayouts"
-                            aria-labelledby="headingOne"
-                            data-bs-parent="#sidenavAccordion"
-                        >
-                            <nav className="sb-sidenav-menu-nested nav">
-                                <a className="nav-link" href="/layout-static">
-                                    Static Navigation
-                                </a>
-                                <a className="nav-link" href="/layout-sidenav-light">
-                                    Light Sidenav
-                                </a>
-                            </nav>
-                        </Collapse>
-                        <a
                             className={`nav-link ${!openSegments.pages ? "collapsed" : ""}`}
                             onClick={() => toggleSegment("pages")}
                             aria-expanded={openSegments.pages}
@@ -130,14 +105,6 @@ function MySideNav() {
                                 </Collapse>
                             </nav>
                         </Collapse>
-                        <a className="nav-link" href="/charts">
-                            <FontAwesomeIcon className="sb-nav-link-icon" icon="fa-chart-area" />
-                            Charts
-                        </a>
-                        <a className="nav-link" href="/tables">
-                            <FontAwesomeIcon className="sb-nav-link-icon" icon="fa-table" />
-                            Tables
-                        </a>
                     </Nav>
                 </div>
                 <div className="sb-sidenav-footer">
