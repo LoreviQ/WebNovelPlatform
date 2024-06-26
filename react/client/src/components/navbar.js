@@ -6,13 +6,15 @@ import Button from "react-bootstrap/Button";
 import InputGroup from "react-bootstrap/InputGroup";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { toggleTheme } from "../utils/theme";
+import { useAuth } from "../utils/auth";
 
-function MyNavbar({ userData, logout }) {
+function MyNavbar() {
     const toggleSidebar = () => {
         const isToggled = document.body.classList.toggle("sb-sidenav-toggled");
         localStorage.setItem("sb|sidebar-toggle", isToggled);
     };
     const [theme, setTheme] = useState("dark");
+    const { user, logout } = useAuth();
 
     const localToggleTheme = () => {
         var newTheme = toggleTheme();
@@ -49,7 +51,7 @@ function MyNavbar({ userData, logout }) {
             <Button variant="link" size="sm" id="themeToggle" className="me-3" onClick={localToggleTheme}>
                 <FontAwesomeIcon icon={theme === "dark" ? "fa-moon" : "fa-sun"} id="themeIcon" />
             </Button>
-            {userData ? (
+            {user ? (
                 "placeholder"
             ) : (
                 <Button variant="primary" href="/login" className="me-3">
