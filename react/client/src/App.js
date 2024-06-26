@@ -3,22 +3,18 @@ import MyNavbar from "./components/navbar";
 import MySideNav from "./components/sidenav";
 import MyFooter from "./components/footer";
 
-import "./css/styles.css";
-
-function App({ Page }) {
+function App({ Page, pageProps }) {
     return (
-        <body className="sb-nav-fixed">
+        <div className="sb-nav-fixed">
             <MyNavbar />
             <div id="layoutSidenav">
                 <MySideNav />
                 <div id="layoutSidenav_content" className="sb-sidenav-dark">
-                    <main>
-                        <Page />
-                    </main>
+                    <main>{React.createElement(Page, pageProps)}</main>
                     <MyFooter />
                 </div>
             </div>
-        </body>
+        </div>
     );
 }
 
