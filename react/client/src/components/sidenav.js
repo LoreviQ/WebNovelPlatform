@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Nav from "react-bootstrap/Nav";
 import Collapse from "react-bootstrap/Collapse";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useAuth } from "../utils/auth";
 
 function MySideNav() {
     const [openSegments, setOpenSegments] = useState({
@@ -13,6 +14,7 @@ function MySideNav() {
     const toggleSegment = (segment) => {
         setOpenSegments((prev) => ({ ...prev, [segment]: !prev[segment] }));
     };
+    const { user } = useAuth();
     return (
         <div id="layoutSidenav_nav">
             <Nav className="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
@@ -111,7 +113,7 @@ function MySideNav() {
                     <div className="small" id="loginStatusText">
                         Logged in as:
                     </div>
-                    <div id="userStatus">Not logged in</div>
+                    <div id="userStatus">{user ? user.name : "Not logged in"}</div>
                 </div>
             </Nav>
         </div>
