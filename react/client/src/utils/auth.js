@@ -4,14 +4,16 @@ const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
     const [user, setUser] = useState(null);
+    const [gettingUser, setGettingUser] = useState(true);
     const apiBaseUrl = process.env.API_URL || "https://webnovelapi-y5hewbdc4a-nw.a.run.app";
 
     useEffect(() => {
-        // Check local storage or cookie for existing login session
+        setGettingUser(true);
         const storedUser = localStorage.getItem("user");
         if (storedUser) {
             setUser(JSON.parse(storedUser));
         }
+        setGettingUser(false);
     }, []);
 
     const login = async (email, password) => {
@@ -46,7 +48,7 @@ export function AuthProvider({ children }) {
         localStorage.removeItem("auth");
     };
 
-    return <AuthContext.Provider value={{ user, login, logout }}>{children}</AuthContext.Provider>;
+    return <AuthContext.Provider value={{ user, gettingUser, login, logout }}>{children}</AuthContext.Provider>;
 }
 
 const PrivateRoute = ({ component: Component, ...rest }) => {

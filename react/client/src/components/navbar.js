@@ -15,7 +15,7 @@ function MyNavbar() {
         localStorage.setItem("sb|sidebar-toggle", isToggled);
     };
     const [theme, setTheme] = useState("dark");
-    const { user, logout } = useAuth();
+    const { user, gettingUser, logout } = useAuth();
 
     const localToggleTheme = () => {
         var newTheme = toggleTheme();
@@ -70,7 +70,7 @@ function MyNavbar() {
                 <FontAwesomeIcon icon={theme === "dark" ? "fa-moon" : "fa-sun"} id="themeIcon" />
             </Button>
             <ul className="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
-                {user ? (
+                {user || gettingUser ? (
                     <Dropdown>
                         <Dropdown.Toggle as={CustomToggle} id="dropdown-basic" drop="down-centered"></Dropdown.Toggle>
 
