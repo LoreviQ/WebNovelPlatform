@@ -16,6 +16,7 @@ import (
 
 // To change behaviour so tesats can be completed in a reasonable time
 var TEST = false
+var RTduration = time.Hour * 24 * 60
 
 func AuthenticateUser(email string, password []byte, db *database.Queries) (*database.User, error) {
 	// Authenticate user
@@ -32,20 +33,21 @@ func AuthenticateUser(email string, password []byte, db *database.Queries) (*dat
 	return &user, nil
 }
 
-func IssueAccessToken(userID string, secret []byte) (string, error) {
-	duration := time.Hour
+func IssueAccessToken(userID string, secret []byte) (string, time.Time, error) {
+	duration := time.Hour*24 + time.Second*5
 	if TEST {
 		duration = time.Second * 15
 	}
+	expires := time.Now().Add(duration)
 	claims := jwt.RegisteredClaims{
 		Issuer:    "wnp-access",
 		IssuedAt:  jwt.NewNumericDate(time.Now()),
-		ExpiresAt: jwt.NewNumericDate(time.Now().Add(duration)),
+		ExpiresAt: jwt.NewNumericDate(expires),
 		Subject:   userID,
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	signedToken, err := token.SignedString(secret)
-	return signedToken, err
+	return signedToken, expires, err
 }
 
 func AuthenticateAccessToken(tokenString string, secret []byte) (string, error) {
@@ -73,18 +75,19 @@ func AuthenticateAccessToken(tokenString string, secret []byte) (string, error) 
 	return subject, nil
 }
 
-func IssueRefreshToken(userID string, DB *database.Queries, ctx context.Context) (string, error) {
+func IssueRefreshToken(userID string, DB *database.Queries, ctx context.Context) (string, time.Time, error) {
 	tokenHex := make([]byte, 32)
 	_, err := rand.Read(tokenHex)
 	if err != nil {
-		return "", err
+		return "", time.Time{}, err
 	}
 	token := hex.EncodeToString(tokenHex)
+	createdAt := time.Now()
 	err = DB.CreateToken(ctx, database.CreateTokenParams{
 		ID:        uuid.New().String(),
 		Token:     token,
 		Valid:     1,
-		CreatedAt: time.Now().UTC().Format(time.RFC3339),
+		CreatedAt: createdAt.UTC().Format(time.RFC3339),
 		RevokedAt: sql.NullString{
 			String: "",
 			Valid:  false,
@@ -92,9 +95,9 @@ func IssueRefreshToken(userID string, DB *database.Queries, ctx context.Context)
 		Userid: userID,
 	})
 	if err != nil {
-		return "", err
+		return "", time.Time{}, err
 	}
-	return token, nil
+	return token, createdAt.Add(RTduration), nil
 }
 
 func AuthenticateRefreshToken(tokenString string, DB *database.Queries, ctx context.Context) (string, error) {
@@ -109,16 +112,16 @@ func AuthenticateRefreshToken(tokenString string, DB *database.Queries, ctx cont
 	if err != nil {
 		return "", fmt.Errorf("error parsing token creation time")
 	}
-	if createdAt.Add(time.Hour * 24 * 60).Before(time.Now()) {
+	if createdAt.Add(RTduration).Before(time.Now()) {
 		return "", fmt.Errorf("token is expired")
 	}
 	return token.Userid, nil
 }
 
-func RefreshAccessToken(refreshToken string, DB *database.Queries, ctx context.Context, secret []byte) (string, error) {
+func RefreshAccessToken(refreshToken string, DB *database.Queries, ctx context.Context, secret []byte) (string, time.Time, error) {
 	userID, err := AuthenticateRefreshToken(refreshToken, DB, ctx)
 	if err != nil {
-		return "", err
+		return "", time.Time{}, err
 	}
 	return IssueAccessToken(userID, secret)
 }

@@ -55,7 +55,7 @@ func (cfg *apiConfig) postUser(w http.ResponseWriter, r *http.Request) {
 	hash, err := bcrypt.GenerateFromPassword([]byte(request.Password), 10)
 	if err != nil {
 		log.Printf("Error generating password hash: %s", err)
-		w.WriteHeader(500)
+		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 	user, err := cfg.DB.CreateUser(r.Context(), database.CreateUserParams{

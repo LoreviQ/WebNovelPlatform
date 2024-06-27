@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/LoreviQ/WebNovelPlatform/api/internal/auth"
 	"github.com/LoreviQ/WebNovelPlatform/api/internal/database"
@@ -41,13 +42,13 @@ func (cfg *apiConfig) postLogin(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// CREATE JWT TOKENS
-	accessToken, err := auth.IssueAccessToken(user.ID, cfg.JWT_Secret)
+	accessToken, accessExpires, err := auth.IssueAccessToken(user.ID, cfg.JWT_Secret)
 	if err != nil {
 		log.Printf("Error Creating Access Token: %s", err)
 		w.WriteHeader(500)
 		return
 	}
-	refreshToken, err := auth.IssueRefreshToken(user.ID, cfg.DB, r.Context())
+	refreshToken, refreshExpires, err := auth.IssueRefreshToken(user.ID, cfg.DB, r.Context())
 	if err != nil {
 		log.Printf("Error Creating Refresh Token: %s", err)
 		w.WriteHeader(500)
@@ -60,9 +61,17 @@ func (cfg *apiConfig) postLogin(w http.ResponseWriter, r *http.Request) {
 		Name  string `json:"name"`
 		Email string `json:"email"`
 	}
+	type accessTokenStruct struct {
+		Token   string    `json:"token"`
+		Expires time.Time `json:"expires"`
+	}
+	type refreshTokenStruct struct {
+		Token   string    `json:"token"`
+		Expires time.Time `json:"expires"`
+	}
 	type authData struct {
-		AccessToken  string `json:"token"`
-		RefreshToken string `json:"refresh"`
+		AccessToken  accessTokenStruct  `json:"access"`
+		RefreshToken refreshTokenStruct `json:"refresh"`
 	}
 	type responseStruct struct {
 		UserData userData `json:"user"`
@@ -75,8 +84,14 @@ func (cfg *apiConfig) postLogin(w http.ResponseWriter, r *http.Request) {
 			Email: user.Email,
 		},
 		AuthData: authData{
-			AccessToken:  accessToken,
-			RefreshToken: refreshToken,
+			AccessToken: accessTokenStruct{
+				Token:   accessToken,
+				Expires: accessExpires,
+			},
+			RefreshToken: refreshTokenStruct{
+				Token:   refreshToken,
+				Expires: refreshExpires,
+			},
 		},
 	})
 }
@@ -94,9 +109,9 @@ func (cfg *apiConfig) getRefresh(w http.ResponseWriter, r *http.Request) {
 	_, err := auth.AuthenticateRefreshToken(refreshToken, cfg.DB, r.Context())
 	if err != nil {
 		w.WriteHeader(http.StatusUnauthorized)
-	} else {
-		w.WriteHeader(http.StatusOK)
+		return
 	}
+	w.WriteHeader(http.StatusOK)
 }
 
 func (cfg *apiConfig) postRefresh(w http.ResponseWriter, r *http.Request) {
@@ -109,7 +124,7 @@ func (cfg *apiConfig) postRefresh(w http.ResponseWriter, r *http.Request) {
 	refreshToken := header[len("Bearer "):]
 
 	// REFRESH ACCESS TOKEN
-	accessToken, err := auth.RefreshAccessToken(refreshToken, cfg.DB, r.Context(), cfg.JWT_Secret)
+	accessToken, expires, err := auth.RefreshAccessToken(refreshToken, cfg.DB, r.Context(), cfg.JWT_Secret)
 	if err != nil {
 		respondWithError(w, http.StatusUnauthorized, err.Error())
 		return
@@ -117,10 +132,12 @@ func (cfg *apiConfig) postRefresh(w http.ResponseWriter, r *http.Request) {
 
 	// RESPONSE
 	type responseStruct struct {
-		AccessToken string `json:"token"`
+		Token   string    `json:"token"`
+		Expires time.Time `json:"expires"`
 	}
 	respondWithJSON(w, 200, responseStruct{
-		AccessToken: accessToken,
+		Token:   accessToken,
+		Expires: expires,
 	})
 }
 
