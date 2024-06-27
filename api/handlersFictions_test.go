@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"net/http"
 	"testing"
+	"time"
 )
 
 func testGetFictions(t *testing.T) {
@@ -234,8 +235,14 @@ func testDeleteFictionFail(t *testing.T) {
 			Email string `json:"email"`
 		} `json:"user"`
 		AuthData struct {
-			AccessToken  string `json:"token"`
-			RefreshToken string `json:"refresh"`
+			AccessToken struct {
+				Token   string    `json:"token"`
+				Expires time.Time `json:"expires"`
+			} `json:"access"`
+			RefreshToken struct {
+				Token   string    `json:"token"`
+				Expires time.Time `json:"expires"`
+			} `json:"refresh"`
 		} `json:"auth"`
 	}
 	err := json.NewDecoder(res.Body).Decode(&responseAuth)
@@ -246,7 +253,7 @@ func testDeleteFictionFail(t *testing.T) {
 	// Create a new request to the /v1/fictions/{id} endpoint
 	requestURL := "http://localhost:8080/v1/fictions/the-great-gatsby"
 	headers := map[string]string{
-		"Authorization": fmt.Sprintf("Bearer %s", responseAuth.AuthData.AccessToken),
+		"Authorization": fmt.Sprintf("Bearer %s", responseAuth.AuthData.AccessToken.Token),
 	}
 	res = loopSendRequest(requestURL, http.MethodDelete, nil, headers, t)
 

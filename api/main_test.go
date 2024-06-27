@@ -180,8 +180,14 @@ func testPostLogin(t *testing.T) (string, string) {
 			Email string `json:"email"`
 		} `json:"user"`
 		AuthData struct {
-			AccessToken  string `json:"token"`
-			RefreshToken string `json:"refresh"`
+			AccessToken struct {
+				Token   string    `json:"token"`
+				Expires time.Time `json:"expires"`
+			} `json:"access"`
+			RefreshToken struct {
+				Token   string    `json:"token"`
+				Expires time.Time `json:"expires"`
+			} `json:"refresh"`
 		} `json:"auth"`
 	}
 	err := json.NewDecoder(res.Body).Decode(&response)
@@ -191,10 +197,10 @@ func testPostLogin(t *testing.T) (string, string) {
 	if response.UserData.Email != "test@test.com" {
 		t.Fatalf("expected response body \"OK\", got %q", response)
 	}
-	if response.AuthData.AccessToken == "" {
+	if response.AuthData.AccessToken.Token == "" {
 		t.Fatalf("expected access token, got %q", response.AuthData.AccessToken)
 	}
-	return response.AuthData.AccessToken, response.AuthData.RefreshToken
+	return response.AuthData.AccessToken.Token, response.AuthData.RefreshToken.Token
 }
 
 func testPutUser(t *testing.T, accessToken string) {
