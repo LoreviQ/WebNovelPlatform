@@ -94,9 +94,9 @@ func (cfg *apiConfig) getRefresh(w http.ResponseWriter, r *http.Request) {
 	_, err := auth.AuthenticateRefreshToken(refreshToken, cfg.DB, r.Context())
 	if err != nil {
 		w.WriteHeader(http.StatusUnauthorized)
-	} else {
-		w.WriteHeader(http.StatusOK)
+		return
 	}
+	w.WriteHeader(http.StatusOK)
 }
 
 func (cfg *apiConfig) postRefresh(w http.ResponseWriter, r *http.Request) {

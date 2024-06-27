@@ -33,7 +33,7 @@ func AuthenticateUser(email string, password []byte, db *database.Queries) (*dat
 }
 
 func IssueAccessToken(userID string, secret []byte) (string, error) {
-	duration := time.Hour
+	duration := time.Hour*24 + time.Second*5
 	if TEST {
 		duration = time.Second * 15
 	}
