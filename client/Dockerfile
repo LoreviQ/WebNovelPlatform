@@ -1,20 +1,14 @@
-# Use an official Node.js runtime as a parent image
-FROM node:14
-
-# Set the working directory in the container
-WORKDIR /usr/src/app
-
-# Copy package.json and package-lock.json to the working directory
+# Build stage
+FROM node:14 AS build
+WORKDIR /app
 COPY package*.json ./
-
-# Install dependencies
 RUN npm install
-
-# Bundle app source
 COPY . .
+RUN npm run build
 
-# Expose the port on which your app runs 
-EXPOSE 8000
-
-# Command to run your application
-CMD ["node", "server.js"]
+# Serve stage
+FROM nginx:alpine
+COPY --from=build /app/build /usr/share/nginx/html
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]

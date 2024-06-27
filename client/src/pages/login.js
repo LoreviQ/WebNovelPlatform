@@ -3,7 +3,7 @@ import MyFooter from "../components/footer";
 import MyHead from "../components/head";
 import { initTheme } from "../utils/theme";
 import { useAuth } from "../utils/auth";
-import { AuthProvider } from "./../utils/auth";
+import { AuthProvider } from "../utils/auth";
 
 function Login() {
     return (
