@@ -3,6 +3,7 @@ api/webnovelapi
 client/.env
 client/webnovelclient
 */node_modules
+*/build
 client/server.cert
 client/server.key
 scripts/migratedown.sh
