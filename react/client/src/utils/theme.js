@@ -17,6 +17,7 @@ const applyTheme = (theme) => {
     document.querySelectorAll(`.${oppositeThemeClass}`).forEach((el) => {
         el.classList.replace(oppositeThemeClass, themeClass);
     });
+    document.documentElement.setAttribute("data-bs-theme", theme);
 };
 
 export { initTheme, toggleTheme, applyTheme };
