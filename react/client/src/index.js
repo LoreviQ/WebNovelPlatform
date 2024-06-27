@@ -23,6 +23,8 @@ function AppRouter() {
                 <Route path="login" element={<Pages.Login />} />
                 <Route path="register" element={<Pages.Register />} />
                 <Route path="forgotpassword" element={<Pages.ForgotPassword />} />
+                <Route path="user/me" element={<App Page={Pages.User} />} />
+                <Route path="user/:userid" element={<App Page={Pages.User} />} />
                 <Route path="401" element={<App Page={Pages.Error} pageProps={{ statusCode: 401 }} />} />
                 <Route path="403" element={<App Page={Pages.Error} pageProps={{ statusCode: 403 }} />} />
                 <Route path="404" element={<App Page={Pages.Error} pageProps={{ statusCode: 404 }} />} />

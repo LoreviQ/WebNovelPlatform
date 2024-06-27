@@ -46,6 +46,7 @@ export function AuthProvider({ children }) {
         setUser(null);
         localStorage.removeItem("user");
         localStorage.removeItem("auth");
+        window.location.href = "/";
     };
 
     return <AuthContext.Provider value={{ user, gettingUser, login, logout }}>{children}</AuthContext.Provider>;
