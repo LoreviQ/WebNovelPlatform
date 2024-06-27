@@ -6,6 +6,7 @@ import Button from "react-bootstrap/Button";
 import InputGroup from "react-bootstrap/InputGroup";
 import Dropdown from "react-bootstrap/Dropdown";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBars, faMoon, faSun, faSearch, faUser } from "@fortawesome/free-solid-svg-icons";
 import { toggleTheme } from "../utils/theme";
 import { useAuth } from "../utils/auth";
 
@@ -35,7 +36,7 @@ function MyNavbar() {
             }}
         >
             {children}
-            <FontAwesomeIcon icon={"fa-user"} />
+            <FontAwesomeIcon icon={faUser} />
         </a>
     ));
 
@@ -51,7 +52,7 @@ function MyNavbar() {
                 id="sidebarToggle"
                 onClick={toggleSidebar}
             >
-                <FontAwesomeIcon icon={"fa-bars"} />
+                <FontAwesomeIcon icon={faBars} />
             </Button>
             <Form className="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
                 <InputGroup>
@@ -62,12 +63,12 @@ function MyNavbar() {
                         aria-describedby="btnNavbarSearch"
                     />
                     <Button id="btnNavbarSearch" type="button">
-                        <FontAwesomeIcon icon={"fa-search"} />
+                        <FontAwesomeIcon icon={faSearch} />
                     </Button>
                 </InputGroup>
             </Form>
             <Button variant="link" size="sm" id="themeToggle" className="me-3" onClick={localToggleTheme}>
-                <FontAwesomeIcon icon={theme === "dark" ? "fa-moon" : "fa-sun"} id="themeIcon" />
+                <FontAwesomeIcon icon={theme === "dark" ? faMoon : faSun} id="themeIcon" />
             </Button>
             <ul className="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
                 {user || gettingUser ? (

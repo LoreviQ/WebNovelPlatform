@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Nav from "react-bootstrap/Nav";
 import Collapse from "react-bootstrap/Collapse";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faAngleDown, faBook, faBookOpen, faTachometerAlt } from "@fortawesome/free-solid-svg-icons";
 import { useAuth } from "../utils/auth";
 
 function MySideNav() {
@@ -22,16 +23,16 @@ function MySideNav() {
                     <Nav>
                         <div className="sb-sidenav-menu-heading">Core</div>
                         <a className="nav-link" href="/">
-                            <FontAwesomeIcon className="sb-nav-link-icon" icon="fa-tachometer-alt" />
+                            <FontAwesomeIcon className="sb-nav-link-icon" icon={faTachometerAlt} />
                             Home
                         </a>
                         <a id="fictionsLink" className="nav-link" href="/user/me/fictions">
-                            <FontAwesomeIcon className="sb-nav-link-icon" icon="fa-book" />
+                            <FontAwesomeIcon className="sb-nav-link-icon" icon={faBook} />
                             Fictions
                         </a>
                         <div className="sb-sidenav-menu-heading">Demo</div>
                         <a className="nav-link" href="/example">
-                            <FontAwesomeIcon className="sb-nav-link-icon" icon="fa-tachometer-alt" />
+                            <FontAwesomeIcon className="sb-nav-link-icon" icon={faTachometerAlt} />
                             Dashboard
                         </a>
                         <a
@@ -40,9 +41,9 @@ function MySideNav() {
                             aria-expanded={openSegments.pages}
                             aria-controls="collapsePages"
                         >
-                            <FontAwesomeIcon className="sb-nav-link-icon" icon="fa-book-open" />
+                            <FontAwesomeIcon className="sb-nav-link-icon" icon={faBookOpen} />
                             Pages
-                            <FontAwesomeIcon className="sb-sidenav-collapse-arrow" icon="fa-angle-down" />
+                            <FontAwesomeIcon className="sb-sidenav-collapse-arrow" icon={faAngleDown} />
                         </a>
                         <Collapse
                             in={openSegments.pages}
@@ -58,7 +59,7 @@ function MySideNav() {
                                     aria-controls="pagesCollapseAuth"
                                 >
                                     Authentication
-                                    <FontAwesomeIcon className="sb-sidenav-collapse-arrow" icon="fa-angle-down" />
+                                    <FontAwesomeIcon className="sb-sidenav-collapse-arrow" icon={faAngleDown} />
                                 </a>
                                 <Collapse
                                     in={openSegments.authentication}
@@ -85,7 +86,7 @@ function MySideNav() {
                                     aria-controls="pagesCollapseError"
                                 >
                                     Error
-                                    <FontAwesomeIcon className="sb-sidenav-collapse-arrow" icon="fa-angle-down" />
+                                    <FontAwesomeIcon className="sb-sidenav-collapse-arrow" icon={faAngleDown} />
                                 </a>
                                 <Collapse
                                     in={openSegments.error}
