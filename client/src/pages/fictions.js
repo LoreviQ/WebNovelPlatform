@@ -28,9 +28,7 @@ function Fictions() {
             if (!userData) navigate("/404");
             setDisplayUser(userData);
             const fictionData = await getFictionsByAuthorID(uid);
-            if (fictionData === false) navigate("/404");
             setFictions(fictionData);
-            console.log(fictionData);
         };
         fetchFictions();
     }, [userid, user, navigate]);
@@ -48,6 +46,7 @@ function Fictions() {
                 <h1 className="mt-4">{displayUser ? displayUser.name : ""}'s Fictions</h1>
             </div>
             <hr />
+            {!fictions || fictions.length === 0 ? <h1>No fictions!</h1> : <h1>Insert fictions here</h1>}
         </div>
     );
 }
