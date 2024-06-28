@@ -48,7 +48,7 @@ export function AuthProvider({ children }) {
         // Clear session from backend and local storage
         setUser(null);
         localStorage.removeItem("user");
-        localStorage.removeItem("auth");
+        localStorage.removeItem("access");
         localStorage.removeItem("refresh");
         window.location.href = "/";
     };
