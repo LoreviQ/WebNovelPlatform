@@ -16,19 +16,22 @@ export function AuthProvider({ children }) {
         setGettingUser(false);
     }, []);
 
-    const login = async (email, password) => {
+    const login = async (email, password, remember_me) => {
         try {
             const response = await fetch(apiBaseUrl + "/v1/login", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ email: email, password: password }),
+                body: JSON.stringify({ email: email, password: password, remember_me: remember_me }),
             });
             const data = await response.json();
             if (response.ok) {
                 localStorage.setItem("user", JSON.stringify(data.user));
-                localStorage.setItem("auth", JSON.stringify(data.auth));
+                localStorage.setItem("access", JSON.stringify(data.auth.access));
+                if (remember_me) {
+                    localStorage.setItem("refresh", JSON.stringify(data.auth.refresh));
+                }
                 setUser(data.user);
                 return true;
             } else {
@@ -46,6 +49,7 @@ export function AuthProvider({ children }) {
         setUser(null);
         localStorage.removeItem("user");
         localStorage.removeItem("auth");
+        localStorage.removeItem("refresh");
         window.location.href = "/";
     };
 
