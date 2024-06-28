@@ -61,9 +61,8 @@ func (cfg *apiConfig) postLogin(w http.ResponseWriter, r *http.Request) {
 
 	// RESPONSE
 	type userData struct {
-		ID    string `json:"id"`
-		Name  string `json:"name"`
-		Email string `json:"email"`
+		ID   string `json:"id"`
+		Name string `json:"name"`
 	}
 	type accessTokenStruct struct {
 		Token   string    `json:"token"`
@@ -90,9 +89,8 @@ func (cfg *apiConfig) postLogin(w http.ResponseWriter, r *http.Request) {
 	}
 	respondWithJSON(w, 200, responseStruct{
 		UserData: userData{
-			ID:    user.ID,
-			Name:  user.Name,
-			Email: user.Email,
+			ID:   user.ID,
+			Name: user.Name,
 		},
 		AuthData: authData{
 			AccessToken: accessTokenStruct{

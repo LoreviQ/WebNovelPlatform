@@ -28,7 +28,7 @@ function MySideNav() {
                         </a>
                         <a id="fictionsLink" className="nav-link" href="/user/me/fictions">
                             <FontAwesomeIcon className="sb-nav-link-icon" icon={faBook} />
-                            Fictions
+                            My Fictions
                         </a>
                         <div className="sb-sidenav-menu-heading">Demo</div>
                         <a className="nav-link" href="/example">

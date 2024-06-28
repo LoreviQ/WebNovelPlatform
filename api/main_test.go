@@ -176,9 +176,8 @@ func testPostLogin(t *testing.T) (string, string) {
 	}
 	var response struct {
 		UserData struct {
-			ID    string `json:"id"`
-			Name  string `json:"name"`
-			Email string `json:"email"`
+			ID   string `json:"id"`
+			Name string `json:"name"`
 		} `json:"user"`
 		AuthData struct {
 			AccessToken struct {
@@ -194,9 +193,6 @@ func testPostLogin(t *testing.T) (string, string) {
 	err := json.NewDecoder(res.Body).Decode(&response)
 	if err != nil {
 		t.Fatalf("could not read response body: %v", err)
-	}
-	if response.UserData.Email != "test@test.com" {
-		t.Fatalf("expected response body \"OK\", got %q", response)
 	}
 	if response.AuthData.AccessToken.Token == "" {
 		t.Fatalf("expected access token, got %q", response.AuthData.AccessToken)

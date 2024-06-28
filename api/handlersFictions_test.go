@@ -230,9 +230,8 @@ func testDeleteFictionFail(t *testing.T) {
 	res := loopSendRequest("http://localhost:8080/v1/login", http.MethodPost, body, nil, t)
 	var responseAuth struct {
 		UserData struct {
-			ID    string `json:"id"`
-			Name  string `json:"name"`
-			Email string `json:"email"`
+			ID   string `json:"id"`
+			Name string `json:"name"`
 		} `json:"user"`
 		AuthData struct {
 			AccessToken struct {
