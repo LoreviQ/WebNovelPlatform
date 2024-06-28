@@ -9,11 +9,14 @@ export function AuthProvider({ children }) {
 
     useEffect(() => {
         setGettingUser(true);
-        const storedUser = localStorage.getItem("user");
-        if (storedUser) {
-            setUser(JSON.parse(storedUser));
+        if (checkAuth()) {
+            const storedUser = localStorage.getItem("user");
+            if (storedUser) {
+                setUser(JSON.parse(storedUser));
+            }
+        } else {
+            logout();
         }
-        checkAuth();
         setGettingUser(false);
     }, []);
 
@@ -56,12 +59,11 @@ export function AuthProvider({ children }) {
     // Checks the current time against the expiry time of the access token
     const checkAuth = async () => {
         const access = JSON.parse(localStorage.getItem("access"));
-        if (!access) {
-            return false;
-        }
-        const expires = new Date(access.expires);
-        if (expires > new Date()) {
-            return true;
+        if (access) {
+            const expires = new Date(access.expires);
+            if (expires > new Date()) {
+                return true;
+            }
         }
         return await refreshAuth();
     };
@@ -81,7 +83,7 @@ export function AuthProvider({ children }) {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    Authentication: "Bearer " + refresh.token,
+                    Authorization: "Bearer " + refresh.token,
                 },
             });
             const data = await response.json();
