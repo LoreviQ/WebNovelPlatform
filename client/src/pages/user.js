@@ -9,7 +9,7 @@ import LoadingAnimation from "../components/loading";
 function User() {
     // get userid from url or logged in user
     const [displayUser, setDisplayUser] = useState(null);
-    const { user, gettingUser } = useAuth();
+    const { user, awaitUser } = useAuth();
     const { userid } = useParams();
     const navigate = useNavigate();
 
@@ -19,17 +19,8 @@ function User() {
         const fetchUserData = async () => {
             let uid = userid;
 
-            // Wait for gettingUser to be false if uid is 'me'
             if (uid === "me") {
-                await new Promise((resolve) => {
-                    const checkUserInterval = setInterval(() => {
-                        if (!gettingUser) {
-                            clearInterval(checkUserInterval);
-                            resolve();
-                        }
-                    }, 5);
-                });
-
+                await awaitUser();
                 if (!user) {
                     navigate("/login");
                     return;
@@ -43,7 +34,7 @@ function User() {
         };
 
         fetchUserData();
-    }, [userid, user, gettingUser, navigate]);
+    }, [userid, user, navigate]);
     if (!displayUser) {
         return <LoadingAnimation />;
     }

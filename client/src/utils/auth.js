@@ -118,7 +118,21 @@ export function AuthProvider({ children }) {
         localStorage.removeItem("refresh");
     };
 
-    return <AuthContext.Provider value={{ user, gettingUser, login, logout }}>{children}</AuthContext.Provider>;
+    const awaitUser = async () => {
+        // Wait for gettingUser to be false if uid is 'me'
+        await new Promise((resolve) => {
+            const checkUserInterval = setInterval(() => {
+                if (!gettingUser) {
+                    clearInterval(checkUserInterval);
+                    resolve();
+                }
+            }, 5);
+        });
+    };
+
+    return (
+        <AuthContext.Provider value={{ user, gettingUser, awaitUser, login, logout }}>{children}</AuthContext.Provider>
+    );
 }
 
 const PrivateRoute = ({ component: Component, ...rest }) => {
