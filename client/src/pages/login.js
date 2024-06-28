@@ -25,7 +25,8 @@ function LoginAuthed() {
         event.preventDefault();
         const email = document.getElementById("inputEmail").value;
         const password = document.getElementById("inputPassword").value;
-        if (await login(email, password)) {
+        const remember_me = document.getElementById("inputRememberPassword").checked;
+        if (await login(email, password, remember_me)) {
             window.location.href = "/";
         } else {
             alert("Invalid Username or Password.");
@@ -71,7 +72,6 @@ function LoginAuthed() {
                                                             className="form-check-input"
                                                             id="inputRememberPassword"
                                                             type="checkbox"
-                                                            value=""
                                                         />
                                                         <label
                                                             className="form-check-label"
