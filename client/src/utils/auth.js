@@ -7,6 +7,7 @@ export function AuthProvider({ children }) {
     const [gettingUser, setGettingUser] = useState(true);
     const apiBaseUrl = process.env.API_URL || "https://webnovelapi-y5hewbdc4a-nw.a.run.app";
 
+    // Gets the user data from local storage and checks if the user is authenticated
     useEffect(() => {
         setGettingUser(true);
         const storedUser = localStorage.getItem("user");
@@ -22,6 +23,7 @@ export function AuthProvider({ children }) {
         verifyAuth();
     }, []);
 
+    // Logs the user in and stores the user data and access token
     const login = async (email, password, remember_me) => {
         try {
             const response = await fetch(apiBaseUrl + "/v1/login", {
@@ -48,14 +50,6 @@ export function AuthProvider({ children }) {
             console.error("Login request failed:", error);
             return false;
         }
-    };
-
-    const logout = () => {
-        // Clear session from backend and local storage
-        setUser(null);
-        localStorage.removeItem("user");
-        localStorage.removeItem("access");
-        localStorage.removeItem("refresh");
     };
 
     // Checks the current time against the expiry time of the access token
@@ -100,6 +94,28 @@ export function AuthProvider({ children }) {
             console.error("Refresh request failed:", error);
             return false;
         }
+    };
+
+    // Logs the user out by removing all stored data
+    const logout = () => {
+        setUser(null);
+        localStorage.removeItem("user");
+        localStorage.removeItem("access");
+        revokeRefresh();
+    };
+
+    const revokeRefresh = () => {
+        const refresh = JSON.parse(localStorage.getItem("refresh"));
+        if (refresh) {
+            fetch(apiBaseUrl + "/v1/revoke", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: "Bearer " + refresh.token,
+                },
+            });
+        }
+        localStorage.removeItem("refresh");
     };
 
     return <AuthContext.Provider value={{ user, gettingUser, login, logout }}>{children}</AuthContext.Provider>;
