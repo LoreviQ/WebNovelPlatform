@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { useAuth } from "../utils/auth";
 import Tab from "react-bootstrap/Tab";
 import Tabs from "react-bootstrap/Tabs";
+import { useAuth } from "../utils/auth";
 import { GetUserByUID } from "../utils/api";
 import LoadingAnimation from "../components/loading";
 
@@ -10,7 +10,7 @@ function User() {
     // get userid from url or logged in user
     const [displayUser, setDisplayUser] = useState(null);
     const { user, gettingUser } = useAuth();
-    let { userid } = useParams();
+    const { userid } = useParams();
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -19,8 +19,8 @@ function User() {
         const fetchUserData = async () => {
             let uid = userid;
 
-            // Wait for gettingUser to be false if no userid is provided
-            if (!uid) {
+            // Wait for gettingUser to be false if uid is 'me'
+            if (uid === "me") {
                 await new Promise((resolve) => {
                     const checkUserInterval = setInterval(() => {
                         if (!gettingUser) {
@@ -38,6 +38,7 @@ function User() {
             }
 
             const userData = await GetUserByUID(uid);
+            if (!userData) navigate("/404");
             setDisplayUser(userData);
         };
 

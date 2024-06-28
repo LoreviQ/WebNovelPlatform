@@ -10,7 +10,18 @@ async function GetUserByUID(uid) {
         let body = await response.json();
         return body;
     }
-    return null;
+    return false;
 }
 
-export { GetUserByUID };
+async function getFictionsByAuthorID(uid) {
+    const response = await fetch(apiBaseUrl + "/v1/users/" + uid + "/fictions", {
+        method: "GET",
+    });
+    if (response.status === 200) {
+        let body = await response.json();
+        return body;
+    }
+    return false;
+}
+
+export { GetUserByUID, getFictionsByAuthorID };
