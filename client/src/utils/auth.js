@@ -9,15 +9,17 @@ export function AuthProvider({ children }) {
 
     useEffect(() => {
         setGettingUser(true);
-        if (checkAuth()) {
-            const storedUser = localStorage.getItem("user");
-            if (storedUser) {
-                setUser(JSON.parse(storedUser));
-            }
-        } else {
-            logout();
+        const storedUser = localStorage.getItem("user");
+        if (storedUser) {
+            setUser(JSON.parse(storedUser));
         }
         setGettingUser(false);
+        const verifyAuth = async () => {
+            if (!(await checkAuth())) {
+                logout();
+            }
+        };
+        verifyAuth();
     }, []);
 
     const login = async (email, password, remember_me) => {
