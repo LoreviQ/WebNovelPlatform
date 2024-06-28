@@ -164,7 +164,8 @@ func testPostLogin(t *testing.T) (string, string) {
 	// Create a new request to the POST /v1/login endpoint
 	body := []byte(`{
 		"email": "test@test.com",
-		"password": "password"
+		"password": "password",
+		"remember_me": true
 		}`)
 	requestURL := "http://localhost:8080/v1/login"
 	res := loopSendRequest(requestURL, http.MethodPost, bytes.NewBuffer(body), nil, t)

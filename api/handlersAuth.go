@@ -26,8 +26,9 @@ func (cfg *apiConfig) getLogin(w http.ResponseWriter, r *http.Request, user data
 func (cfg *apiConfig) postLogin(w http.ResponseWriter, r *http.Request) {
 	// REQUEST
 	request, err := decodeRequest(w, r, struct {
-		Email    string `json:"email"`
-		Password string `json:"password"`
+		Email      string `json:"email"`
+		Password   string `json:"password"`
+		RememberMe bool   `json:"remember_me"`
 	}{})
 	if err != nil {
 		respondWithError(w, http.StatusBadRequest, "failed to decode request body")
@@ -48,11 +49,14 @@ func (cfg *apiConfig) postLogin(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(500)
 		return
 	}
-	refreshToken, refreshExpires, err := auth.IssueRefreshToken(user.ID, cfg.DB, r.Context())
-	if err != nil {
-		log.Printf("Error Creating Refresh Token: %s", err)
-		w.WriteHeader(500)
-		return
+	refreshToken, refreshExpires := "", time.Time{}
+	if request.RememberMe {
+		refreshToken, refreshExpires, err = auth.IssueRefreshToken(user.ID, cfg.DB, r.Context())
+		if err != nil {
+			log.Printf("Error Creating Refresh Token: %s", err)
+			w.WriteHeader(500)
+			return
+		}
 	}
 
 	// RESPONSE
@@ -77,6 +81,13 @@ func (cfg *apiConfig) postLogin(w http.ResponseWriter, r *http.Request) {
 		UserData userData `json:"user"`
 		AuthData authData `json:"auth"`
 	}
+	rtResponse := refreshTokenStruct{}
+	if request.RememberMe {
+		rtResponse = refreshTokenStruct{
+			Token:   refreshToken,
+			Expires: refreshExpires,
+		}
+	}
 	respondWithJSON(w, 200, responseStruct{
 		UserData: userData{
 			ID:    user.ID,
@@ -88,10 +99,7 @@ func (cfg *apiConfig) postLogin(w http.ResponseWriter, r *http.Request) {
 				Token:   accessToken,
 				Expires: accessExpires,
 			},
-			RefreshToken: refreshTokenStruct{
-				Token:   refreshToken,
-				Expires: refreshExpires,
-			},
+			RefreshToken: rtResponse,
 		},
 	})
 }
