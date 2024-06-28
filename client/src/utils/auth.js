@@ -13,6 +13,7 @@ export function AuthProvider({ children }) {
         if (storedUser) {
             setUser(JSON.parse(storedUser));
         }
+        checkAuth();
         setGettingUser(false);
     }, []);
 
@@ -50,7 +51,51 @@ export function AuthProvider({ children }) {
         localStorage.removeItem("user");
         localStorage.removeItem("access");
         localStorage.removeItem("refresh");
-        window.location.href = "/";
+    };
+
+    // Checks the current time against the expiry time of the access token
+    const checkAuth = async () => {
+        const access = JSON.parse(localStorage.getItem("access"));
+        if (!access) {
+            return false;
+        }
+        const expires = new Date(access.expires);
+        if (expires > new Date()) {
+            return true;
+        }
+        return await refreshAuth();
+    };
+
+    // Refreshes the access token using the refresh token
+    const refreshAuth = async () => {
+        const refresh = JSON.parse(localStorage.getItem("refresh"));
+        if (!refresh) {
+            return false;
+        }
+        const expires = new Date(refresh.expires);
+        if (expires < new Date()) {
+            return false;
+        }
+        try {
+            const response = await fetch(apiBaseUrl + "/v1/refresh", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authentication: "Bearer " + refresh.token,
+                },
+            });
+            const data = await response.json();
+            if (response.ok) {
+                localStorage.setItem("access", JSON.stringify(data));
+                return true;
+            } else {
+                console.error("Refresh failed:", data.message);
+                return false;
+            }
+        } catch (error) {
+            console.error("Refresh request failed:", error);
+            return false;
+        }
     };
 
     return <AuthContext.Provider value={{ user, gettingUser, login, logout }}>{children}</AuthContext.Provider>;
