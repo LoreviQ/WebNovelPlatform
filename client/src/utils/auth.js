@@ -1,4 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
+import { Navigate } from "react-router-dom";
+import LoadingAnimation from "../components/loading";
+import Login from "../pages/login";
 
 const AuthContext = createContext();
 
@@ -135,10 +138,12 @@ export function AuthProvider({ children }) {
     );
 }
 
-const PrivateRoute = ({ component: Component, ...rest }) => {
-    const { user } = useAuth();
-
-    return <Route {...rest} render={(props) => (user ? <Component {...props} /> : <Redirect to="/login" />)} />;
+const PrivateRoute = ({ children }) => {
+    const { user, gettingUser } = useAuth();
+    if (gettingUser) {
+        return <LoadingAnimation />;
+    }
+    return user ? children : <Login />;
 };
 
 export const useAuth = () => useContext(AuthContext);

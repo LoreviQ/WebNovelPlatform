@@ -4,7 +4,6 @@ import MySideNav from "./components/sidenav";
 import MyFooter from "./components/footer";
 import MyHead from "./components/head";
 import { initTheme } from "./utils/theme";
-import { AuthProvider } from "./utils/auth";
 
 function App({ Page, pageProps }) {
     useEffect(() => {
@@ -13,18 +12,16 @@ function App({ Page, pageProps }) {
     return (
         <>
             <MyHead />
-            <AuthProvider>
-                <div className="sb-nav-fixed">
-                    <MyNavbar />
-                    <div id="layoutSidenav">
-                        <MySideNav />
-                        <div id="layoutSidenav_content" className="sb-sidenav-dark">
-                            <main>{React.createElement(Page, pageProps)}</main>
-                            <MyFooter />
-                        </div>
+            <div className="sb-nav-fixed">
+                <MyNavbar />
+                <div id="layoutSidenav">
+                    <MySideNav />
+                    <div id="layoutSidenav_content" className="sb-sidenav-dark">
+                        <main>{React.createElement(Page, pageProps)}</main>
+                        <MyFooter />
                     </div>
                 </div>
-            </AuthProvider>
+            </div>
         </>
     );
 }
