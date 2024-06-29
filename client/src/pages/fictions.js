@@ -6,8 +6,10 @@ import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { useAuth } from "../utils/auth";
 import { GetUserByUID, getFictionsByAuthorID } from "../utils/api";
 import LoadingAnimation from "../components/loading";
+import Error from "./error";
 
 function Fictions() {
+    const [err404, setErr404] = useState(false);
     const [displayUser, setDisplayUser] = useState(null);
     const [fictions, setFictions] = useState(null);
     const { user, awaitUser } = useAuth();
@@ -28,13 +30,19 @@ function Fictions() {
                 uid = user.id;
             }
             const userData = await GetUserByUID(uid);
-            if (!userData) navigate("/404");
+            if (!userData) {
+                setErr404(true);
+                return;
+            }
             setDisplayUser(userData);
             const fictionData = await getFictionsByAuthorID(uid);
             setFictions(fictionData);
         };
         fetchFictions();
     }, [userid, user, navigate]);
+    if (err404) {
+        return <Error statusCode={404} />;
+    }
     if (!fictions) {
         return <LoadingAnimation />;
     }

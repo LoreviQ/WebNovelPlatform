@@ -5,9 +5,10 @@ import Tabs from "react-bootstrap/Tabs";
 import { useAuth } from "../utils/auth";
 import { GetUserByUID } from "../utils/api";
 import LoadingAnimation from "../components/loading";
+import Error from "./error";
 
 function User() {
-    // get userid from url or logged in user
+    const [err404, setErr404] = useState(false);
     const [displayUser, setDisplayUser] = useState(null);
     const { user, awaitUser } = useAuth();
     const { userid } = useParams();
@@ -18,7 +19,6 @@ function User() {
 
         const fetchUserData = async () => {
             let uid = userid;
-
             if (uid === "me") {
                 await awaitUser();
                 if (!user) {
@@ -27,14 +27,19 @@ function User() {
                 }
                 uid = user.id;
             }
-
             const userData = await GetUserByUID(uid);
-            if (!userData) navigate("/404");
+            if (!userData) {
+                setErr404(true);
+                return;
+            }
             setDisplayUser(userData);
         };
 
         fetchUserData();
     }, [userid, user, navigate]);
+    if (err404) {
+        return <Error statusCode={404} />;
+    }
     if (!displayUser) {
         return <LoadingAnimation />;
     }
