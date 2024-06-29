@@ -52,6 +52,7 @@ function User() {
             <Tabs defaultActiveKey="profile" id="userTabs" className="mb-3">
                 <Tab eventKey="profile" title="Profile">
                     <ul className="list-group list-group-flush">
+                        <li className="list-group-item">UID: {displayUser ? displayUser.id : ""}</li>
                         <li className="list-group-item">Date Joined: {displayUser ? displayUser.created_at : ""}</li>
                         <li className="list-group-item">Last Active: {displayUser ? displayUser.updated_at : ""}</li>
                         <li className="list-group-item">Email: {displayUser ? displayUser.email : ""}</li>
