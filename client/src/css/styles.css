@@ -3225,7 +3225,7 @@ textarea.form-control-lg {
 }
 
 [data-bs-theme="dark"] .btn-theme {
-  --bs-btn-color: #fff;
+  --bs-btn-color: rgba(255, 255, 255, 0.5);
   --bs-btn-hover-color: #fff;
   --bs-btn-hover-bg: #424649;
   --bs-btn-hover-border-color: #373b3e;
