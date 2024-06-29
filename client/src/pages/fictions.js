@@ -50,7 +50,7 @@ function Fictions() {
                 {displayUser && displayUser.id === user.id ? (
                     <>
                         <div style={{ flexGrow: 1 }}></div>
-                        <Button className="mt-4 me-4" variant="theme">
+                        <Button className="mt-4 me-4" variant="theme" onClick={() => navigate("create")}>
                             <div style={{ display: "flex", alignItems: "center" }}>
                                 <FontAwesomeIcon className="ms-1 mt-1 me-2" icon={faPlus} size="2x" />
                                 <h2 className="mt-2 me-1">Submit</h2>
