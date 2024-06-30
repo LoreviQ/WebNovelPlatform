@@ -55,7 +55,7 @@ function Fictions() {
                     alt="ProfilePicture"
                 />
                 <h1 className="mt-4">{displayUser ? displayUser.name : ""}'s Fictions</h1>
-                {displayUser && displayUser.id === user.id ? (
+                {displayUser && user && displayUser.id === user.id ? (
                     <>
                         <div style={{ flexGrow: 1 }}></div>
                         <Button className="mt-4 me-4" variant="theme" onClick={() => navigate("submit")}>

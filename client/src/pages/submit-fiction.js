@@ -11,23 +11,7 @@ function SubmitFiction() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        document.title = "Fictions | WebNovelPlatform";
-
-        const fetchFictions = async () => {
-            let uid = userid;
-            if (uid === "me") {
-                await awaitUser();
-                if (!user) {
-                    navigate("/login");
-                    return;
-                }
-                uid = user.id;
-            }
-            const userData = await GetUserByUID(uid);
-            if (!userData) navigate("/404");
-            setDisplayUser(userData);
-        };
-        fetchFictions();
+        document.title = "Submit | WebNovelPlatform";
     }, [userid, user, navigate]);
     return (
         <div className="container-fluid px-4">

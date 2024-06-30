@@ -1,7 +1,9 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { Navigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import LoadingAnimation from "../components/loading";
 import Login from "../pages/login";
+import Error from "../pages/error";
+import App from "../App";
 
 const AuthContext = createContext();
 
@@ -146,5 +148,14 @@ const PrivateRoute = ({ children }) => {
     return user ? children : <Login />;
 };
 
+const PrivateRouteUserid = ({ children }) => {
+    const { userid } = useParams();
+    const { user, gettingUser } = useAuth();
+    if (gettingUser) {
+        return <LoadingAnimation />;
+    }
+    return userid === user.id ? children : <App Page={Error} pageProps={{ statusCode: 401 }} />;
+};
+
 export const useAuth = () => useContext(AuthContext);
-export default PrivateRoute;
+export { PrivateRoute, PrivateRouteUserid };
