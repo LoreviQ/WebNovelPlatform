@@ -157,5 +157,15 @@ const PrivateRouteUserid = ({ children }) => {
     return userid === user.id ? children : <App Page={Error} pageProps={{ statusCode: 401 }} />;
 };
 
+//automatically applies correct router based on userid
+const UserIDRouter = ({ children }) => {
+    const { userid } = useParams();
+    if (userid === "me") {
+        return <PrivateRoute>{children}</PrivateRoute>;
+    } else {
+        return <PrivateRouteUserid>{children}</PrivateRouteUserid>;
+    }
+};
+
 export const useAuth = () => useContext(AuthContext);
-export { PrivateRoute, PrivateRouteUserid };
+export { PrivateRoute, PrivateRouteUserid, UserIDRouter };

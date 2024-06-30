@@ -3,7 +3,7 @@ import ReactDOM from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import App from "./App";
 import * as Pages from "./pages";
-import { AuthProvider, PrivateRouteUserid } from "./utils/auth";
+import { AuthProvider, UserIDRouter } from "./utils/auth";
 
 import "./css/styles.css";
 
@@ -25,15 +25,28 @@ function AppRouter() {
                     <Route path="login" element={<Pages.Login />} />
                     <Route path="register" element={<Pages.Register />} />
                     <Route path="forgotpassword" element={<Pages.ForgotPassword />} />
-                    <Route path="user/:userid" element={<App Page={Pages.User} />} />
-                    <Route path="user/:userid/fictions" element={<App Page={Pages.Fictions} />} />
-                    <Route path="user/me/fictions/submit" element={<App Page={Pages.SubmitFiction} />} />
+                    <Route
+                        path="user/:userid"
+                        element={
+                            <UserIDRouter>
+                                <App Page={Pages.User} />
+                            </UserIDRouter>
+                        }
+                    />
+                    <Route
+                        path="user/:userid/fictions"
+                        element={
+                            <UserIDRouter>
+                                <App Page={Pages.Fictions} />
+                            </UserIDRouter>
+                        }
+                    />
                     <Route
                         path="user/:userid/fictions/submit"
                         element={
-                            <PrivateRouteUserid>
+                            <UserIDRouter>
                                 <App Page={Pages.SubmitFiction} />
-                            </PrivateRouteUserid>
+                            </UserIDRouter>
                         }
                     />
                     <Route path="401" element={<App Page={Pages.Error} pageProps={{ statusCode: 401 }} />} />
