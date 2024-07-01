@@ -57,6 +57,7 @@ function Fictions() {
                     className="mt-4 me-4"
                     src={`${process.env.PUBLIC_URL}/profile-default.webp`}
                     alt="ProfilePicture"
+                    style={{ width: "100px", height: "100px" }}
                 />
                 <h1 className="mt-4">{displayUser ? displayUser.name : ""}'s Fictions</h1>
                 {displayUser && user && displayUser.id === user.id ? (
@@ -76,14 +77,22 @@ function Fictions() {
                 <h1>No fictions!</h1>
             ) : (
                 <ListGroup as="ul">
-                    <ListGroup.Item as="li" active>
-                        Cras justo odio
-                    </ListGroup.Item>
-                    <ListGroup.Item as="li">Dapibus ac facilisis in</ListGroup.Item>
-                    <ListGroup.Item as="li" disabled>
-                        Morbi leo risus
-                    </ListGroup.Item>
-                    <ListGroup.Item as="li">Porta ac consectetur ac</ListGroup.Item>
+                    {fictions.map((fiction) => (
+                        <ListGroup.Item as="li" key={fiction.id}>
+                            <div style={{ display: "flex", alignItems: "center" }}>
+                                <img
+                                    className="me-4"
+                                    src={`${process.env.PUBLIC_URL}/image-placeholder.png`}
+                                    alt="ProfilePicture"
+                                    style={{ width: "100px", height: "100px", backgroundColor: "#f0f0f0" }}
+                                />
+                                <div className="ms-2 me-auto">
+                                    <div className="fw-bold">{fiction.title}</div>
+                                    <div className="ms-2">{fiction.description}</div>
+                                </div>
+                            </div>
+                        </ListGroup.Item>
+                    ))}
                 </ListGroup>
             )}
         </div>
