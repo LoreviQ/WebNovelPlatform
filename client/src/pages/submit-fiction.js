@@ -3,7 +3,9 @@ import { useParams, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import Button from "react-bootstrap/Button";
+import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
+import Row from "react-bootstrap/Row";
 
 import { useAuth } from "../utils/auth";
 import { GetUserByUID } from "../utils/api";
@@ -39,27 +41,35 @@ function SubmitFiction() {
             </div>
             <hr />
             <Form noValidate validated={validated} onSubmit={formSubmission}>
-                <Form.Group className="mb-3" controlId="submitTitle">
-                    <Form.Label>Title</Form.Label>
-                    <Form.Control
-                        type="text"
-                        placeholder="Title of Fiction"
-                        value={title}
-                        onChange={(e) => setTitle(e.target.value)}
-                        required
-                    />
+                <Form.Group as={Row} className="mb-3" controlId="submitTitle">
+                    <Form.Label column sm={1}>
+                        Title
+                    </Form.Label>
+                    <Col sm={11}>
+                        <Form.Control
+                            type="text"
+                            placeholder="Title of Fiction"
+                            value={title}
+                            onChange={(e) => setTitle(e.target.value)}
+                            required
+                        />
+                    </Col>
                     <Form.Control.Feedback type="invalid">Required</Form.Control.Feedback>
                 </Form.Group>
 
-                <Form.Group className="mb-3" controlId="submitDescription">
-                    <Form.Label>Description</Form.Label>
-                    <Form.Control
-                        as="textarea"
-                        rows={5}
-                        placeholder="Summary of your fiction"
-                        value={description}
-                        onChange={(e) => setDescription(e.target.value)}
-                    />
+                <Form.Group as={Row} className="mb-3" controlId="submitDescription">
+                    <Form.Label column sm={1}>
+                        Description
+                    </Form.Label>
+                    <Col sm={11}>
+                        <Form.Control
+                            as="textarea"
+                            rows={5}
+                            placeholder="Summary of your fiction"
+                            value={description}
+                            onChange={(e) => setDescription(e.target.value)}
+                        />
+                    </Col>
                 </Form.Group>
                 <div style={{ display: "flex", alignItems: "center" }}>
                     <div style={{ flexGrow: 1 }}></div>
