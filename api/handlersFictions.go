@@ -294,7 +294,7 @@ func (cfg *apiConfig) getFictionsByUser(w http.ResponseWriter, r *http.Request) 
 // Get ALL Fictions By User Handler
 //
 // Returns all fictions by the logged in author even if not published
-func (cfg *apiConfig) getAllFictionsByUser(w http.ResponseWriter, r *http.Request, user database.User) {
+func (cfg *apiConfig) getMyFictions(w http.ResponseWriter, r *http.Request, user database.User) {
 	// GET FICTIONS
 	fictions, err := cfg.DB.GetFictionsByAuthorId(r.Context(), database.GetFictionsByAuthorIdParams{
 		Authorid:  user.ID,
