@@ -25,7 +25,6 @@ function SubmitFiction() {
         if (form.checkValidity() === false) {
             event.stopPropagation();
         } else {
-            console.log(formData);
             if (await authApi(postFiction, formData)) {
                 navigateUp();
             } else {

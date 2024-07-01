@@ -1,7 +1,7 @@
 // Utility functions for making API calls
 
-//const apiBaseUrl = process.env.API_URL || "https://webnovelapi-y5hewbdc4a-nw.a.run.app";
-const apiBaseUrl = "http://localhost:8080";
+const apiBaseUrl = process.env.API_URL || "https://webnovelapi-y5hewbdc4a-nw.a.run.app";
+//const apiBaseUrl = "http://localhost:8080";
 
 // Gets a user by their UID
 async function getUserByUID(uid) {
@@ -27,6 +27,21 @@ async function getFictionsByAuthorID(uid) {
     return false;
 }
 
+async function getMyFictions(accessToken) {
+    const response = await fetch(apiBaseUrl + "/v1/users/me/fictions", {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + accessToken,
+        },
+    });
+    if (response.status === 200) {
+        let body = await response.json();
+        return body;
+    }
+    return false;
+}
+
 //Submits a fiction to the logged in user's account
 async function postFiction(accessToken, fictionData) {
     const response = await fetch(apiBaseUrl + "/v1/fictions", {
@@ -43,4 +58,4 @@ async function postFiction(accessToken, fictionData) {
     return false;
 }
 
-export { getUserByUID, getFictionsByAuthorID, postFiction };
+export { getUserByUID, getFictionsByAuthorID, getMyFictions, postFiction };

@@ -5,7 +5,7 @@ import ListGroup from "react-bootstrap/ListGroup";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { useAuth } from "../utils/auth";
-import { getUserByUID, getFictionsByAuthorID } from "../utils/api";
+import { getUserByUID, getFictionsByAuthorID, getMyFictions } from "../utils/api";
 import LoadingAnimation from "../components/loading";
 import Error from "./error";
 
@@ -13,33 +13,36 @@ function Fictions() {
     const [err404, setErr404] = useState(false);
     const [displayUser, setDisplayUser] = useState(null);
     const [fictions, setFictions] = useState(null);
-    const { user, awaitUser } = useAuth();
+    const { user, awaitUser, authApi } = useAuth();
     const { userid } = useParams();
     const navigate = useNavigate();
 
     useEffect(() => {
         document.title = "Fictions | WebNovelPlatform";
 
-        const fetchFictions = async () => {
+        const fetchDisplayData = async () => {
             let uid = userid;
+            let fictionData;
             if (uid === "me") {
                 await awaitUser();
                 if (!user) {
                     navigate("/login");
                     return;
                 }
-                uid = user.id;
+                setDisplayUser(user);
+                fictionData = await authApi(getMyFictions);
+            } else {
+                const userData = await getUserByUID(uid);
+                if (!userData) {
+                    setErr404(true);
+                    return;
+                }
+                setDisplayUser(userData);
+                fictionData = await getFictionsByAuthorID(uid);
             }
-            const userData = await getUserByUID(uid);
-            if (!userData) {
-                setErr404(true);
-                return;
-            }
-            setDisplayUser(userData);
-            const fictionData = await getFictionsByAuthorID(uid);
             setFictions(fictionData);
         };
-        fetchFictions();
+        fetchDisplayData();
     }, []);
     if (err404) {
         return <Error statusCode={404} />;

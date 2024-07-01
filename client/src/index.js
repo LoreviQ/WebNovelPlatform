@@ -3,7 +3,7 @@ import ReactDOM from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import App from "./App";
 import * as Pages from "./pages";
-import { AuthProvider, UserIDRouter } from "./utils/auth";
+import { AuthProvider, PrivateRoute, UserIDRouter } from "./utils/auth";
 
 import "./css/styles.css";
 
@@ -36,9 +36,9 @@ function AppRouter() {
                     <Route
                         path="user/:userid/fictions"
                         element={
-                            <UserIDRouter>
+                            <PrivateRoute>
                                 <App Page={Pages.Fictions} />
-                            </UserIDRouter>
+                            </PrivateRoute>
                         }
                     />
                     <Route
