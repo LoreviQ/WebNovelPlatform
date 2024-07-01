@@ -1,6 +1,7 @@
 // Utility functions for making API calls
 
-const apiBaseUrl = process.env.API_URL || "https://webnovelapi-y5hewbdc4a-nw.a.run.app";
+//const apiBaseUrl = process.env.API_URL || "https://webnovelapi-y5hewbdc4a-nw.a.run.app";
+const apiBaseUrl = "http://localhost:8080";
 
 // Gets a user by their UID
 async function getUserByUID(uid) {

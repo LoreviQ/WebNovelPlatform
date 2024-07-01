@@ -82,17 +82,18 @@ func (q *Queries) GetFictionById(ctx context.Context, id string) (Fiction, error
 }
 
 const getFictionsByAuthorId = `-- name: GetFictionsByAuthorId :many
-SELECT id, title, authorid, description, created_at, updated_at, published_at, published FROM fictions WHERE authorid = ? and published = 1
+SELECT id, title, authorid, description, created_at, updated_at, published_at, published FROM fictions WHERE authorid = ? and published = ?
 LIMIT ?
 `
 
 type GetFictionsByAuthorIdParams struct {
-	Authorid string
-	Limit    int64
+	Authorid  string
+	Published int64
+	Limit     int64
 }
 
 func (q *Queries) GetFictionsByAuthorId(ctx context.Context, arg GetFictionsByAuthorIdParams) ([]Fiction, error) {
-	rows, err := q.db.QueryContext(ctx, getFictionsByAuthorId, arg.Authorid, arg.Limit)
+	rows, err := q.db.QueryContext(ctx, getFictionsByAuthorId, arg.Authorid, arg.Published, arg.Limit)
 	if err != nil {
 		return nil, err
 	}
