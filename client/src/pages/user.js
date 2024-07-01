@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import Tab from "react-bootstrap/Tab";
 import Tabs from "react-bootstrap/Tabs";
 import { useAuth } from "../utils/auth";
-import { GetUserByUID } from "../utils/api";
+import { getUserByUID } from "../utils/api";
 import LoadingAnimation from "../components/loading";
 import Error from "./error";
 
@@ -27,7 +27,7 @@ function User() {
                 }
                 uid = user.id;
             }
-            const userData = await GetUserByUID(uid);
+            const userData = await getUserByUID(uid);
             if (!userData) {
                 setErr404(true);
                 return;

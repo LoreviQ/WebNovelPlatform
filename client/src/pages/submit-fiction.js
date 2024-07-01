@@ -8,7 +8,7 @@ import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 
 import { useAuth } from "../utils/auth";
-import { GetUserByUID } from "../utils/api";
+import { postFiction } from "../utils/api";
 
 function SubmitFiction() {
     const { user, awaitUser } = useAuth();

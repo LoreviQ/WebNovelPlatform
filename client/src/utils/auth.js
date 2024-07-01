@@ -135,8 +135,15 @@ export function AuthProvider({ children }) {
         });
     };
 
+    const authApi = (apiFunction, ...args) => {
+        const access = JSON.parse(localStorage.getItem("access"));
+        return apiFunction(access.token, ...args);
+    };
+
     return (
-        <AuthContext.Provider value={{ user, gettingUser, awaitUser, login, logout }}>{children}</AuthContext.Provider>
+        <AuthContext.Provider value={{ user, gettingUser, awaitUser, login, logout, authApi }}>
+            {children}
+        </AuthContext.Provider>
     );
 }
 

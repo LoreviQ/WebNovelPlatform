@@ -4,7 +4,7 @@ import Button from "react-bootstrap/Button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { useAuth } from "../utils/auth";
-import { GetUserByUID, getFictionsByAuthorID } from "../utils/api";
+import { getUserByUID, getFictionsByAuthorID } from "../utils/api";
 import LoadingAnimation from "../components/loading";
 import Error from "./error";
 
@@ -29,7 +29,7 @@ function Fictions() {
                 }
                 uid = user.id;
             }
-            const userData = await GetUserByUID(uid);
+            const userData = await getUserByUID(uid);
             if (!userData) {
                 setErr404(true);
                 return;
