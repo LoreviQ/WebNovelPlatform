@@ -16,25 +16,16 @@ function SubmitFiction() {
 
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
-    const [errors, setErrors] = useState({});
+    const [validated, setValidated] = useState(false);
 
     const formSubmission = async (event) => {
+        const form = event.currentTarget;
         event.preventDefault();
-        if (!formValidation()) {
-            return;
+        if (form.checkValidity() === false) {
+            event.stopPropagation();
         }
+        setValidated(true);
         console.log(title, description);
-    };
-
-    const formValidation = () => {
-        const formErrors = {};
-        // Check if description is at least 80 characters
-        if (description.length < 80) {
-            formErrors.description = "Description must be at least 80 characters long";
-        }
-        setErrors(formErrors);
-        // Form is valid if there are no properties in the errors object
-        return Object.keys(formErrors).length === 0;
     };
 
     useEffect(() => {
@@ -47,7 +38,7 @@ function SubmitFiction() {
                 <h1 className="mt-4">Submit your fiction!</h1>
             </div>
             <hr />
-            <Form onSubmit={formSubmission}>
+            <Form noValidate validated={validated} onSubmit={formSubmission}>
                 <Form.Group className="mb-3" controlId="submitTitle">
                     <Form.Label>Title</Form.Label>
                     <Form.Control
@@ -57,6 +48,7 @@ function SubmitFiction() {
                         onChange={(e) => setTitle(e.target.value)}
                         required
                     />
+                    <Form.Control.Feedback type="invalid">Required</Form.Control.Feedback>
                 </Form.Group>
 
                 <Form.Group className="mb-3" controlId="submitDescription">
@@ -68,7 +60,6 @@ function SubmitFiction() {
                         value={description}
                         onChange={(e) => setDescription(e.target.value)}
                     />
-                    {errors.description && <div style={{ color: "red" }}>{errors.description}</div>}
                 </Form.Group>
                 <div style={{ display: "flex", alignItems: "center" }}>
                     <div style={{ flexGrow: 1 }}></div>
