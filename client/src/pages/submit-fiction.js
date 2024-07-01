@@ -11,13 +11,11 @@ import { useAuth } from "../utils/auth";
 import { GetUserByUID } from "../utils/api";
 
 function SubmitFiction() {
-    const [displayUser, setDisplayUser] = useState(null);
     const { user, awaitUser } = useAuth();
     const { userid } = useParams();
     const navigate = useNavigate();
 
-    const [title, setTitle] = useState("");
-    const [description, setDescription] = useState("");
+    const [formData, setFormData] = useState({ title: "", description: "" });
     const [validated, setValidated] = useState(false);
 
     const formSubmission = async (event) => {
@@ -27,7 +25,7 @@ function SubmitFiction() {
             event.stopPropagation();
         }
         setValidated(true);
-        console.log(title, description);
+        console.log(formData);
     };
 
     useEffect(() => {
@@ -49,8 +47,8 @@ function SubmitFiction() {
                         <Form.Control
                             type="text"
                             placeholder="Title of Fiction"
-                            value={title}
-                            onChange={(e) => setTitle(e.target.value)}
+                            value={formData.title}
+                            onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                             required
                         />
                     </Col>
@@ -66,8 +64,8 @@ function SubmitFiction() {
                             as="textarea"
                             rows={5}
                             placeholder="Summary of your fiction"
-                            value={description}
-                            onChange={(e) => setDescription(e.target.value)}
+                            value={formData.description}
+                            onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                         />
                     </Col>
                 </Form.Group>
