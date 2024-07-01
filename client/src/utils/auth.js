@@ -1,4 +1,9 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import LoadingAnimation from "../components/loading";
+import Login from "../pages/login";
+import Error from "../pages/error";
+import App from "../App";
 
 const AuthContext = createContext();
 
@@ -118,14 +123,56 @@ export function AuthProvider({ children }) {
         localStorage.removeItem("refresh");
     };
 
-    return <AuthContext.Provider value={{ user, gettingUser, login, logout }}>{children}</AuthContext.Provider>;
+    const awaitUser = async () => {
+        // Wait for gettingUser to be false if uid is 'me'
+        await new Promise((resolve) => {
+            const checkUserInterval = setInterval(() => {
+                if (!gettingUser) {
+                    clearInterval(checkUserInterval);
+                    resolve();
+                }
+            }, 5);
+        });
+    };
+
+    const authApi = async (apiFunction, ...args) => {
+        const access = JSON.parse(localStorage.getItem("access"));
+        return apiFunction(access.token, ...args);
+    };
+
+    return (
+        <AuthContext.Provider value={{ user, gettingUser, awaitUser, login, logout, authApi }}>
+            {children}
+        </AuthContext.Provider>
+    );
 }
 
-const PrivateRoute = ({ component: Component, ...rest }) => {
-    const { user } = useAuth();
+const PrivateRoute = ({ children }) => {
+    const { user, gettingUser } = useAuth();
+    if (gettingUser) {
+        return <LoadingAnimation />;
+    }
+    return user ? children : <Login />;
+};
 
-    return <Route {...rest} render={(props) => (user ? <Component {...props} /> : <Redirect to="/login" />)} />;
+const PrivateRouteUserid = ({ children }) => {
+    const { userid } = useParams();
+    const { user, gettingUser } = useAuth();
+    if (gettingUser) {
+        return <LoadingAnimation />;
+    }
+    return userid === user.id ? children : <App Page={Error} pageProps={{ statusCode: 401 }} />;
+};
+
+//automatically applies correct router based on userid
+const UserIDRouter = ({ children }) => {
+    const { userid } = useParams();
+    if (userid === "me") {
+        return <PrivateRoute>{children}</PrivateRoute>;
+    } else {
+        return <PrivateRouteUserid>{children}</PrivateRouteUserid>;
+    }
 };
 
 export const useAuth = () => useContext(AuthContext);
-export default PrivateRoute;
+export { PrivateRoute, PrivateRouteUserid, UserIDRouter };

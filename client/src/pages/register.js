@@ -2,17 +2,8 @@ import React, { useEffect } from "react";
 import MyFooter from "../components/footer";
 import MyHead from "../components/head";
 import { initTheme } from "../utils/theme";
-import { AuthProvider } from "../utils/auth";
 
 function Register() {
-    return (
-        <AuthProvider>
-            <RegisterAuthed />
-        </AuthProvider>
-    );
-}
-
-function RegisterAuthed() {
     useEffect(() => {
         document.title = "Register | WebNovelPlatform";
         initTheme();

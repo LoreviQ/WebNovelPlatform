@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { useAuth } from "../utils/auth";
 import Tab from "react-bootstrap/Tab";
 import Tabs from "react-bootstrap/Tabs";
-import { GetUserByUID } from "../utils/api";
+import { useAuth } from "../utils/auth";
+import { getUserByUID } from "../utils/api";
 import LoadingAnimation from "../components/loading";
+import Error from "./error";
 
 function User() {
-    // get userid from url or logged in user
+    const [err404, setErr404] = useState(false);
     const [displayUser, setDisplayUser] = useState(null);
-    const { user, gettingUser } = useAuth();
-    let { userid } = useParams();
+    const { user, awaitUser } = useAuth();
+    const { userid } = useParams();
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -18,31 +19,27 @@ function User() {
 
         const fetchUserData = async () => {
             let uid = userid;
-
-            // Wait for gettingUser to be false if no userid is provided
-            if (!uid) {
-                await new Promise((resolve) => {
-                    const checkUserInterval = setInterval(() => {
-                        if (!gettingUser) {
-                            clearInterval(checkUserInterval);
-                            resolve();
-                        }
-                    }, 5);
-                });
-
+            if (uid === "me") {
+                await awaitUser();
                 if (!user) {
                     navigate("/login");
                     return;
                 }
                 uid = user.id;
             }
-
-            const userData = await GetUserByUID(uid);
+            const userData = await getUserByUID(uid);
+            if (!userData) {
+                setErr404(true);
+                return;
+            }
             setDisplayUser(userData);
         };
 
         fetchUserData();
-    }, [userid, user, gettingUser, navigate]);
+    }, []);
+    if (err404) {
+        return <Error statusCode={404} />;
+    }
     if (!displayUser) {
         return <LoadingAnimation />;
     }
@@ -60,6 +57,7 @@ function User() {
             <Tabs defaultActiveKey="profile" id="userTabs" className="mb-3">
                 <Tab eventKey="profile" title="Profile">
                     <ul className="list-group list-group-flush">
+                        <li className="list-group-item">UID: {displayUser ? displayUser.id : ""}</li>
                         <li className="list-group-item">Date Joined: {displayUser ? displayUser.created_at : ""}</li>
                         <li className="list-group-item">Last Active: {displayUser ? displayUser.updated_at : ""}</li>
                         <li className="list-group-item">Email: {displayUser ? displayUser.email : ""}</li>

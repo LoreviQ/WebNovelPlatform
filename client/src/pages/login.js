@@ -1,25 +1,19 @@
 import React, { useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import MyFooter from "../components/footer";
 import MyHead from "../components/head";
 import { initTheme } from "../utils/theme";
 import { useAuth } from "../utils/auth";
-import { AuthProvider } from "../utils/auth";
 
 function Login() {
-    return (
-        <AuthProvider>
-            <LoginAuthed />
-        </AuthProvider>
-    );
-}
+    const navigate = useNavigate();
+    const location = useLocation();
+    const { login } = useAuth();
 
-function LoginAuthed() {
     useEffect(() => {
         document.title = "Login | WebNovelPlatform";
         initTheme();
     }, []);
-
-    const { login } = useAuth();
 
     const loginButton = async (event) => {
         event.preventDefault();
@@ -27,7 +21,11 @@ function LoginAuthed() {
         const password = document.getElementById("inputPassword").value;
         const remember_me = document.getElementById("inputRememberPassword").checked;
         if (await login(email, password, remember_me)) {
-            window.location.href = "/";
+            if (location.pathname === "/login") {
+                window.location.href = "/";
+            } else {
+                navigate(0);
+            }
         } else {
             alert("Invalid Username or Password.");
         }
