@@ -135,7 +135,7 @@ export function AuthProvider({ children }) {
         });
     };
 
-    const authApi = (apiFunction, ...args) => {
+    const authApi = async (apiFunction, ...args) => {
         const access = JSON.parse(localStorage.getItem("access"));
         return apiFunction(access.token, ...args);
     };

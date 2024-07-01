@@ -39,7 +39,7 @@ function Fictions() {
             setFictions(fictionData);
         };
         fetchFictions();
-    }, [userid, user, navigate]);
+    }, []);
     if (err404) {
         return <Error statusCode={404} />;
     }

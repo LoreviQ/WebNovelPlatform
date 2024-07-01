@@ -9,11 +9,12 @@ import Row from "react-bootstrap/Row";
 
 import { useAuth } from "../utils/auth";
 import { postFiction } from "../utils/api";
+import { useNavigateUp } from "../utils/navigation";
 
 function SubmitFiction() {
-    const { user, awaitUser } = useAuth();
+    const { user, authApi } = useAuth();
     const { userid } = useParams();
-    const navigate = useNavigate();
+    const navigateUp = useNavigateUp();
 
     const [formData, setFormData] = useState({ title: "", description: "" });
     const [validated, setValidated] = useState(false);
@@ -23,14 +24,20 @@ function SubmitFiction() {
         event.preventDefault();
         if (form.checkValidity() === false) {
             event.stopPropagation();
+        } else {
+            console.log(formData);
+            if (await authApi(postFiction, formData)) {
+                navigateUp();
+            } else {
+                alert("Failed to submit fiction");
+            }
         }
         setValidated(true);
-        console.log(formData);
     };
 
     useEffect(() => {
         document.title = "Submit | WebNovelPlatform";
-    }, [userid, user, navigate]);
+    }, []);
 
     return (
         <div className="container-fluid px-4">
