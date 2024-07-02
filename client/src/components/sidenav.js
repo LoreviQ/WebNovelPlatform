@@ -110,12 +110,14 @@ function MySideNav() {
                         </Collapse>
                     </Nav>
                 </div>
+                {/* FOOTER
                 <div className="sb-sidenav-footer">
                     <div className="small" id="loginStatusText">
                         Logged in as:
                     </div>
                     <div id="userStatus">{gettingUser ? "..." : user ? user.name : "Not logged in"}</div>
                 </div>
+                */}
             </Nav>
         </div>
     );

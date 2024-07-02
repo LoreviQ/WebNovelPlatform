@@ -7096,11 +7096,15 @@ textarea.form-control-lg {
   --bs-aspect-ratio: 42.8571428571%;
 }
 
-.fixed-top, .sb-nav-fixed #layoutSidenav #layoutSidenav_nav, .sb-nav-fixed .sb-topnav {
+.fixed-top, .sb-nav-fixed .sb-topnav {
   position: fixed;
   top: 0;
   right: 0;
   left: 0;
+  z-index: 1030;
+}
+
+.sb-nav-fixed #layoutSidenav #layoutSidenav_nav{
   z-index: 1030;
 }
 
@@ -12129,6 +12133,11 @@ body {
 
 #layoutSidenav {
   display: flex;
+  overflow: hidden;
+  padding: 0;
+}
+#layoutSidenav_nav {
+  border-right: 1px solid var(--bs-secondary-bg);
 }
 #layoutSidenav #layoutSidenav_nav {
   flex-basis: 225px;
@@ -12198,7 +12207,6 @@ body {
   overflow-y: auto;
 }
 .sb-nav-fixed #layoutSidenav #layoutSidenav_content {
-  padding-left: 225px;
   top: 56px;
 }
 
@@ -12291,7 +12299,6 @@ body {
 .sb-sidenav-dark {
   background-color: #212529;
   color: rgba(255, 255, 255, 0.5);
-  border-right: 1px solid #343a40; /* divider color */
 }
 .sb-sidenav-dark .sb-sidenav-menu .sb-sidenav-menu-heading {
   color: rgba(255, 255, 255, 0.25);
@@ -12317,6 +12324,7 @@ body {
 .sb-sidenav-dark .sb-sidenav-footer {
   background-color: #343a40;
 }
+
 
 .sb-sidenav-light {
   background-color: #f8f9fa;
