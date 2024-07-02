@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import Container from "react-bootstrap/esm/Container";
 import Button from "react-bootstrap/Button";
 import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
@@ -39,9 +40,9 @@ function SubmitFiction() {
     }, []);
 
     return (
-        <div className="container-fluid px-4">
+        <Container fluid className="my-4 ms-2">
             <div style={{ display: "flex", alignItems: "center" }}>
-                <h1 className="mt-4">Submit your fiction!</h1>
+                <h1>Submit your fiction!</h1>
             </div>
             <hr />
             <Form noValidate validated={validated} onSubmit={formSubmission}>
@@ -85,7 +86,7 @@ function SubmitFiction() {
                     </Button>
                 </div>
             </Form>
-        </div>
+        </Container>
     );
 }
 

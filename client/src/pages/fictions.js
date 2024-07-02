@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import Container from "react-bootstrap/esm/Container";
 import Button from "react-bootstrap/Button";
 import ListGroup from "react-bootstrap/ListGroup";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -51,19 +52,19 @@ function Fictions() {
         return <LoadingAnimation />;
     }
     return (
-        <div className="container-fluid px-4">
+        <Container fluid className="my-4 ms-2">
             <div style={{ display: "flex", alignItems: "center" }}>
                 <img
-                    className="mt-4 me-4"
+                    className="me-4"
                     src={`${process.env.PUBLIC_URL}/profile-default.webp`}
                     alt="ProfilePicture"
                     style={{ width: "100px", height: "100px" }}
                 />
-                <h1 className="mt-4">{displayUser ? displayUser.name : ""}'s Fictions</h1>
+                <h1>{displayUser ? displayUser.name : ""}'s Fictions</h1>
                 {displayUser && user && displayUser.id === user.id ? (
                     <>
                         <div style={{ flexGrow: 1 }}></div>
-                        <Button className="mt-4 me-4" variant="theme" onClick={() => navigate("submit")}>
+                        <Button className="me-4" variant="theme" onClick={() => navigate("submit")}>
                             <div style={{ display: "flex", alignItems: "center" }}>
                                 <FontAwesomeIcon className="ms-1 mt-1 me-2" icon={faPlus} size="2x" />
                                 <h2 className="mt-2 me-1">Submit</h2>
@@ -95,7 +96,7 @@ function Fictions() {
                     ))}
                 </ListGroup>
             )}
-        </div>
+        </Container>
     );
 }
 

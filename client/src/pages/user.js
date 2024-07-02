@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import Container from "react-bootstrap/esm/Container";
 import Tab from "react-bootstrap/Tab";
 import Tabs from "react-bootstrap/Tabs";
 import { useAuth } from "../utils/auth";
@@ -44,14 +45,10 @@ function User() {
         return <LoadingAnimation />;
     }
     return (
-        <div className="container-fluid px-4">
+        <Container fluid className="my-4 ms-2">
             <div style={{ display: "flex", alignItems: "center" }}>
-                <img
-                    className="mt-4 me-4"
-                    src={`${process.env.PUBLIC_URL}/profile-default.webp`}
-                    alt="ProfilePicture"
-                />
-                <h1 className="mt-4">{displayUser ? displayUser.name : ""}</h1>
+                <img className="me-4" src={`${process.env.PUBLIC_URL}/profile-default.webp`} alt="ProfilePicture" />
+                <h1>{displayUser ? displayUser.name : ""}</h1>
             </div>
             <hr />
             <Tabs defaultActiveKey="profile" id="userTabs" className="mb-3">
@@ -67,7 +64,7 @@ function User() {
                     Tab content for Settings
                 </Tab>
             </Tabs>
-        </div>
+        </Container>
     );
 }
 
