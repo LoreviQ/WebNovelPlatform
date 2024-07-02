@@ -12214,10 +12214,16 @@ body {
   top: 56px;
   z-index: 1038;
   background-color: transparent;
+  pointer-events: none;
+}
+
+.sb-nav-fixed #layoutSidenav #layoutSidenav_content * {
+  pointer-events: auto;
 }
 
 .sb-nav-fixed #layoutSidenav #layoutSidenav_content #content_main {
   background-color: var(--bs-body-bg);
+  height: 100%;
 }
 
 #layoutError {

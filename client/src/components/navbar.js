@@ -38,7 +38,8 @@ function MyNavbar({ toggleSideNav }) {
             }}
         >
             {children}
-            <FontAwesomeIcon icon={faUser} />
+            {gettingUser ? "..." : user ? user.name : "Not logged in"}
+            <FontAwesomeIcon className="ms-3" icon={faUser} />
         </a>
     ));
 
@@ -48,15 +49,10 @@ function MyNavbar({ toggleSideNav }) {
                 <Navbar.Brand className="ps-3" href="/">
                     WebNovelPlatform
                 </Navbar.Brand>
-                <Button
-                    variant="link"
-                    size="sm"
-                    className="order-1 order-lg-0 me-4 me-lg-0"
-                    id="sidebarToggle"
-                    onClick={toggleSidebar}
-                >
+                <Button variant="link" size="sm" className=" me-4 me-lg-0" id="sidebarToggle" onClick={toggleSidebar}>
                     <FontAwesomeIcon icon={faBars} />
                 </Button>
+                <div style={{ flexGrow: 1 }}></div>
                 <Form className="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
                     <InputGroup>
                         <FormControl

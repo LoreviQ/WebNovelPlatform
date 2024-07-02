@@ -15,7 +15,6 @@ function MySideNav() {
     const toggleSegment = (segment) => {
         setOpenSegments((prev) => ({ ...prev, [segment]: !prev[segment] }));
     };
-    const { user, gettingUser } = useAuth();
     return (
         <div id="layoutSidenav_nav">
             <Nav className="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
@@ -110,14 +109,6 @@ function MySideNav() {
                         </Collapse>
                     </Nav>
                 </div>
-                {/*
-                <div className="sb-sidenav-footer">
-                    <div className="small" id="loginStatusText">
-                        Logged in as:
-                    </div>
-                    <div id="userStatus">{gettingUser ? "..." : user ? user.name : "Not logged in"}</div>
-                </div>
-                */}
             </Nav>
         </div>
     );
