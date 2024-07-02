@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import Container from "react-bootstrap/Container";
 import Navbar from "react-bootstrap/Navbar";
 import Form from "react-bootstrap/Form";
 import FormControl from "react-bootstrap/FormControl";
@@ -10,10 +11,11 @@ import { faBars, faMoon, faSun, faSearch, faUser } from "@fortawesome/free-solid
 import { toggleTheme } from "../utils/theme";
 import { useAuth } from "../utils/auth";
 
-function MyNavbar() {
+function MyNavbar({ toggleSideNav }) {
     const toggleSidebar = () => {
         const isToggled = document.body.classList.toggle("sb-sidenav-toggled");
         localStorage.setItem("sb|sidebar-toggle", isToggled);
+        toggleSideNav;
     };
     const [theme, setTheme] = useState("dark");
     const { user, gettingUser, logout } = useAuth();
@@ -42,52 +44,58 @@ function MyNavbar() {
 
     return (
         <Navbar bg="dark" variant="dark" expand="lg" className="sb-topnav navbar navbar-expand navbar-dark bg-dark">
-            <Navbar.Brand className="ps-3" href="/">
-                WebNovelPlatform
-            </Navbar.Brand>
-            <Button
-                variant="link"
-                size="sm"
-                className="order-1 order-lg-0 me-4 me-lg-0"
-                id="sidebarToggle"
-                onClick={toggleSidebar}
-            >
-                <FontAwesomeIcon icon={faBars} />
-            </Button>
-            <Form className="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
-                <InputGroup>
-                    <FormControl
-                        type="text"
-                        placeholder="Search for..."
-                        aria-label="Search for..."
-                        aria-describedby="btnNavbarSearch"
-                    />
-                    <Button id="btnNavbarSearch" type="button">
-                        <FontAwesomeIcon icon={faSearch} />
-                    </Button>
-                </InputGroup>
-            </Form>
-            <Button variant="link" size="sm" id="themeToggle" className="me-3" onClick={localToggleTheme}>
-                <FontAwesomeIcon icon={theme === "dark" ? faMoon : faSun} id="themeIcon" />
-            </Button>
-            <ul className="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
-                {user || gettingUser ? (
-                    <Dropdown>
-                        <Dropdown.Toggle as={CustomToggle} id="dropdown-basic" drop="down-centered"></Dropdown.Toggle>
+            <Container fluid="xl">
+                <Navbar.Brand className="ps-3" href="/">
+                    WebNovelPlatform
+                </Navbar.Brand>
+                <Button
+                    variant="link"
+                    size="sm"
+                    className="order-1 order-lg-0 me-4 me-lg-0"
+                    id="sidebarToggle"
+                    onClick={toggleSidebar}
+                >
+                    <FontAwesomeIcon icon={faBars} />
+                </Button>
+                <Form className="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
+                    <InputGroup>
+                        <FormControl
+                            type="text"
+                            placeholder="Search for..."
+                            aria-label="Search for..."
+                            aria-describedby="btnNavbarSearch"
+                        />
+                        <Button id="btnNavbarSearch" type="button">
+                            <FontAwesomeIcon icon={faSearch} />
+                        </Button>
+                    </InputGroup>
+                </Form>
+                <Button variant="link" size="sm" id="themeToggle" className="me-3" onClick={localToggleTheme}>
+                    <FontAwesomeIcon icon={theme === "dark" ? faMoon : faSun} id="themeIcon" />
+                </Button>
+                <ul className="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
+                    {user || gettingUser ? (
+                        <Dropdown>
+                            <Dropdown.Toggle
+                                as={CustomToggle}
+                                id="dropdown-basic"
+                                drop="down-centered"
+                            ></Dropdown.Toggle>
 
-                        <Dropdown.Menu align="end">
-                            <Dropdown.Item href="/user/me">My Profile</Dropdown.Item>
-                            <Dropdown.Item href="/settings">Settings</Dropdown.Item>
-                            <Dropdown.Divider />
-                            <Dropdown.Item onClick={logout}>Logout</Dropdown.Item>
-                        </Dropdown.Menu>
-                    </Dropdown>
-                ) : (
-                    <Button variant="primary" href="/login" className="me-3">
-                        Log In
-                    </Button>
-                )}
-            </ul>
+                            <Dropdown.Menu align="end">
+                                <Dropdown.Item href="/user/me">My Profile</Dropdown.Item>
+                                <Dropdown.Item href="/settings">Settings</Dropdown.Item>
+                                <Dropdown.Divider />
+                                <Dropdown.Item onClick={logout}>Logout</Dropdown.Item>
+                            </Dropdown.Menu>
+                        </Dropdown>
+                    ) : (
+                        <Button variant="primary" href="/login" className="me-3">
+                            Log In
+                        </Button>
+                    )}
+                </ul>
+            </Container>
         </Navbar>
     );
 }
