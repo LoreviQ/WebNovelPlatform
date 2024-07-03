@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Container from "react-bootstrap/Container";
 import Navbar from "react-bootstrap/Navbar";
 import Form from "react-bootstrap/Form";
@@ -12,14 +12,14 @@ import { toggleTheme } from "../utils/theme";
 import { useAuth } from "../utils/auth";
 
 function MyNavbar({ toggleSideNav }) {
+    const { user, gettingUser, logout } = useAuth();
+    const [theme, setTheme] = useState("dark");
+
     const toggleSidebar = () => {
         const isToggled = document.body.classList.toggle("sb-sidenav-toggled");
         localStorage.setItem("sb|sidebar-toggle", isToggled);
         toggleSideNav;
     };
-    const [theme, setTheme] = useState("dark");
-    const { user, gettingUser, logout } = useAuth();
-
     const localToggleTheme = () => {
         var newTheme = toggleTheme();
         setTheme(newTheme);
@@ -49,9 +49,10 @@ function MyNavbar({ toggleSideNav }) {
                 <Navbar.Brand className="ps-3" href="/">
                     WebNovelPlatform
                 </Navbar.Brand>
-                <Button variant="link" size="sm" className=" me-4 me-lg-0" id="sidebarToggle" onClick={toggleSidebar}>
+                <Button variant="link" size="sm" className="me-4 me-lg-0" id="sidebarToggle" onClick={toggleSidebar}>
                     <FontAwesomeIcon icon={faBars} />
                 </Button>
+
                 <div style={{ flexGrow: 1 }}></div>
                 <Form className="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
                     <InputGroup>

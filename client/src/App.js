@@ -25,8 +25,8 @@ function App({ Page, pageProps }) {
                         <main id="content_main">{React.createElement(Page, pageProps)}</main>
                     </div>
                 </Container>
-                <MyFooter />
             </div>
+            <MyFooter />
         </>
     );
 }
