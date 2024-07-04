@@ -5,7 +5,14 @@ import Button from "react-bootstrap/Button";
 import ListGroup from "react-bootstrap/ListGroup";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus, faCircleCheck, faPenToSquare, faTrashCan } from "@fortawesome/free-solid-svg-icons";
+import {
+    faPlus,
+    faCircleCheck as faCircleCheckSolid,
+    faPenToSquare,
+    faTrashCan,
+} from "@fortawesome/free-solid-svg-icons";
+import { faCircleCheck as faCircleCheckRegular } from "@fortawesome/free-regular-svg-icons";
+
 import { useAuth } from "../utils/auth";
 import { getUserByUID, getFictionsByAuthorID, getMyFictions, publishFiction } from "../utils/api";
 import LoadingAnimation from "../components/loading";
@@ -22,6 +29,7 @@ function Fictions() {
 
     const publishButton = async (fictionID) => {
         await authApi(publishFiction, fictionID);
+        navigate(0);
     };
 
     useEffect(() => {
@@ -121,7 +129,11 @@ function Fictions() {
                                                 publishButton(fiction.id);
                                             }}
                                         >
-                                            <FontAwesomeIcon icon={faCircleCheck} inverse={fiction.published === 1} />
+                                            {fiction.published ? (
+                                                <FontAwesomeIcon icon={faCircleCheckRegular} />
+                                            ) : (
+                                                <FontAwesomeIcon icon={faCircleCheckSolid} />
+                                            )}
                                         </Button>
                                         <Button
                                             className="list-item-buttons"
@@ -130,6 +142,10 @@ function Fictions() {
                                             variant="warning"
                                             size="lg"
                                             title="Edit Fiction"
+                                            onClick={(event) => {
+                                                event.stopPropagation();
+                                                navigate("/fictions/" + fiction.id + "/edit");
+                                            }}
                                         >
                                             <FontAwesomeIcon icon={faPenToSquare} />
                                         </Button>
