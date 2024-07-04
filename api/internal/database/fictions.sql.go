@@ -82,18 +82,60 @@ func (q *Queries) GetFictionById(ctx context.Context, id string) (Fiction, error
 }
 
 const getFictionsByAuthorId = `-- name: GetFictionsByAuthorId :many
-SELECT id, title, authorid, description, created_at, updated_at, published_at, published FROM fictions WHERE authorid = ? and published = ?
+SELECT id, title, authorid, description, created_at, updated_at, published_at, published FROM fictions WHERE authorid = ?
 LIMIT ?
 `
 
 type GetFictionsByAuthorIdParams struct {
+	Authorid string
+	Limit    int64
+}
+
+func (q *Queries) GetFictionsByAuthorId(ctx context.Context, arg GetFictionsByAuthorIdParams) ([]Fiction, error) {
+	rows, err := q.db.QueryContext(ctx, getFictionsByAuthorId, arg.Authorid, arg.Limit)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Fiction
+	for rows.Next() {
+		var i Fiction
+		if err := rows.Scan(
+			&i.ID,
+			&i.Title,
+			&i.Authorid,
+			&i.Description,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.PublishedAt,
+			&i.Published,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getFictionsByAuthorIdIfPublished = `-- name: GetFictionsByAuthorIdIfPublished :many
+SELECT id, title, authorid, description, created_at, updated_at, published_at, published FROM fictions WHERE authorid = ? and published = ?
+LIMIT ?
+`
+
+type GetFictionsByAuthorIdIfPublishedParams struct {
 	Authorid  string
 	Published int64
 	Limit     int64
 }
 
-func (q *Queries) GetFictionsByAuthorId(ctx context.Context, arg GetFictionsByAuthorIdParams) ([]Fiction, error) {
-	rows, err := q.db.QueryContext(ctx, getFictionsByAuthorId, arg.Authorid, arg.Published, arg.Limit)
+func (q *Queries) GetFictionsByAuthorIdIfPublished(ctx context.Context, arg GetFictionsByAuthorIdIfPublishedParams) ([]Fiction, error) {
+	rows, err := q.db.QueryContext(ctx, getFictionsByAuthorIdIfPublished, arg.Authorid, arg.Published, arg.Limit)
 	if err != nil {
 		return nil, err
 	}

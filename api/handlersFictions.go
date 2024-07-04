@@ -256,7 +256,7 @@ func (cfg *apiConfig) getFictionsByUser(w http.ResponseWriter, r *http.Request) 
 	}
 
 	// GET FICTIONS
-	fictions, err := cfg.DB.GetFictionsByAuthorId(r.Context(), database.GetFictionsByAuthorIdParams{
+	fictions, err := cfg.DB.GetFictionsByAuthorIdIfPublished(r.Context(), database.GetFictionsByAuthorIdIfPublishedParams{
 		Authorid:  id,
 		Published: 1,
 		Limit:     20,
