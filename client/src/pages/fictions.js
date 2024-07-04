@@ -5,7 +5,7 @@ import Button from "react-bootstrap/Button";
 import ListGroup from "react-bootstrap/ListGroup";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus, faCheck, faPenToSquare, faTrashCan } from "@fortawesome/free-solid-svg-icons";
+import { faPlus, faCircleCheck, faPenToSquare, faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import { useAuth } from "../utils/auth";
 import { getUserByUID, getFictionsByAuthorID, getMyFictions } from "../utils/api";
 import LoadingAnimation from "../components/loading";
@@ -110,9 +110,10 @@ function Fictions() {
                                             type="button"
                                             variant="success"
                                             size="lg"
-                                            title="Publish Fiction"
+                                            title={fiction.published ? "Fiction Published" : "Publish Fiction"}
+                                            disabled={fiction.published === 1}
                                         >
-                                            <FontAwesomeIcon icon={faCheck} />
+                                            <FontAwesomeIcon icon={faCircleCheck} inverse={fiction.published === 1} />
                                         </Button>
                                         <Button
                                             className="list-item-buttons"
