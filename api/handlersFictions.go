@@ -68,6 +68,7 @@ func (cfg *apiConfig) getFiction(w http.ResponseWriter, r *http.Request) {
 		CreatedAt   string         `json:"created_at"`
 		UpdatedAt   string         `json:"updated_at"`
 		PublishedAt sql.NullString `json:"published_at"`
+		Published   int64          `json:"published"`
 	}
 	respondWithJSON(w, http.StatusOK, response{
 		ID:          fiction.ID,
@@ -77,6 +78,7 @@ func (cfg *apiConfig) getFiction(w http.ResponseWriter, r *http.Request) {
 		CreatedAt:   fiction.CreatedAt,
 		UpdatedAt:   fiction.UpdatedAt,
 		PublishedAt: fiction.PublishedAt,
+		Published:   fiction.Published,
 	})
 }
 

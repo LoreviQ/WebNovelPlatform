@@ -179,13 +179,13 @@ const PrivateRouteFictionId = ({ children }) => {
     const { user, gettingUser } = useAuth(); // Get user from AuthContext
     const { fictionid } = useParams(); // Get fictionid from URL
     const [gettingAuthor, setGettingAuthor] = useState(true);
-    const [authorized, setAuthorized] = useState(false);
+    const [fiction, setFiction] = useState(null);
 
     useEffect(() => {
         const checkAuthorization = async () => {
-            const fiction = await getFictionByID(fictionid);
-            if (fiction && fiction.authorid === user.id) {
-                setAuthorized(true);
+            const fictionData = await getFictionByID(fictionid);
+            if (fictionData) {
+                setFiction(fictionData);
             }
             setGettingAuthor(false);
         };
@@ -195,7 +195,10 @@ const PrivateRouteFictionId = ({ children }) => {
     if (gettingUser || gettingAuthor) {
         return <App Page={LoadingAnimation} />;
     }
-    return authorized ? children : <App Page={Error} pageProps={{ statusCode: 401 }} />;
+    if (!fiction) {
+        return <App Page={Error} pageProps={{ statusCode: 404 }} />;
+    }
+    return fiction.authorid === user.id ? children : <App Page={Error} pageProps={{ statusCode: 401 }} />;
 };
 
 export const useAuth = () => useContext(AuthContext);

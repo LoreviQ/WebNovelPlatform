@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
+import { format } from "date-fns";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import Container from "react-bootstrap/esm/Container";
@@ -8,44 +9,60 @@ import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 
-import { useAuth } from "../utils/auth";
-import { postFiction } from "../utils/api";
+import { getFictionByID } from "../utils/api";
 import { useNavigateUp } from "../utils/navigation";
 
 function EditFiction() {
-    const { user, authApi } = useAuth();
-    const { userid } = useParams();
+    const { fictionid } = useParams();
     const navigateUp = useNavigateUp();
 
-    const [formData, setFormData] = useState({ title: "", description: "" });
+    const [formData, setFormData] = useState({ id: "", title: "", description: "", publishedAt: Date() });
     const [validated, setValidated] = useState(false);
 
-    const formSubmission = async (event) => {
-        const form = event.currentTarget;
-        event.preventDefault();
-        if (form.checkValidity() === false) {
-            event.stopPropagation();
-        } else {
-            if (await authApi(postFiction, formData)) {
-                navigateUp();
-            } else {
-                alert("Failed to submit fiction");
-            }
-        }
-        setValidated(true);
-    };
-
     useEffect(() => {
-        document.title = "Submit | WebNovelPlatform";
+        document.title = "Edit | WebNovelPlatform";
+
+        const fetchFictionData = async () => {
+            const fictionData = await getFictionByID(fictionid);
+            console.log(fictionData);
+            if (!fictionData) {
+                alert("Failed to fetch fiction data");
+                navigateUp();
+                return;
+            }
+            setFormData({
+                id: fictionData.id,
+                title: fictionData.title,
+                description: fictionData.description,
+                publishedAt: new Date(fictionData.published_at.String),
+            });
+        };
+
+        fetchFictionData();
     }, []);
 
     return (
         <Container fluid className="my-4 ms-2">
             <div style={{ display: "flex", alignItems: "center" }}>
-                <h1>Submit your fiction!</h1>
+                <h1>{formData.title}</h1>
             </div>
             <hr />
-            <Form noValidate validated={validated} onSubmit={formSubmission}>
+            <Form noValidate validated={validated}>
+                <Form.Group as={Row} className="mb-3" controlId="submitTitle">
+                    <Form.Label column sm={1}>
+                        Title
+                    </Form.Label>
+                    <Col sm={11}>
+                        <Form.Control
+                            type="text"
+                            placeholder="fictionid"
+                            value={formData.id}
+                            onChange={(e) => setFormData({ ...formData, id: e.target.value })}
+                            required
+                        />
+                    </Col>
+                    <Form.Control.Feedback type="invalid">Required</Form.Control.Feedback>
+                </Form.Group>
                 <Form.Group as={Row} className="mb-3" controlId="submitTitle">
                     <Form.Label column sm={1}>
                         Title
@@ -61,7 +78,6 @@ function EditFiction() {
                     </Col>
                     <Form.Control.Feedback type="invalid">Required</Form.Control.Feedback>
                 </Form.Group>
-
                 <Form.Group as={Row} className="mb-3" controlId="submitDescription">
                     <Form.Label column sm={1}>
                         Description
@@ -76,12 +92,26 @@ function EditFiction() {
                         />
                     </Col>
                 </Form.Group>
+                <Form.Group as={Row} className="mb-3" controlId="submitDescription">
+                    <Form.Label column sm={2}>
+                        Published On
+                    </Form.Label>
+                    <Col sm={10}>
+                        <Form.Control
+                            disabled
+                            type="text"
+                            rows={5}
+                            placeholder="Not Published"
+                            value={format(formData.publishedAt, "do MMMM yyyy")}
+                        />
+                    </Col>
+                </Form.Group>
                 <div style={{ display: "flex", alignItems: "center" }}>
                     <div style={{ flexGrow: 1 }}></div>
                     <Button type="submit" className="mt-4 me-4" variant="theme">
                         <div style={{ display: "flex", alignItems: "center" }}>
                             <FontAwesomeIcon className="ms-1 mt-1 me-2" icon={faPlus} size="2x" />
-                            <h2 className="mt-2 me-1">Submit</h2>
+                            <h2 className="mt-2 me-1">Update</h2>
                         </div>
                     </Button>
                 </div>

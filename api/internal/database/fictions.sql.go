@@ -81,6 +81,26 @@ func (q *Queries) GetFictionById(ctx context.Context, id string) (Fiction, error
 	return i, err
 }
 
+const getFictionByIdIfPublished = `-- name: GetFictionByIdIfPublished :one
+SELECT id, title, authorid, description, created_at, updated_at, published_at, published FROM fictions WHERE id = ? and published = 1
+`
+
+func (q *Queries) GetFictionByIdIfPublished(ctx context.Context, id string) (Fiction, error) {
+	row := q.db.QueryRowContext(ctx, getFictionByIdIfPublished, id)
+	var i Fiction
+	err := row.Scan(
+		&i.ID,
+		&i.Title,
+		&i.Authorid,
+		&i.Description,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.PublishedAt,
+		&i.Published,
+	)
+	return i, err
+}
+
 const getFictionsByAuthorId = `-- name: GetFictionsByAuthorId :many
 SELECT id, title, authorid, description, created_at, updated_at, published_at, published FROM fictions WHERE authorid = ?
 LIMIT ?
