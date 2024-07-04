@@ -58,4 +58,19 @@ async function postFiction(accessToken, fictionData) {
     return false;
 }
 
-export { getUserByUID, getFictionsByAuthorID, getMyFictions, postFiction };
+// Publishes the fiction with the given ID
+async function publishFiction(accessToken, fictionID) {
+    const response = await fetch(apiBaseUrl + "/v1/fictions/" + fictionID + "/publish", {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + accessToken,
+        },
+    });
+    if (response.status === 200) {
+        return true;
+    }
+    return false;
+}
+
+export { getUserByUID, getFictionsByAuthorID, getMyFictions, postFiction, publishFiction };

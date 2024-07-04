@@ -7,7 +7,7 @@ import ButtonGroup from "react-bootstrap/ButtonGroup";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faCircleCheck, faPenToSquare, faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import { useAuth } from "../utils/auth";
-import { getUserByUID, getFictionsByAuthorID, getMyFictions } from "../utils/api";
+import { getUserByUID, getFictionsByAuthorID, getMyFictions, publishFiction } from "../utils/api";
 import LoadingAnimation from "../components/loading";
 import Error from "./error";
 
@@ -19,6 +19,10 @@ function Fictions() {
     const { user, awaitUser, authApi } = useAuth();
     const { userid } = useParams();
     const navigate = useNavigate();
+
+    const publishButton = async (fictionID) => {
+        await authApi(publishFiction, fictionID);
+    };
 
     useEffect(() => {
         document.title = "Fictions | WebNovelPlatform";
@@ -112,6 +116,10 @@ function Fictions() {
                                             size="lg"
                                             title={fiction.published ? "Fiction Published" : "Publish Fiction"}
                                             disabled={fiction.published === 1}
+                                            onClick={(event) => {
+                                                event.stopPropagation();
+                                                publishButton(fiction.id);
+                                            }}
                                         >
                                             <FontAwesomeIcon icon={faCircleCheck} inverse={fiction.published === 1} />
                                         </Button>

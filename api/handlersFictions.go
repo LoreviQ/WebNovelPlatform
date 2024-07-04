@@ -297,9 +297,8 @@ func (cfg *apiConfig) getFictionsByUser(w http.ResponseWriter, r *http.Request) 
 func (cfg *apiConfig) getMyFictions(w http.ResponseWriter, r *http.Request, user database.User) {
 	// GET FICTIONS
 	fictions, err := cfg.DB.GetFictionsByAuthorId(r.Context(), database.GetFictionsByAuthorIdParams{
-		Authorid:  user.ID,
-		Published: 0,
-		Limit:     20,
+		Authorid: user.ID,
+		Limit:    20,
 	})
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, "Couldn't get fictions")
