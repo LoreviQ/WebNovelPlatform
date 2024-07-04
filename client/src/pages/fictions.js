@@ -27,9 +27,25 @@ function Fictions() {
     const { userid } = useParams();
     const navigate = useNavigate();
 
+    // Publishes the provided fiction
     const publishButton = async (fictionID) => {
-        await authApi(publishFiction, fictionID);
-        navigate(0);
+        const isConfirmed = window.confirm("Are you sure you want to publish this fiction?");
+
+        if (isConfirmed) {
+            await authApi(publishFiction, fictionID);
+            navigate(0); // Reloads the current page
+        }
+    };
+    // Deletes the provided fiction
+    const deleteButton = async (fictionID) => {
+        const userInput = window.prompt(`Please type the fiction ID (${fictionID}) to confirm deletion:`);
+
+        if (userInput === fictionID.toString()) {
+            await authApi(publishFiction, fictionID);
+            navigate(0); // Reloads the current page
+        } else if (userInput) {
+            window.alert("The fiction ID does not match.");
+        }
     };
 
     useEffect(() => {
@@ -156,6 +172,10 @@ function Fictions() {
                                             variant="danger"
                                             size="lg"
                                             title="Delete Fiction"
+                                            onClick={(event) => {
+                                                event.stopPropagation();
+                                                deleteButton(fiction.id);
+                                            }}
                                         >
                                             <FontAwesomeIcon icon={faTrashCan} />
                                         </Button>
