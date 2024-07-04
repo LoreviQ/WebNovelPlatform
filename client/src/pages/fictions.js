@@ -3,14 +3,16 @@ import { useParams, useNavigate } from "react-router-dom";
 import Container from "react-bootstrap/esm/Container";
 import Button from "react-bootstrap/Button";
 import ListGroup from "react-bootstrap/ListGroup";
+import ButtonGroup from "react-bootstrap/ButtonGroup";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faPlus, faCheck, faPenToSquare, faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import { useAuth } from "../utils/auth";
 import { getUserByUID, getFictionsByAuthorID, getMyFictions } from "../utils/api";
 import LoadingAnimation from "../components/loading";
 import Error from "./error";
 
 function Fictions() {
+    const [loggedInUser, setLoggedInUser] = useState(false);
     const [err404, setErr404] = useState(false);
     const [displayUser, setDisplayUser] = useState(null);
     const [fictions, setFictions] = useState(null);
@@ -24,8 +26,11 @@ function Fictions() {
         const fetchDisplayData = async () => {
             let uid = userid;
             let fictionData;
+            await awaitUser();
+            if (uid === "me" || (user && uid === user.id)) {
+                setLoggedInUser(true);
+            }
             if (uid === "me") {
-                await awaitUser();
                 if (!user) {
                     navigate("/login");
                     return;
@@ -79,7 +84,13 @@ function Fictions() {
             ) : (
                 <ListGroup as="ul">
                     {fictions.map((fiction) => (
-                        <ListGroup.Item as="li" key={fiction.id}>
+                        <ListGroup.Item
+                            as="li"
+                            key={fiction.id}
+                            action
+                            onClick={() => navigate(`/fictions/${fiction.id}`)}
+                            style={{ padding: 0 }}
+                        >
                             <div style={{ display: "flex", alignItems: "center" }}>
                                 <img
                                     className="me-4"
@@ -91,6 +102,40 @@ function Fictions() {
                                     <div className="fw-bold">{fiction.title}</div>
                                     <div className="ms-2">{fiction.description}</div>
                                 </div>
+                                {loggedInUser ? (
+                                    <ButtonGroup style={{ height: "100px", width: "150px" }} aria-label="ownerTools">
+                                        <Button
+                                            className="list-item-buttons"
+                                            id="fictionPublish"
+                                            type="button"
+                                            variant="success"
+                                            size="lg"
+                                            title="Publish Fiction"
+                                        >
+                                            <FontAwesomeIcon icon={faCheck} />
+                                        </Button>
+                                        <Button
+                                            className="list-item-buttons"
+                                            id="fictionEdit"
+                                            type="button"
+                                            variant="warning"
+                                            size="lg"
+                                            title="Edit Fiction"
+                                        >
+                                            <FontAwesomeIcon icon={faPenToSquare} />
+                                        </Button>
+                                        <Button
+                                            className="list-item-buttons"
+                                            id="fictionDelete"
+                                            type="button"
+                                            variant="danger"
+                                            size="lg"
+                                            title="Delete Fiction"
+                                        >
+                                            <FontAwesomeIcon icon={faTrashCan} />
+                                        </Button>
+                                    </ButtonGroup>
+                                ) : null}
                             </div>
                         </ListGroup.Item>
                     ))}
