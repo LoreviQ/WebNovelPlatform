@@ -49,10 +49,10 @@ function EditFiction() {
             <hr />
             <Form noValidate validated={validated}>
                 <Form.Group as={Row} className="mb-3" controlId="submitTitle">
-                    <Form.Label column sm={1}>
-                        Title
+                    <Form.Label column sm={2}>
+                        <h5>UID</h5>
                     </Form.Label>
-                    <Col sm={11}>
+                    <Col sm={10}>
                         <Form.Control
                             type="text"
                             placeholder="fictionid"
@@ -60,14 +60,15 @@ function EditFiction() {
                             onChange={(e) => setFormData({ ...formData, id: e.target.value })}
                             required
                         />
+                        <div className="ms-2 mt-1">Unique ID for fiction. Appears in URL. Max 20 characters.</div>
                     </Col>
                     <Form.Control.Feedback type="invalid">Required</Form.Control.Feedback>
                 </Form.Group>
                 <Form.Group as={Row} className="mb-3" controlId="submitTitle">
-                    <Form.Label column sm={1}>
-                        Title
+                    <Form.Label column sm={2}>
+                        <h5>Title</h5>
                     </Form.Label>
-                    <Col sm={11}>
+                    <Col sm={10}>
                         <Form.Control
                             type="text"
                             placeholder="Title of Fiction"
@@ -79,10 +80,10 @@ function EditFiction() {
                     <Form.Control.Feedback type="invalid">Required</Form.Control.Feedback>
                 </Form.Group>
                 <Form.Group as={Row} className="mb-3" controlId="submitDescription">
-                    <Form.Label column sm={1}>
-                        Description
+                    <Form.Label column sm={2}>
+                        <h5>Description</h5>
                     </Form.Label>
-                    <Col sm={11}>
+                    <Col sm={10}>
                         <Form.Control
                             as="textarea"
                             rows={5}
@@ -94,7 +95,7 @@ function EditFiction() {
                 </Form.Group>
                 <Form.Group as={Row} className="mb-3" controlId="submitDescription">
                     <Form.Label column sm={2}>
-                        Published On
+                        <h5>Published On</h5>
                     </Form.Label>
                     <Col sm={10}>
                         <Form.Control
