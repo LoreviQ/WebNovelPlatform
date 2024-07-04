@@ -4,6 +4,7 @@ import LoadingAnimation from "../components/loading";
 import Login from "../pages/login";
 import Error from "../pages/error";
 import App from "../App";
+import { getFictionByID } from "./api";
 
 const AuthContext = createContext();
 
@@ -150,16 +151,16 @@ export function AuthProvider({ children }) {
 const PrivateRoute = ({ children }) => {
     const { user, gettingUser } = useAuth();
     if (gettingUser) {
-        return <LoadingAnimation />;
+        return <App Page={LoadingAnimation} />;
     }
     return user ? children : <Login />;
 };
 
-const PrivateRouteUserid = ({ children }) => {
+const PrivateRouteUserID = ({ children }) => {
     const { userid } = useParams();
     const { user, gettingUser } = useAuth();
     if (gettingUser) {
-        return <LoadingAnimation />;
+        return <App Page={LoadingAnimation} />;
     }
     return userid === user.id ? children : <App Page={Error} pageProps={{ statusCode: 401 }} />;
 };
@@ -170,9 +171,32 @@ const UserIDRouter = ({ children }) => {
     if (userid === "me") {
         return <PrivateRoute>{children}</PrivateRoute>;
     } else {
-        return <PrivateRouteUserid>{children}</PrivateRouteUserid>;
+        return <PrivateRouteUserID>{children}</PrivateRouteUserID>;
     }
 };
 
+const PrivateRouteFictionId = ({ children }) => {
+    const { user, gettingUser } = useAuth(); // Get user from AuthContext
+    const { fictionid } = useParams(); // Get fictionid from URL
+    const [gettingAuthor, setGettingAuthor] = useState(true);
+    const [authorized, setAuthorized] = useState(false);
+
+    useEffect(() => {
+        const checkAuthorization = async () => {
+            const fiction = await getFictionByID(fictionid);
+            if (fiction && fiction.authorid === user.id) {
+                setAuthorized(true);
+            }
+            setGettingAuthor(false);
+        };
+        checkAuthorization();
+    }, []);
+
+    if (gettingUser || gettingAuthor) {
+        return <App Page={LoadingAnimation} />;
+    }
+    return authorized ? children : <App Page={Error} pageProps={{ statusCode: 401 }} />;
+};
+
 export const useAuth = () => useContext(AuthContext);
-export { PrivateRoute, PrivateRouteUserid, UserIDRouter };
+export { PrivateRoute, PrivateRouteUserID, UserIDRouter, PrivateRouteFictionId };

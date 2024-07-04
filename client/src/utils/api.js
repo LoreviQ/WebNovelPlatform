@@ -42,6 +42,18 @@ async function getMyFictions(accessToken) {
     return false;
 }
 
+// Gets fictions details from fiction ID
+async function getFictionByID(fictionID) {
+    const response = await fetch(apiBaseUrl + "/v1/fictions/" + fictionID, {
+        method: "GET",
+    });
+    if (response.status === 200) {
+        let body = await response.json();
+        return body;
+    }
+    return false;
+}
+
 //Submits a fiction to the logged in user's account
 async function postFiction(accessToken, fictionData) {
     const response = await fetch(apiBaseUrl + "/v1/fictions", {
@@ -88,4 +100,12 @@ async function deleteFiction(accessToken, fictionID) {
     return false;
 }
 
-export { getUserByUID, getFictionsByAuthorID, getMyFictions, postFiction, publishFiction, deleteFiction };
+export {
+    getUserByUID,
+    getFictionByID,
+    getFictionsByAuthorID,
+    getMyFictions,
+    postFiction,
+    publishFiction,
+    deleteFiction,
+};

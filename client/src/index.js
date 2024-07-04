@@ -3,7 +3,7 @@ import ReactDOM from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import App from "./App";
 import * as Pages from "./pages";
-import { AuthProvider, PrivateRoute, UserIDRouter } from "./utils/auth";
+import { AuthProvider, PrivateRoute, UserIDRouter, PrivateRouteFictionId } from "./utils/auth";
 
 import "./css/styles.css";
 
@@ -47,6 +47,14 @@ function AppRouter() {
                             <UserIDRouter>
                                 <App Page={Pages.SubmitFiction} />
                             </UserIDRouter>
+                        }
+                    />
+                    <Route
+                        path="fictions/:fictionid/Edit"
+                        element={
+                            <PrivateRouteFictionId>
+                                <App Page={Pages.EditFiction} />
+                            </PrivateRouteFictionId>
                         }
                     />
                     <Route path="401" element={<App Page={Pages.Error} pageProps={{ statusCode: 401 }} />} />
