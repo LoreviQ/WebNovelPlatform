@@ -73,4 +73,19 @@ async function publishFiction(accessToken, fictionID) {
     return false;
 }
 
-export { getUserByUID, getFictionsByAuthorID, getMyFictions, postFiction, publishFiction };
+// Deletes the fiction with the given ID
+async function deleteFiction(accessToken, fictionID) {
+    const response = await fetch(apiBaseUrl + "/v1/fictions/" + fictionID, {
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + accessToken,
+        },
+    });
+    if (response.status === 200) {
+        return true;
+    }
+    return false;
+}
+
+export { getUserByUID, getFictionsByAuthorID, getMyFictions, postFiction, publishFiction, deleteFiction };

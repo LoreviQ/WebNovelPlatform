@@ -14,7 +14,7 @@ import {
 import { faCircleCheck as faCircleCheckRegular } from "@fortawesome/free-regular-svg-icons";
 
 import { useAuth } from "../utils/auth";
-import { getUserByUID, getFictionsByAuthorID, getMyFictions, publishFiction } from "../utils/api";
+import { getUserByUID, getFictionsByAuthorID, getMyFictions, publishFiction, deleteFiction } from "../utils/api";
 import LoadingAnimation from "../components/loading";
 import Error from "./error";
 
@@ -41,7 +41,7 @@ function Fictions() {
         const userInput = window.prompt(`Please type the fiction ID (${fictionID}) to confirm deletion:`);
 
         if (userInput === fictionID.toString()) {
-            await authApi(publishFiction, fictionID);
+            await authApi(deleteFiction, fictionID);
             navigate(0); // Reloads the current page
         } else if (userInput) {
             window.alert("The fiction ID does not match.");
