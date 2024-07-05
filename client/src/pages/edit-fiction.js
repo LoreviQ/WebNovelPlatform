@@ -16,8 +16,12 @@ function EditFiction() {
     const { fictionid } = useParams();
     const navigateUp = useNavigateUp();
 
-    const [formData, setFormData] = useState({ id: "", title: "", description: "", publishedAt: Date() });
+    const [formData, setFormData] = useState({ id: "", title: "", description: "", published: 0, publishedAt: Date() });
     const [validated, setValidated] = useState(false);
+
+    const publish = (event) => {
+        setFormData({ ...formData, published: event.target.value, publishedAt: Date() });
+    };
 
     useEffect(() => {
         document.title = "Edit | WebNovelPlatform";
@@ -34,6 +38,7 @@ function EditFiction() {
                 id: fictionData.id,
                 title: fictionData.title,
                 description: fictionData.description,
+                published: fictionData.published,
                 publishedAt: new Date(fictionData.published_at.String),
             });
         };
@@ -48,7 +53,7 @@ function EditFiction() {
             </div>
             <hr />
             <Form noValidate validated={validated}>
-                <Form.Group as={Row} className="mb-3" controlId="submitTitle">
+                <Form.Group as={Row} className="mb-3" controlId="editID">
                     <Form.Label column sm={2}>
                         <h5>UID</h5>
                     </Form.Label>
@@ -64,7 +69,7 @@ function EditFiction() {
                     </Col>
                     <Form.Control.Feedback type="invalid">Required</Form.Control.Feedback>
                 </Form.Group>
-                <Form.Group as={Row} className="mb-3" controlId="submitTitle">
+                <Form.Group as={Row} className="mb-3" controlId="editTitle">
                     <Form.Label column sm={2}>
                         <h5>Title</h5>
                     </Form.Label>
@@ -79,7 +84,7 @@ function EditFiction() {
                     </Col>
                     <Form.Control.Feedback type="invalid">Required</Form.Control.Feedback>
                 </Form.Group>
-                <Form.Group as={Row} className="mb-3" controlId="submitDescription">
+                <Form.Group as={Row} className="mb-3" controlId="editDescription">
                     <Form.Label column sm={2}>
                         <h5>Description</h5>
                     </Form.Label>
@@ -93,20 +98,35 @@ function EditFiction() {
                         />
                     </Col>
                 </Form.Group>
-                <Form.Group as={Row} className="mb-3" controlId="submitDescription">
+                <Form.Group as={Row} className="mb-3" controlId="editPuiblished">
                     <Form.Label column sm={2}>
-                        <h5>Published On</h5>
+                        <h5>Published</h5>
                     </Form.Label>
                     <Col sm={10}>
-                        <Form.Control
-                            disabled
-                            type="text"
-                            rows={5}
-                            placeholder="Not Published"
-                            value={format(formData.publishedAt, "do MMMM yyyy")}
+                        <Form.Check
+                            className="mt-2"
+                            type="switch"
+                            checked={formData.published}
+                            onChange={(e) => publish(e)}
                         />
                     </Col>
                 </Form.Group>
+                {formData.published ? (
+                    <Form.Group as={Row} className="mb-3" controlId="editPublishDate">
+                        <Form.Label column sm={2}>
+                            <h5>Published On</h5>
+                        </Form.Label>
+                        <Col sm={10}>
+                            <Form.Control
+                                disabled
+                                type="text"
+                                rows={5}
+                                placeholder="Not Published"
+                                value={format(formData.publishedAt, "do MMMM yyyy")}
+                            />
+                        </Col>
+                    </Form.Group>
+                ) : null}
                 <div style={{ display: "flex", alignItems: "center" }}>
                     <div style={{ flexGrow: 1 }}></div>
                     <Button type="submit" className="mt-4 me-4" variant="theme">
