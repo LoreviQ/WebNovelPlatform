@@ -158,6 +158,7 @@ func urlify(inputString string) string {
 func (cfg *apiConfig) putFiction(w http.ResponseWriter, r *http.Request, user database.User) {
 	// REQUEST
 	request, err := decodeRequest(w, r, struct {
+		NewID       string `json:"new_id"`
 		Title       string `json:"title"`
 		Description string `json:"description"`
 	}{})
@@ -189,7 +190,7 @@ func (cfg *apiConfig) putFiction(w http.ResponseWriter, r *http.Request, user da
 		UpdatedAt:   time.Now().UTC().Format(time.RFC3339),
 		Title:       request.Title,
 		Description: request.Description,
-		ID:          urlify(request.Title),
+		ID:          request.NewID,
 		ID_2:        id,
 	})
 	if err != nil {
