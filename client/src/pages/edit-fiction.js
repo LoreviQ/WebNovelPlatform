@@ -17,7 +17,13 @@ function EditFiction() {
     const { authApi } = useAuth();
     const navigate = useNavigate();
 
-    const [formData, setFormData] = useState({ id: "", title: "", description: "", published: 0, publishedAt: Date() });
+    const [formData, setFormData] = useState({
+        id: "",
+        title: "",
+        description: "",
+        published: false,
+        publishedAt: Date(),
+    });
     const [validated, setValidated] = useState(false);
 
     const publish = (event) => {
@@ -30,7 +36,7 @@ function EditFiction() {
         if (form.checkValidity() === false) {
             event.stopPropagation();
         } else {
-            if (await authApi(putFiction, formData)) {
+            if (await authApi(putFiction, [formData, fictionid])) {
                 navigate(-1);
             } else {
                 alert("Failed to submit fiction");

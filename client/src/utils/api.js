@@ -101,8 +101,9 @@ async function deleteFiction(accessToken, fictionID) {
 }
 
 // Updates the fiction with the given ID
-async function putFiction(accessToken, fictionData) {
-    const response = await fetch(apiBaseUrl + "/v1/fictions/" + fictionData.id, {
+async function putFiction(accessToken, args) {
+    const [fictionData, fictionid] = args;
+    const response = await fetch(apiBaseUrl + "/v1/fictions/" + fictionid, {
         method: "PUT",
         headers: {
             "Content-Type": "application/json",
@@ -112,7 +113,7 @@ async function putFiction(accessToken, fictionData) {
             new_id: fictionData.id,
             title: fictionData.title,
             description: fictionData.description,
-            published: fictionData.published,
+            published: fictionData.published ? 1 : 0,
         }),
     });
     if (response.status === 200) {
