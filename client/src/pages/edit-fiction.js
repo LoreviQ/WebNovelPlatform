@@ -20,7 +20,7 @@ function EditFiction() {
     const [validated, setValidated] = useState(false);
 
     const publish = (event) => {
-        setFormData({ ...formData, published: event.target.value, publishedAt: Date() });
+        setFormData({ ...formData, published: event.target.checked, publishedAt: Date() });
     };
 
     useEffect(() => {
