@@ -185,12 +185,20 @@ func (cfg *apiConfig) putFiction(w http.ResponseWriter, r *http.Request, user da
 		return
 	}
 
+	// NEW ID
+	var newID string
+	if request.NewID != "" {
+		newID = request.NewID
+	} else {
+		newID = urlify(request.Title)
+	}
+
 	// UPDATE FICTION
 	fiction, err = cfg.DB.UpdateFiction(r.Context(), database.UpdateFictionParams{
 		UpdatedAt:   time.Now().UTC().Format(time.RFC3339),
 		Title:       request.Title,
 		Description: request.Description,
-		ID:          request.NewID,
+		ID:          newID,
 		ID_2:        id,
 	})
 	if err != nil {
