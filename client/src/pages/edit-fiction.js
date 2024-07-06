@@ -36,6 +36,10 @@ function EditFiction() {
         if (form.checkValidity() === false) {
             event.stopPropagation();
         } else {
+            const isConfirmed = window.confirm("Are you sure?");
+            if (!isConfirmed) {
+                return;
+            }
             if (await authApi(putFiction, [formData, fictionid])) {
                 navigate(-1);
             } else {
