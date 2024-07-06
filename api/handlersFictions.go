@@ -161,6 +161,7 @@ func (cfg *apiConfig) putFiction(w http.ResponseWriter, r *http.Request, user da
 		NewID       string `json:"new_id"`
 		Title       string `json:"title"`
 		Description string `json:"description"`
+		Published   int64  `json:"published"`
 	}{})
 	if err != nil {
 		respondWithError(w, http.StatusBadRequest, "failed to decode request body")
@@ -193,12 +194,30 @@ func (cfg *apiConfig) putFiction(w http.ResponseWriter, r *http.Request, user da
 		newID = urlify(request.Title)
 	}
 
+	// GENERATE PUBLISH DATE
+	var publishDate sql.NullString
+	if request.Published == 1 && fiction.Published == 0 {
+		publishDate = sql.NullString{
+			String: time.Now().UTC().Format(time.RFC3339),
+			Valid:  true,
+		}
+	} else if request.Published == 0 && fiction.Published == 1 {
+		publishDate = sql.NullString{
+			String: fiction.PublishedAt.String,
+			Valid:  false,
+		}
+	} else {
+		publishDate = fiction.PublishedAt
+	}
+
 	// UPDATE FICTION
 	fiction, err = cfg.DB.UpdateFiction(r.Context(), database.UpdateFictionParams{
 		UpdatedAt:   time.Now().UTC().Format(time.RFC3339),
 		Title:       request.Title,
 		Description: request.Description,
 		ID:          newID,
+		PublishedAt: publishDate,
+		Published:   request.Published,
 		ID_2:        id,
 	})
 	if err != nil {

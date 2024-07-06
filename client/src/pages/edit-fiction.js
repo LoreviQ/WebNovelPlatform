@@ -9,7 +9,7 @@ import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 
-import { getFictionByID, putFiction, publishFiction } from "../utils/api";
+import { getFictionByID, putFiction } from "../utils/api";
 import { useAuth } from "../utils/auth";
 
 function EditFiction() {
