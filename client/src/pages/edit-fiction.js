@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { format } from "date-fns";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
@@ -9,18 +9,34 @@ import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 
-import { getFictionByID } from "../utils/api";
-import { useNavigateUp } from "../utils/navigation";
+import { getFictionByID, putFiction } from "../utils/api";
+import { useAuth } from "../utils/auth";
 
 function EditFiction() {
     const { fictionid } = useParams();
-    const navigateUp = useNavigateUp();
+    const { authApi } = useAuth();
+    const navigate = useNavigate();
 
     const [formData, setFormData] = useState({ id: "", title: "", description: "", published: 0, publishedAt: Date() });
     const [validated, setValidated] = useState(false);
 
     const publish = (event) => {
         setFormData({ ...formData, published: event.target.checked, publishedAt: Date() });
+    };
+
+    const formSubmission = async (event) => {
+        const form = event.currentTarget;
+        event.preventDefault();
+        if (form.checkValidity() === false) {
+            event.stopPropagation();
+        } else {
+            if (await authApi(putFiction, formData)) {
+                navigate(-1);
+            } else {
+                alert("Failed to submit fiction");
+            }
+        }
+        setValidated(true);
     };
 
     useEffect(() => {
@@ -52,7 +68,7 @@ function EditFiction() {
                 <h1>{formData.title}</h1>
             </div>
             <hr />
-            <Form noValidate validated={validated}>
+            <Form noValidate validated={validated} onSubmit={formSubmission}>
                 <Form.Group as={Row} className="mb-3" controlId="editID">
                     <Form.Label column sm={2}>
                         <h5>UID</h5>
