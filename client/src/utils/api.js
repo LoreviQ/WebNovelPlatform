@@ -112,6 +112,7 @@ async function putFiction(accessToken, fictionData) {
             new_id: fictionData.id,
             title: fictionData.title,
             description: fictionData.description,
+            published: fictionData.published,
         }),
     });
     if (response.status === 200) {
