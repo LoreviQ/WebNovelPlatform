@@ -109,10 +109,9 @@ async function putFiction(accessToken, fictionData) {
             Authorization: "Bearer " + accessToken,
         },
         body: JSON.stringify({
+            new_id: fictionData.id,
             title: fictionData.title,
             description: fictionData.description,
-            published: fictionData.published,
-            published_at: fictionData.publishedAt,
         }),
     });
     if (response.status === 200) {
