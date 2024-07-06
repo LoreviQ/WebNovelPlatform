@@ -10,12 +10,11 @@ import Row from "react-bootstrap/Row";
 
 import { useAuth } from "../utils/auth";
 import { postFiction } from "../utils/api";
-import { useNavigateUp } from "../utils/navigation";
 
 function SubmitFiction() {
     const { user, authApi } = useAuth();
     const { userid } = useParams();
-    const navigateUp = useNavigateUp();
+    const navigate = useNavigate();
 
     const [formData, setFormData] = useState({ title: "", description: "" });
     const [validated, setValidated] = useState(false);
@@ -27,7 +26,7 @@ function SubmitFiction() {
             event.stopPropagation();
         } else {
             if (await authApi(postFiction, formData)) {
-                navigateUp();
+                navigate(-1);
             } else {
                 alert("Failed to submit fiction");
             }

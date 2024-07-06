@@ -365,6 +365,12 @@ func (cfg *apiConfig) publishFiction(w http.ResponseWriter, r *http.Request, use
 		return
 	}
 
+	// CHECK FICTION IS NOT ALREADY PUBLISHED
+	if fiction.Published == 1 {
+		respondWithError(w, http.StatusBadRequest, "Fiction is already published")
+		return
+	}
+
 	// PUBLISH FICTION
 	fiction, err = cfg.DB.PublishFiction(r.Context(), database.PublishFictionParams{
 		PublishedAt: sql.NullString{
