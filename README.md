@@ -113,28 +113,28 @@ The Project is divided into two parts, client and server(api).
 
 ### Installation
 
-* Clone the repo
+1. Clone the repo
    ```sh
    git clone https://github.com/LoreviQ/WebNovelPlatform.git
    ```
 
 
-* Setup Server
-1. Navigate to the server directory 
-  ```sh
-  cd ./api
-  ```
-2. Build and run the api
-  ```sh
-  go build -o webnovelapi && webnovelapi
-  ```
+2. Setup Server
+  - Navigate to the server directory 
+    ```sh
+    cd ./api
+    ```
+  - Build and run the api
+    ```sh
+    go build -o webnovelapi && webnovelapi
+    ```
 
 
-* Install NPM packages
+3. Install NPM packages
    ```sh
    npm install
    ```
-* Enter your API in `config.js`
+4. Enter your API in `config.js`
    ```js
    const API_KEY = 'ENTER YOUR API';
    ```
