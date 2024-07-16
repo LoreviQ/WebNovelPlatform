@@ -124,20 +124,37 @@ The Project is divided into two parts, client and server(api).
     ```sh
     cd ./api
     ```
+  - Set up local environment. Create a .env with the following or set as environment variables:
+    ```
+    PORT="your port"
+    DB_CONNECTION="libsql connection string - [more info here](https://github.com/tursodatabase/libsql)"
+    JWT_SECRET="Secret key for authenticating JWT tokens"
+    ```
   - Build and run the api
     ```sh
     go build -o webnovelapi && webnovelapi
     ```
 
 
-3. Install NPM packages
-   ```sh
-   npm install
-   ```
-4. Enter your API in `config.js`
-   ```js
-   const API_KEY = 'ENTER YOUR API';
-   ```
+3. Setup Client (in a seperate terminal)
+  - Navigate to the client directory 
+    ```sh
+    cd ./client
+    ```
+  - Install NPM packages
+    ```sh
+    npm install
+    ```
+  - Set up local environment. Create a .env with the following or set as environment variables:
+    ```
+    API_URL="Your api url. Probably localhost:port. Will access a version of the API hosted on GCP by default"
+    ```
+  - Run the client:
+    ```sh
+    npm start
+    ```
+  
+   
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
