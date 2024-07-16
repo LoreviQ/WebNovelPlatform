@@ -127,7 +127,7 @@ The Project is divided into two parts, client and server(api).
   - Set up local environment. Create a .env with the following or set as environment variables:
     ```
     PORT="your port"
-    DB_CONNECTION="libsql connection string - [more info here](https://github.com/tursodatabase/libsql)"
+    DB_CONNECTION="libsql connection string - more info here: https://github.com/tursodatabase/libsql"
     JWT_SECRET="Secret key for authenticating JWT tokens"
     ```
   - Build and run the api
@@ -217,18 +217,10 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 
 Project Link: [https://github.com/LoreviQ/WebNovelPlatform](https://github.com/LoreviQ/WebNovelPlatform)
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-
-<!-- ACKNOWLEDGMENTS -->
-## Acknowledgments
-
-* []()
-* []()
-* []()
+Email me at oliver.tj@protonmail.com
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
+
 
 
 
