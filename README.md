@@ -101,15 +101,15 @@
 This is an example of how you may give instructions on setting up your project locally.
 To get a local copy up and running follow these simple example steps.
 
-The Project is divided into two parts, clientside and serverside. 
+The Project is divided into two parts, client and server(api). 
 
 ### Prerequisites
 
-* npm: The client requires npm, which can 
+* Go: The server requires Go to be installed on your machine. To install Go, follow the instructions on the [official Go website](https://golang.org/doc/install).
+* npm: The client requires npm, which can be updated tot he latest version with:
   ```sh
   npm install npm@latest -g
   ```
- * Go: The project requires Go to be installed on your machine. To install Go, follow the instructions on the [official Go website](https://golang.org/doc/install).
 
 ### Installation
 
@@ -120,8 +120,11 @@ The Project is divided into two parts, clientside and serverside.
 
 
 2. **Setup Server**
-  1. Navigate to the server directory 
+  - 2.1. Navigate to the server directory 
   ```cd ./api
+  ```
+  - 2.2 Build and run the api
+  ```go build -o webnovelapi && webnovelapi
   ```
 
 
