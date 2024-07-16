@@ -15,6 +15,18 @@ async function getUserByUID(uid) {
     return false;
 }
 
+// Gets all fictions
+async function getFictions() {
+    const response = await fetch(apiBaseUrl + "/v1/fictions", {
+        method: "GET",
+    });
+    if (response.status === 200) {
+        let body = await response.json();
+        return body;
+    }
+    return false;
+}
+
 // Gets fictions by the author's UID
 async function getFictionsByAuthorID(uid) {
     const response = await fetch(apiBaseUrl + "/v1/users/" + uid + "/fictions", {
@@ -125,6 +137,7 @@ async function putFiction(accessToken, args) {
 export {
     getUserByUID,
     getFictionByID,
+    getFictions,
     getFictionsByAuthorID,
     getMyFictions,
     postFiction,
