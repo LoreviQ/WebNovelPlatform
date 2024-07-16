@@ -77,6 +77,8 @@ func initialiseServer(cfg apiConfig, mux *http.ServeMux) *http.Server {
 
 	mux.HandleFunc("PUT /v1/fictions/{id}/publish", cfg.AuthMiddleware(cfg.publishFiction))
 
+	mux.HandleFunc("GET /v1/gcs-signed-url", cfg.AuthMiddleware(cfg.getSignedURL))
+
 	corsMux := cfg.CorsMiddleware(mux)
 
 	server := &http.Server{

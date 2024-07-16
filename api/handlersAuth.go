@@ -1,9 +1,12 @@
 package main
 
 import (
+	"context"
 	"log"
 	"net/http"
 	"time"
+
+	"cloud.google.com/go/storage"
 
 	"github.com/LoreviQ/WebNovelPlatform/api/internal/auth"
 	"github.com/LoreviQ/WebNovelPlatform/api/internal/database"
@@ -163,4 +166,38 @@ func (cfg *apiConfig) postRevoke(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.WriteHeader(200)
+}
+
+// getSignedURL returns a signed URL for the client to upload a file to GCS
+func (cfg *apiConfig) getSignedURL(w http.ResponseWriter, r *http.Request, user database.User) {
+	// Initializes a GCS client
+	client, err := storage.NewClient(context.Background())
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, "storage.NewClient: "+err.Error())
+		return
+	}
+	defer client.Close()
+
+	bucketName := "webnovelapp-images"
+	objectName := "uploads/" + user.ID + "/" + time.Now().Format("20060102150405")
+	urlExpiration := time.Now().Add(15 * time.Minute)
+
+	signedURL, err := client.Bucket(bucketName).SignedURL(objectName, &storage.SignedURLOptions{
+		Method:  "PUT",
+		Expires: urlExpiration,
+	})
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, "Failed to generate signed URL: "+err.Error())
+		return
+	}
+
+	// RESPONSE
+	type responseStruct struct {
+		URL     string    `json:"url"`
+		Expires time.Time `json:"expires"`
+	}
+	respondWithJSON(w, 200, responseStruct{
+		URL:     signedURL,
+		Expires: urlExpiration,
+	})
 }
