@@ -234,5 +234,5 @@ Project Link: [https://github.com/LoreviQ/WebNovelPlatform](https://github.com/L
 [JQuery-url]: https://jquery.com 
 [go.dev]: https://img.shields.io/badge/Go-00ADD8?style=for-the-badge&logo=go&logoColor=white
 [go-url]: https://go.dev/
-[sqlite.org]: https://img.shields.io/badge/sqlc-003B57?style=for-the-badge&logo=sqlite&logoColor=white
+[sqlite.org]: https://img.shields.io/badge/sqlite-003B57?style=for-the-badge&logo=sqlite&logoColor=white
 [sqlite-url]: https://www.sqlite.org/
