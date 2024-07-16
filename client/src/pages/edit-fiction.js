@@ -19,6 +19,7 @@ function EditFiction() {
     const { authApi } = useAuth();
     const { Formik } = formik;
     const navigate = useNavigate();
+    const [selectedFile, setSelectedFile] = useState(null);
 
     const validationSchema = yup.object().shape({
         id: yup
@@ -51,6 +52,10 @@ function EditFiction() {
         }
     };
 
+    const handleFileChange = (event) => {
+        setSelectedFile(event.target.files[0]);
+    };
+
     useEffect(() => {
         document.title = "Edit | WebNovelPlatform";
 
@@ -78,6 +83,8 @@ function EditFiction() {
             <div style={{ display: "flex", alignItems: "center" }}>
                 <h1>{formData.title}</h1>
             </div>
+            <hr />
+            <input type="file" onChange={handleFileChange} />
             <hr />
             <Formik
                 validationSchema={validationSchema}
