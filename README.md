@@ -87,6 +87,7 @@
 ### Built With
 
 * [![GO][go.dev]][go-url]
+* [![sqlc][sqlc.dev]][sqlc-url]
 * [![React][React.js]][React-url]
 * [![Bootstrap][Bootstrap.com]][Bootstrap-url]
 
