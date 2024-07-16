@@ -1,10 +1,28 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import Container from "react-bootstrap/esm/Container";
+
+import LoadingAnimation from "../components/loading";
+import { getFictions } from "../utils/api";
 
 function Index() {
+    const [fictions, setFictions] = useState(null);
+
     useEffect(() => {
         document.title = "Home | WebNovelPlatform";
+        const fetchDisplayData = async () => {
+            const fictionData = await getFictions();
+            setFictions(fictionData);
+        };
+        fetchDisplayData();
     }, []);
-    return <h1>Index Page here</h1>;
+    if (!fictions) {
+        return <LoadingAnimation />;
+    }
+    return (
+        <Container fluid className="my-4 ms-2">
+            <h1>Index Page here</h1>
+        </Container>
+    );
 }
 
 export default Index;
