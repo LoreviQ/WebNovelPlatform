@@ -121,10 +121,12 @@ The Project is divided into two parts, client and server(api).
 
 2. **Setup Server**
   - 2.1. Navigate to the server directory 
-  ```cd ./api
+  ```sh
+  cd ./api
   ```
   - 2.2 Build and run the api
-  ```go build -o webnovelapi && webnovelapi
+  ```sh
+  go build -o webnovelapi && webnovelapi
   ```
 
 
