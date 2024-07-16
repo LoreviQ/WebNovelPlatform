@@ -86,14 +86,9 @@
 
 ### Built With
 
-* [![Next][Next.js]][Next-url]
+* [![GO][go.dev]][go-url]
 * [![React][React.js]][React-url]
-* [![Vue][Vue.js]][Vue-url]
-* [![Angular][Angular.io]][Angular-url]
-* [![Svelte][Svelte.dev]][Svelte-url]
-* [![Laravel][Laravel.com]][Laravel-url]
 * [![Bootstrap][Bootstrap.com]][Bootstrap-url]
-* [![JQuery][JQuery.com]][JQuery-url]
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -219,7 +214,7 @@ Project Link: [https://github.com/LoreviQ/WebNovelPlatform](https://github.com/L
 [license-url]: https://github.com/LoreviQ/WebNovelPlatform/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://www.linkedin.com/in/oliver-jay-4aa76a313/
-[product-screenshot]: images/screenshot.png
+[product-screenshot]: https://www.oliver.tj/assets/img/WebNovelPlatform-Screenshot.png
 [Next.js]: https://img.shields.io/badge/next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white
 [Next-url]: https://nextjs.org/
 [React.js]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
@@ -236,3 +231,5 @@ Project Link: [https://github.com/LoreviQ/WebNovelPlatform](https://github.com/L
 [Bootstrap-url]: https://getbootstrap.com
 [JQuery.com]: https://img.shields.io/badge/jQuery-0769AD?style=for-the-badge&logo=jquery&logoColor=white
 [JQuery-url]: https://jquery.com 
+[go.dev]: https://img.shields.io/badge/Go-00ADD8?style=for-the-badge&logo=go&logoColor=white
+[go-url]: https://go.dev/
