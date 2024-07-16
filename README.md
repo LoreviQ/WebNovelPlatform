@@ -120,14 +120,14 @@ The Project is divided into two parts, client and server(api).
 
 
 2. **Setup Server**
-  - 2.1. Navigate to the server directory 
-  ```sh
-  cd ./api
-  ```
-  - 2.2 Build and run the api
-  ```sh
-  go build -o webnovelapi && webnovelapi
-  ```
+  1. Navigate to the server directory 
+    ```sh
+    cd ./api
+    ```
+  2. Build and run the api
+    ```sh
+    go build -o webnovelapi && webnovelapi
+    ```
 
 
 3. Install NPM packages
