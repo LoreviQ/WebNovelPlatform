@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import Container from "react-bootstrap/esm/Container";
 import Tab from "react-bootstrap/Tab";
 import Tabs from "react-bootstrap/Tabs";
@@ -14,6 +14,7 @@ function User() {
     const { user, awaitUser } = useAuth();
     const { userid } = useParams();
     const navigate = useNavigate();
+    const location = useLocation();
 
     useEffect(() => {
         document.title = "User | WebNovelPlatform";
@@ -38,6 +39,18 @@ function User() {
 
         fetchUserData();
     }, []);
+
+    const getDefaultActiveKey = () => {
+        const hash = location.hash;
+        console.log(hash);
+        switch (hash) {
+            case "#settings":
+                return "settings";
+            default:
+                return "profile";
+        }
+    };
+
     if (err404) {
         return <Error statusCode={404} />;
     }
@@ -51,7 +64,7 @@ function User() {
                 <h1>{displayUser ? displayUser.name : ""}</h1>
             </div>
             <hr />
-            <Tabs defaultActiveKey="profile" id="userTabs" className="mb-3">
+            <Tabs defaultActiveKey={getDefaultActiveKey()} id="userTabs" className="mb-3">
                 <Tab eventKey="profile" title="Profile">
                     <ul className="list-group list-group-flush">
                         <li className="list-group-item">UID: {displayUser ? displayUser.id : ""}</li>
