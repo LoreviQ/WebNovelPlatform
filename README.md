@@ -101,21 +101,30 @@
 This is an example of how you may give instructions on setting up your project locally.
 To get a local copy up and running follow these simple example steps.
 
+The Project is divided into two parts, clientside and serverside. 
+
 ### Prerequisites
 
-This is an example of how to list things you need to use the software and how to install them.
-* npm
+* npm: The client requires npm, which can 
   ```sh
   npm install npm@latest -g
   ```
+ * Go: The project requires Go to be installed on your machine. To install Go, follow the instructions on the [official Go website](https://golang.org/doc/install).
 
 ### Installation
 
-1. Get a free API Key at [https://example.com](https://example.com)
-2. Clone the repo
+1. Clone the repo
    ```sh
    git clone https://github.com/LoreviQ/WebNovelPlatform.git
    ```
+
+
+2. **Setup Server**
+  1. Navigate to the server directory 
+  ```cd ./api
+  ```
+
+
 3. Install NPM packages
    ```sh
    npm install
@@ -214,7 +223,7 @@ Project Link: [https://github.com/LoreviQ/WebNovelPlatform](https://github.com/L
 [license-shield]: https://img.shields.io/github/license/LoreviQ/WebNovelPlatform.svg?style=for-the-badge
 [license-url]: https://github.com/LoreviQ/WebNovelPlatform/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
-[linkedin-url]: https://www.linkedin.com/in/oliver-jay-4aa76a313/
+[linkedin-url]: https://www.linkedin.com/in/oliver-tj
 [product-screenshot]: https://www.oliver.tj/assets/img/WebNovelPlatform-Screenshot.png
 [Next.js]: https://img.shields.io/badge/next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white
 [Next-url]: https://nextjs.org/
