@@ -12541,3 +12541,33 @@ body {
 .list-item-buttons {
   border-radius: 0;
 }
+
+.carousel-item-container {
+  display: flex;
+  align-items: center;
+  position: relative; /* Needed for absolute positioning of the pseudo-element */
+}
+
+.carousel-item-container::after {
+  content: '';
+  position: absolute;
+  left: 350px; /* Adjust this value based on your layout */
+  height: 100%;
+  width: 100px; /* Width of the fade effect */
+  background: linear-gradient(to right, rgba(255, 255, 255, 0), white 100%);
+  z-index: 1;
+}
+
+.carousel-text {
+  color: black;
+  width: 400px;
+  position: relative;
+  z-index: 2; /* Ensure text is above the fade effect */
+}
+
+.carousel-image {
+  height: 400px;
+  width: auto;
+  object-fit: contain;
+  background-color: #f0f0f0;
+}

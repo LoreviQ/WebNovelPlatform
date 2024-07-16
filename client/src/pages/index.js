@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Container from "react-bootstrap/esm/Container";
+import Carousel from "react-bootstrap/Carousel";
 
 import LoadingAnimation from "../components/loading";
 import { getFictions } from "../utils/api";
@@ -20,7 +21,21 @@ function Index() {
     }
     return (
         <Container fluid className="my-4 ms-2">
-            <h1>Index Page here</h1>
+            <Carousel style={{ backgroundColor: "white", height: "400px" }}>
+                {fictions.map((fiction, index) => (
+                    <Carousel.Item key={index}>
+                        <div className="carousel-item-container">
+                            <img className="carousel-image" src={`${process.env.PUBLIC_URL}/image-placeholder.png`} />
+                            <div style={{ flexGrow: 1 }}></div>
+                            <div className="carousel-text">
+                                <h3>{fiction.title}</h3>
+                                <p>{fiction.description}</p>
+                            </div>
+                        </div>
+                    </Carousel.Item>
+                ))}
+            </Carousel>
+            <hr />
         </Container>
     );
 }
