@@ -233,3 +233,5 @@ Project Link: [https://github.com/LoreviQ/WebNovelPlatform](https://github.com/L
 [JQuery-url]: https://jquery.com 
 [go.dev]: https://img.shields.io/badge/Go-00ADD8?style=for-the-badge&logo=go&logoColor=white
 [go-url]: https://go.dev/
+[sqlc.dev]: https://img.shields.io/badge/sqlc-00ADD8?style=for-the-badge&logo=go&logoColor=white
+[sqlc-url]: https://sqlc.dev/
