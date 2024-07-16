@@ -36,7 +36,7 @@
     <a href="https://github.com/LoreviQ/WebNovelPlatform"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/LoreviQ/WebNovelPlatform">View Demo</a>
+    <a href="https://webnovelclient-y5hewbdc4a-nw.a.run.app/">View Demo</a>
     ·
     <a href="https://github.com/LoreviQ/WebNovelPlatform/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
     ·
