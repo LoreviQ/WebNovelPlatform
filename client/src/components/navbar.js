@@ -81,7 +81,7 @@ function MyNavbar({ toggleSideNav }) {
 
                             <Dropdown.Menu align="end">
                                 <Dropdown.Item href="/user/me">My Profile</Dropdown.Item>
-                                <Dropdown.Item href="/settings">Settings</Dropdown.Item>
+                                <Dropdown.Item href="/user/me#settings">Settings</Dropdown.Item>
                                 <Dropdown.Divider />
                                 <Dropdown.Item onClick={logout}>Logout</Dropdown.Item>
                             </Dropdown.Menu>
