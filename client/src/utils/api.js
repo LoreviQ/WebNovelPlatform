@@ -150,6 +150,34 @@ async function getSignedUrl(accessToken) {
     return false;
 }
 
+// Uploads a file to GCS
+async function uploadFileToGCS(accessToken, args) {
+    const [file] = args;
+    const response = await fetch(apiBaseUrl + "/v1/gcs-signed-url", {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + accessToken,
+        },
+    });
+    if (response.status != 200) {
+        return false;
+    }
+    let body = await response.json();
+    const signedUrl = body.url;
+    const uploadResponse = await fetch(signedUrl, {
+        method: "PUT",
+        body: file,
+        headers: {
+            "Content-Type": file.type,
+        },
+    });
+    if (uploadResponse.ok) {
+        return signedUrl.split("?")[0];
+    }
+    return false;
+}
+
 export {
     getUserByUID,
     getFictionByID,
@@ -160,5 +188,5 @@ export {
     publishFiction,
     deleteFiction,
     putFiction,
-    getSignedUrl,
+    uploadFileToGCS,
 };

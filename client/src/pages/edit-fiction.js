@@ -11,7 +11,7 @@ import Row from "react-bootstrap/Row";
 import * as formik from "formik";
 import * as yup from "yup";
 
-import { getFictionByID, putFiction } from "../utils/api";
+import { getFictionByID, putFiction, uploadFileToGCS } from "../utils/api";
 import { useAuth } from "../utils/auth";
 
 function EditFiction() {
@@ -44,10 +44,19 @@ function EditFiction() {
         if (!isConfirmed) {
             return;
         }
-
-        if (await authApi(putFiction, [values, fictionid])) {
+        try {
+            if (selectedFile) {
+                const uploadResponse = await authApi(uploadFileToGCS, [selectedFile]);
+                if (!uploadResponse) {
+                    throw new Error("Failed to get signed URL");
+                }
+                console.log(uploadResponse);
+            }
+            if (!(await authApi(putFiction, [values, fictionid]))) {
+                throw new Error("Failed PUT request to API");
+            }
             navigate(-1);
-        } else {
+        } catch (error) {
             alert("Failed to submit fiction");
         }
     };
@@ -63,7 +72,7 @@ function EditFiction() {
             const fictionData = await getFictionByID(fictionid);
             if (!fictionData) {
                 alert("Failed to fetch fiction data");
-                navigateUp();
+                navigate(-1);
                 return;
             }
             setFormData({
@@ -84,7 +93,7 @@ function EditFiction() {
                 <h1>{formData.title}</h1>
             </div>
             <hr />
-            <input type="file" onChange={handleFileChange} />
+            <input id="pictureUpload" type="file" onChange={handleFileChange} />
             <hr />
             <Formik
                 validationSchema={validationSchema}
