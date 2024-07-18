@@ -57,7 +57,7 @@ function EditFiction() {
             }
             navigate(-1);
         } catch (error) {
-            alert("Failed to submit fiction");
+            alert("Failed to submit fiction, error: " + error);
         }
     };
 

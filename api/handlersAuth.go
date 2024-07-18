@@ -169,7 +169,7 @@ func (cfg *apiConfig) postRevoke(w http.ResponseWriter, r *http.Request) {
 }
 
 // getSignedURL returns a signed URL for the client to upload a file to GCS
-func (cfg *apiConfig) getSignedURL(w http.ResponseWriter, r *http.Request, user database.User) {
+func (cfg *apiConfig) postSignedURL(w http.ResponseWriter, r *http.Request, user database.User) {
 	// REQUEST
 	request, err := decodeRequest(w, r, struct {
 		Filename string `json:"filename"`
