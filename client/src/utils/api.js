@@ -155,6 +155,7 @@ async function uploadFileToGCS(accessToken, args) {
     const [file] = args;
     const response = await fetch(apiBaseUrl + "/v1/gcs-signed-url", {
         method: "GET",
+        body: JSON.stringify({ filename: file.name, filetype: file.type }),
         headers: {
             "Content-Type": "application/json",
             Authorization: "Bearer " + accessToken,

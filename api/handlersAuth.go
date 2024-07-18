@@ -170,6 +170,16 @@ func (cfg *apiConfig) postRevoke(w http.ResponseWriter, r *http.Request) {
 
 // getSignedURL returns a signed URL for the client to upload a file to GCS
 func (cfg *apiConfig) getSignedURL(w http.ResponseWriter, r *http.Request, user database.User) {
+	// REQUEST
+	request, err := decodeRequest(w, r, struct {
+		Filename string `json:"filename"`
+		Filetype string `json:"filetype"`
+	}{})
+	if err != nil {
+		respondWithError(w, http.StatusBadRequest, "failed to decode request body")
+		return
+	}
+
 	// Initializes a GCS client
 	client, err := storage.NewClient(context.Background())
 	if err != nil {
@@ -179,12 +189,13 @@ func (cfg *apiConfig) getSignedURL(w http.ResponseWriter, r *http.Request, user 
 	defer client.Close()
 
 	bucketName := "webnovelapp-images"
-	objectName := "uploads/" + user.ID + "/" + time.Now().Format("20060102150405")
+	objectName := "uploads/" + user.ID + "/" + request.Filename
 	urlExpiration := time.Now().Add(15 * time.Minute)
 
 	signedURL, err := client.Bucket(bucketName).SignedURL(objectName, &storage.SignedURLOptions{
-		Method:  "PUT",
-		Expires: urlExpiration,
+		Method:      "PUT",
+		Expires:     urlExpiration,
+		ContentType: request.Filetype,
 	})
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, "Failed to generate signed URL: "+err.Error())
