@@ -7,12 +7,13 @@ package database
 
 import (
 	"context"
+	"database/sql"
 )
 
 const createUser = `-- name: CreateUser :one
-INSERT INTO users (id, created_at, updated_at, name, email, passwordhash)
-VALUES (?, ?, ?, ?, ?, ?)
-RETURNING id, created_at, updated_at, name, email, passwordhash
+INSERT INTO users (id, created_at, updated_at, name, email, passwordhash, image_url)
+VALUES (?, ?, ?, ?, ?, ?, ?)
+RETURNING id, created_at, updated_at, name, email, passwordhash, image_url
 `
 
 type CreateUserParams struct {
@@ -22,6 +23,7 @@ type CreateUserParams struct {
 	Name         string
 	Email        string
 	Passwordhash string
+	ImageUrl     sql.NullString
 }
 
 func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, error) {
@@ -32,6 +34,7 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 		arg.Name,
 		arg.Email,
 		arg.Passwordhash,
+		arg.ImageUrl,
 	)
 	var i User
 	err := row.Scan(
@@ -41,12 +44,13 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 		&i.Name,
 		&i.Email,
 		&i.Passwordhash,
+		&i.ImageUrl,
 	)
 	return i, err
 }
 
 const getUserByEmail = `-- name: GetUserByEmail :one
-SELECT id, created_at, updated_at, name, email, passwordhash FROM users WHERE email = ?
+SELECT id, created_at, updated_at, name, email, passwordhash, image_url FROM users WHERE email = ?
 `
 
 func (q *Queries) GetUserByEmail(ctx context.Context, email string) (User, error) {
@@ -59,12 +63,13 @@ func (q *Queries) GetUserByEmail(ctx context.Context, email string) (User, error
 		&i.Name,
 		&i.Email,
 		&i.Passwordhash,
+		&i.ImageUrl,
 	)
 	return i, err
 }
 
 const getUserById = `-- name: GetUserById :one
-SELECT id, created_at, updated_at, name, email, passwordhash FROM users WHERE id = ?
+SELECT id, created_at, updated_at, name, email, passwordhash, image_url FROM users WHERE id = ?
 `
 
 func (q *Queries) GetUserById(ctx context.Context, id string) (User, error) {
@@ -77,12 +82,13 @@ func (q *Queries) GetUserById(ctx context.Context, id string) (User, error) {
 		&i.Name,
 		&i.Email,
 		&i.Passwordhash,
+		&i.ImageUrl,
 	)
 	return i, err
 }
 
 const updateUser = `-- name: UpdateUser :one
-UPDATE users SET updated_at = ?, name = ?, email = ?, passwordhash = ? WHERE id = ? RETURNING id, created_at, updated_at, name, email, passwordhash
+UPDATE users SET updated_at = ?, name = ?, email = ?, passwordhash = ?, image_url = ? WHERE id = ? RETURNING id, created_at, updated_at, name, email, passwordhash, image_url
 `
 
 type UpdateUserParams struct {
@@ -90,6 +96,7 @@ type UpdateUserParams struct {
 	Name         string
 	Email        string
 	Passwordhash string
+	ImageUrl     sql.NullString
 	ID           string
 }
 
@@ -99,6 +106,7 @@ func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (User, e
 		arg.Name,
 		arg.Email,
 		arg.Passwordhash,
+		arg.ImageUrl,
 		arg.ID,
 	)
 	var i User
@@ -109,6 +117,7 @@ func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (User, e
 		&i.Name,
 		&i.Email,
 		&i.Passwordhash,
+		&i.ImageUrl,
 	)
 	return i, err
 }

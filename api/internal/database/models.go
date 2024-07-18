@@ -17,6 +17,7 @@ type Fiction struct {
 	UpdatedAt   string
 	PublishedAt sql.NullString
 	Published   int64
+	ImageUrl    sql.NullString
 }
 
 type Token struct {
@@ -35,4 +36,5 @@ type User struct {
 	Name         string
 	Email        string
 	Passwordhash string
+	ImageUrl     sql.NullString
 }

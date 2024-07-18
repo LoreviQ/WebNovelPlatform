@@ -1,6 +1,6 @@
 -- name: CreateUser :one
-INSERT INTO users (id, created_at, updated_at, name, email, passwordhash)
-VALUES (?, ?, ?, ?, ?, ?)
+INSERT INTO users (id, created_at, updated_at, name, email, passwordhash, image_url)
+VALUES (?, ?, ?, ?, ?, ?, ?)
 RETURNING *;
 
 
@@ -11,4 +11,4 @@ SELECT * FROM users WHERE email = ?;
 SELECT * FROM users WHERE id = ?;
 
 -- name: UpdateUser :one
-UPDATE users SET updated_at = ?, name = ?, email = ?, passwordhash = ? WHERE id = ? RETURNING *;
+UPDATE users SET updated_at = ?, name = ?, email = ?, passwordhash = ?, image_url = ? WHERE id = ? RETURNING *;

@@ -1,6 +1,6 @@
 -- name: CreateFiction :one
-INSERT INTO fictions (id, title, authorid, description, created_at, updated_at, published_at, published)
-VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+INSERT INTO fictions (id, title, authorid, description, created_at, updated_at, published_at, published, image_url)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
 RETURNING *;
 
 -- name: GetFictionById :one
@@ -18,7 +18,7 @@ SELECT * FROM fictions WHERE authorid = ? and published = ?
 LIMIT ?;
 
 -- name: UpdateFiction :one
-UPDATE fictions SET updated_at = ?, title = ?, description = ?, id = ?, published_at = ?, published = ?
+UPDATE fictions SET updated_at = ?, title = ?, description = ?, id = ?, published_at = ?, published = ?, image_url = ?
 WHERE id = ? 
 RETURNING *;
 

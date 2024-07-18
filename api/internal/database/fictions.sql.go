@@ -11,9 +11,9 @@ import (
 )
 
 const createFiction = `-- name: CreateFiction :one
-INSERT INTO fictions (id, title, authorid, description, created_at, updated_at, published_at, published)
-VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-RETURNING id, title, authorid, description, created_at, updated_at, published_at, published
+INSERT INTO fictions (id, title, authorid, description, created_at, updated_at, published_at, published, image_url)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+RETURNING id, title, authorid, description, created_at, updated_at, published_at, published, image_url
 `
 
 type CreateFictionParams struct {
@@ -25,6 +25,7 @@ type CreateFictionParams struct {
 	UpdatedAt   string
 	PublishedAt sql.NullString
 	Published   int64
+	ImageUrl    sql.NullString
 }
 
 func (q *Queries) CreateFiction(ctx context.Context, arg CreateFictionParams) (Fiction, error) {
@@ -37,6 +38,7 @@ func (q *Queries) CreateFiction(ctx context.Context, arg CreateFictionParams) (F
 		arg.UpdatedAt,
 		arg.PublishedAt,
 		arg.Published,
+		arg.ImageUrl,
 	)
 	var i Fiction
 	err := row.Scan(
@@ -48,6 +50,7 @@ func (q *Queries) CreateFiction(ctx context.Context, arg CreateFictionParams) (F
 		&i.UpdatedAt,
 		&i.PublishedAt,
 		&i.Published,
+		&i.ImageUrl,
 	)
 	return i, err
 }
@@ -62,7 +65,7 @@ func (q *Queries) DeleteFiction(ctx context.Context, id string) error {
 }
 
 const getFictionById = `-- name: GetFictionById :one
-SELECT id, title, authorid, description, created_at, updated_at, published_at, published FROM fictions WHERE id = ?
+SELECT id, title, authorid, description, created_at, updated_at, published_at, published, image_url FROM fictions WHERE id = ?
 `
 
 func (q *Queries) GetFictionById(ctx context.Context, id string) (Fiction, error) {
@@ -77,12 +80,13 @@ func (q *Queries) GetFictionById(ctx context.Context, id string) (Fiction, error
 		&i.UpdatedAt,
 		&i.PublishedAt,
 		&i.Published,
+		&i.ImageUrl,
 	)
 	return i, err
 }
 
 const getFictionByIdIfPublished = `-- name: GetFictionByIdIfPublished :one
-SELECT id, title, authorid, description, created_at, updated_at, published_at, published FROM fictions WHERE id = ? and published = 1
+SELECT id, title, authorid, description, created_at, updated_at, published_at, published, image_url FROM fictions WHERE id = ? and published = 1
 `
 
 func (q *Queries) GetFictionByIdIfPublished(ctx context.Context, id string) (Fiction, error) {
@@ -97,12 +101,13 @@ func (q *Queries) GetFictionByIdIfPublished(ctx context.Context, id string) (Fic
 		&i.UpdatedAt,
 		&i.PublishedAt,
 		&i.Published,
+		&i.ImageUrl,
 	)
 	return i, err
 }
 
 const getFictionsByAuthorId = `-- name: GetFictionsByAuthorId :many
-SELECT id, title, authorid, description, created_at, updated_at, published_at, published FROM fictions WHERE authorid = ?
+SELECT id, title, authorid, description, created_at, updated_at, published_at, published, image_url FROM fictions WHERE authorid = ?
 LIMIT ?
 `
 
@@ -129,6 +134,7 @@ func (q *Queries) GetFictionsByAuthorId(ctx context.Context, arg GetFictionsByAu
 			&i.UpdatedAt,
 			&i.PublishedAt,
 			&i.Published,
+			&i.ImageUrl,
 		); err != nil {
 			return nil, err
 		}
@@ -144,7 +150,7 @@ func (q *Queries) GetFictionsByAuthorId(ctx context.Context, arg GetFictionsByAu
 }
 
 const getFictionsByAuthorIdIfPublished = `-- name: GetFictionsByAuthorIdIfPublished :many
-SELECT id, title, authorid, description, created_at, updated_at, published_at, published FROM fictions WHERE authorid = ? and published = ?
+SELECT id, title, authorid, description, created_at, updated_at, published_at, published, image_url FROM fictions WHERE authorid = ? and published = ?
 LIMIT ?
 `
 
@@ -172,6 +178,7 @@ func (q *Queries) GetFictionsByAuthorIdIfPublished(ctx context.Context, arg GetF
 			&i.UpdatedAt,
 			&i.PublishedAt,
 			&i.Published,
+			&i.ImageUrl,
 		); err != nil {
 			return nil, err
 		}
@@ -187,7 +194,7 @@ func (q *Queries) GetFictionsByAuthorIdIfPublished(ctx context.Context, arg GetF
 }
 
 const getPublishedFictions = `-- name: GetPublishedFictions :many
-SELECT id, title, authorid, description, created_at, updated_at, published_at, published FROM fictions WHERE published = 1
+SELECT id, title, authorid, description, created_at, updated_at, published_at, published, image_url FROM fictions WHERE published = 1
 LIMIT ?
 `
 
@@ -209,6 +216,7 @@ func (q *Queries) GetPublishedFictions(ctx context.Context, limit int64) ([]Fict
 			&i.UpdatedAt,
 			&i.PublishedAt,
 			&i.Published,
+			&i.ImageUrl,
 		); err != nil {
 			return nil, err
 		}
@@ -224,7 +232,7 @@ func (q *Queries) GetPublishedFictions(ctx context.Context, limit int64) ([]Fict
 }
 
 const publishFiction = `-- name: PublishFiction :one
-UPDATE fictions SET published_at = ?, published = ? WHERE id = ? RETURNING id, title, authorid, description, created_at, updated_at, published_at, published
+UPDATE fictions SET published_at = ?, published = ? WHERE id = ? RETURNING id, title, authorid, description, created_at, updated_at, published_at, published, image_url
 `
 
 type PublishFictionParams struct {
@@ -245,14 +253,15 @@ func (q *Queries) PublishFiction(ctx context.Context, arg PublishFictionParams) 
 		&i.UpdatedAt,
 		&i.PublishedAt,
 		&i.Published,
+		&i.ImageUrl,
 	)
 	return i, err
 }
 
 const updateFiction = `-- name: UpdateFiction :one
-UPDATE fictions SET updated_at = ?, title = ?, description = ?, id = ?, published_at = ?, published = ?
+UPDATE fictions SET updated_at = ?, title = ?, description = ?, id = ?, published_at = ?, published = ?, image_url = ?
 WHERE id = ? 
-RETURNING id, title, authorid, description, created_at, updated_at, published_at, published
+RETURNING id, title, authorid, description, created_at, updated_at, published_at, published, image_url
 `
 
 type UpdateFictionParams struct {
@@ -262,6 +271,7 @@ type UpdateFictionParams struct {
 	ID          string
 	PublishedAt sql.NullString
 	Published   int64
+	ImageUrl    sql.NullString
 	ID_2        string
 }
 
@@ -273,6 +283,7 @@ func (q *Queries) UpdateFiction(ctx context.Context, arg UpdateFictionParams) (F
 		arg.ID,
 		arg.PublishedAt,
 		arg.Published,
+		arg.ImageUrl,
 		arg.ID_2,
 	)
 	var i Fiction
@@ -285,6 +296,7 @@ func (q *Queries) UpdateFiction(ctx context.Context, arg UpdateFictionParams) (F
 		&i.UpdatedAt,
 		&i.PublishedAt,
 		&i.Published,
+		&i.ImageUrl,
 	)
 	return i, err
 }
