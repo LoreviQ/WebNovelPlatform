@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { format } from "date-fns";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faCropSimple, faPlus } from "@fortawesome/free-solid-svg-icons";
 import Container from "react-bootstrap/esm/Container";
 import Button from "react-bootstrap/Button";
 import Col from "react-bootstrap/Col";
@@ -45,8 +45,9 @@ function EditFiction() {
             return;
         }
         try {
+            let uploadResponse = null;
             if (selectedFile) {
-                const uploadResponse = await authApi(uploadFileToGCS, [selectedFile]);
+                uploadResponse = await authApi(uploadFileToGCS, [selectedFile]);
                 if (!uploadResponse) {
                     throw new Error("Failed to get signed URL");
                 }
