@@ -50,9 +50,8 @@ function EditFiction() {
                 if (!uploadResponse) {
                     throw new Error("Failed to get signed URL");
                 }
-                console.log(uploadResponse);
             }
-            if (!(await authApi(putFiction, [values, fictionid]))) {
+            if (!(await authApi(putFiction, [values, fictionid, uploadResponse]))) {
                 throw new Error("Failed PUT request to API");
             }
             navigate(-1);
