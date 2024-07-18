@@ -122,7 +122,11 @@ function Fictions() {
                             <div style={{ display: "flex", alignItems: "center" }}>
                                 <img
                                     className="me-4"
-                                    src={`${process.env.PUBLIC_URL}/image-placeholder.png`}
+                                    src={
+                                        fiction.imageLocation
+                                            ? fiction.imageLocation
+                                            : `${process.env.PUBLIC_URL}/image-placeholder.png`
+                                    }
                                     alt="ProfilePicture"
                                     style={{ width: "100px", height: "100px", backgroundColor: "#f0f0f0" }}
                                 />
