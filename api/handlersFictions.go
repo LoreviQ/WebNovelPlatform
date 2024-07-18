@@ -28,6 +28,7 @@ func (cfg *apiConfig) getFictions(w http.ResponseWriter, r *http.Request) {
 		CreatedAt   string         `json:"created_at"`
 		UpdatedAt   string         `json:"updated_at"`
 		PublishedAt sql.NullString `json:"published_at"`
+		ImageUrl    string         `json:"imageLocation"`
 	}
 	responseSlice := make([]response, 0, len(fictions))
 	for _, fiction := range fictions {
@@ -39,6 +40,7 @@ func (cfg *apiConfig) getFictions(w http.ResponseWriter, r *http.Request) {
 			CreatedAt:   fiction.CreatedAt,
 			UpdatedAt:   fiction.UpdatedAt,
 			PublishedAt: fiction.PublishedAt,
+			ImageUrl:    fiction.ImageUrl.String,
 		})
 	}
 	respondWithJSON(w, http.StatusOK, responseSlice)
@@ -69,6 +71,7 @@ func (cfg *apiConfig) getFiction(w http.ResponseWriter, r *http.Request) {
 		UpdatedAt   string         `json:"updated_at"`
 		PublishedAt sql.NullString `json:"published_at"`
 		Published   int64          `json:"published"`
+		ImageUrl    string         `json:"imageLocation"`
 	}
 	respondWithJSON(w, http.StatusOK, response{
 		ID:          fiction.ID,
@@ -79,6 +82,7 @@ func (cfg *apiConfig) getFiction(w http.ResponseWriter, r *http.Request) {
 		UpdatedAt:   fiction.UpdatedAt,
 		PublishedAt: fiction.PublishedAt,
 		Published:   fiction.Published,
+		ImageUrl:    fiction.ImageUrl.String,
 	})
 }
 
@@ -316,6 +320,7 @@ func (cfg *apiConfig) getFictionsByUser(w http.ResponseWriter, r *http.Request) 
 		CreatedAt   string         `json:"created_at"`
 		UpdatedAt   string         `json:"updated_at"`
 		PublishedAt sql.NullString `json:"published_at"`
+		ImageUrl    string         `json:"imageLocation"`
 	}
 	responseSlice := make([]response, 0, len(fictions))
 	for _, fiction := range fictions {
@@ -327,6 +332,7 @@ func (cfg *apiConfig) getFictionsByUser(w http.ResponseWriter, r *http.Request) 
 			CreatedAt:   fiction.CreatedAt,
 			UpdatedAt:   fiction.UpdatedAt,
 			PublishedAt: fiction.PublishedAt,
+			ImageUrl:    fiction.ImageUrl.String,
 		})
 	}
 	respondWithJSON(w, http.StatusOK, responseSlice)
@@ -356,6 +362,7 @@ func (cfg *apiConfig) getMyFictions(w http.ResponseWriter, r *http.Request, user
 		UpdatedAt   string         `json:"updated_at"`
 		PublishedAt sql.NullString `json:"published_at"`
 		Published   int64          `json:"published"`
+		ImageUrl    string         `json:"imageLocation"`
 	}
 	responseSlice := make([]response, 0, len(fictions))
 	for _, fiction := range fictions {
@@ -368,6 +375,7 @@ func (cfg *apiConfig) getMyFictions(w http.ResponseWriter, r *http.Request, user
 			UpdatedAt:   fiction.UpdatedAt,
 			PublishedAt: fiction.PublishedAt,
 			Published:   fiction.Published,
+			ImageUrl:    fiction.ImageUrl.String,
 		})
 	}
 	respondWithJSON(w, http.StatusOK, responseSlice)
