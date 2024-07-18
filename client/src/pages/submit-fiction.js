@@ -25,7 +25,7 @@ function SubmitFiction() {
         if (form.checkValidity() === false) {
             event.stopPropagation();
         } else {
-            if (await authApi(postFiction, formData)) {
+            if (await authApi(postFiction, [formData, null])) {
                 navigate(-1);
             } else {
                 alert("Failed to submit fiction");

@@ -67,14 +67,19 @@ async function getFictionByID(fictionID) {
 }
 
 //Submits a fiction to the logged in user's account
-async function postFiction(accessToken, fictionData) {
+async function postFiction(accessToken, args) {
+    const [fictionData, imageLocation] = args;
     const response = await fetch(apiBaseUrl + "/v1/fictions", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
             Authorization: "Bearer " + accessToken,
         },
-        body: JSON.stringify({ title: fictionData.title, description: fictionData.description }),
+        body: JSON.stringify({
+            title: fictionData.title,
+            description: fictionData.description,
+            imageLocation: imageLocation,
+        }),
     });
     if (response.status === 201) {
         return true;

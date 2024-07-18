@@ -90,6 +90,7 @@ func (cfg *apiConfig) postFiction(w http.ResponseWriter, r *http.Request, user d
 	request, err := decodeRequest(w, r, struct {
 		Title       string `json:"title"`
 		Description string `json:"description"`
+		ImageUrl    string `json:"imageLocation"`
 	}{})
 	if err != nil {
 		respondWithError(w, http.StatusBadRequest, "failed to decode request body")
@@ -109,7 +110,12 @@ func (cfg *apiConfig) postFiction(w http.ResponseWriter, r *http.Request, user d
 			Valid:  false,
 		},
 		Published: 0,
+		ImageUrl: sql.NullString{
+			String: request.ImageUrl,
+			Valid:  (request.ImageUrl != ""),
+		},
 	})
+
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, "Couldn't create fiction")
 		return
@@ -162,6 +168,7 @@ func (cfg *apiConfig) putFiction(w http.ResponseWriter, r *http.Request, user da
 		Title       string `json:"title"`
 		Description string `json:"description"`
 		Published   int64  `json:"published"`
+		ImageUrl    string `json:"imageLocation"`
 	}{})
 	if err != nil {
 		respondWithError(w, http.StatusBadRequest, "failed to decode request body")
@@ -219,6 +226,10 @@ func (cfg *apiConfig) putFiction(w http.ResponseWriter, r *http.Request, user da
 		PublishedAt: publishDate,
 		Published:   request.Published,
 		ID_2:        id,
+		ImageUrl: sql.NullString{
+			String: request.ImageUrl,
+			Valid:  (request.ImageUrl != ""),
+		},
 	})
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, "Couldn't update fiction")
