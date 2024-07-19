@@ -28,6 +28,8 @@ function User() {
     const [selectedFile, setSelectedFile] = useState(null);
     const [selectedFileUrl, setSelectedFileUrl] = useState(null);
     const fileInputRef = useRef(null);
+    const formikRef = useRef(null);
+    const [w1, w2] = [2, 10];
 
     const [formData, setFormData] = useState({
         id: "",
@@ -57,9 +59,17 @@ function User() {
             if (!(await authApi(putFiction, [values, fictionid, uploadResponse]))) {
                 throw new Error("Failed PUT request to API");
             }
-            navigate(-1);
+            setEdit(!edit);
         } catch (error) {
             alert("Failed to submit fiction, error: " + error);
+        }
+    };
+
+    const buttonToggle = () => {
+        if (edit) {
+            formikRef.current.submitForm();
+        } else {
+            setEdit(!edit);
         }
     };
 
@@ -120,100 +130,113 @@ function User() {
     if (!formData) {
         return <LoadingAnimation />;
     }
-    if (edit) {
-        return (
-            <Container fluid className="my-4 ms-2">
-                <div style={{ display: "flex", alignItems: "center" }}>
-                    <div className="image-edit-container" style={{ position: "relative", display: "inline-block" }}>
-                        <img
-                            src={
-                                selectedFileUrl ||
-                                formData.image_url ||
-                                `${process.env.PUBLIC_URL}/profile-default.webp`
-                            }
-                            style={{ maxHeight: "100px", width: "auto", cursor: "pointer" }}
-                            alt="ProfilePicture"
-                            onClick={triggerFileInputClick}
-                        />
-                        <div className="image-overlay" style={{ pointerEvents: "none", cursor: "pointer" }}></div>
-                        <FontAwesomeIcon
-                            icon={faPen}
-                            style={{
-                                position: "absolute",
-                                top: "0px",
-                                right: "0px",
-                                cursor: "pointer",
-                                pointerEvents: "none",
-                            }}
-                        />
-                    </div>
-                    <h1 className="ms-4">{formData ? formData.name : ""}</h1>
-                    <div style={{ flexGrow: 1 }}></div>
-                    <Button className="me-4" variant="theme" onClick={() => setEdit(false)}>
-                        <div style={{ display: "flex", alignItems: "center" }}>
-                            <FontAwesomeIcon className="ms-1 mt-1 me-2" icon={faPlus} size="2x" />
-                            <h2 className="mt-2 me-1">Update</h2>
-                        </div>
-                    </Button>
-                </div>
-                <input
-                    id="pictureUpload"
-                    type="file"
-                    onChange={handleFileChange}
-                    style={{ display: "none" }}
-                    ref={fileInputRef}
-                />
-                <hr />
-                <Tabs defaultActiveKey={getDefaultActiveKey()} id="userTabs" className="mb-3">
-                    <Tab eventKey="profile" title="Profile">
-                        <Formik
-                            validationSchema={profileValidationSchema}
-                            onSubmit={formSubmission}
-                            initialValues={formData}
-                            enableReinitialize
-                        >
-                            {({ handleSubmit, handleChange, values, touched, errors }) => (
-                                <Form noValidate onSubmit={handleSubmit}></Form>
-                            )}
-                        </Formik>
-                    </Tab>
-                    <Tab eventKey="settings" title="Settings">
-                        Tab content for Settings
-                    </Tab>
-                </Tabs>
-            </Container>
-        );
-    }
     return (
         <Container fluid className="my-4 ms-2">
             <div style={{ display: "flex", alignItems: "center" }}>
-                <img
-                    className="me-4"
-                    src={
-                        formData && formData.image_url
-                            ? formData.image_url
-                            : `${process.env.PUBLIC_URL}/profile-default.webp`
-                    }
-                    alt="ProfilePicture"
-                />
-                <h1>{formData ? formData.name : ""}</h1>
+                <div className="image-edit-container" style={{ position: "relative", display: "inline-block" }}>
+                    <img
+                        src={selectedFileUrl || formData.image_url || `${process.env.PUBLIC_URL}/profile-default.webp`}
+                        style={{ maxHeight: "100px", width: "auto", cursor: edit ? "pointer" : "default" }}
+                        alt="ProfilePicture"
+                        onClick={edit ? triggerFileInputClick : null}
+                    />
+                    {edit ? (
+                        <>
+                            <div className="image-overlay" style={{ pointerEvents: "none", cursor: "pointer" }}></div>
+                            <FontAwesomeIcon
+                                icon={faPen}
+                                style={{
+                                    position: "absolute",
+                                    top: "0px",
+                                    right: "0px",
+                                    cursor: "pointer",
+                                    pointerEvents: "none",
+                                }}
+                            />
+                        </>
+                    ) : null}
+                </div>
+                <h1 className="ms-4">{formData ? formData.name : ""}</h1>
                 <div style={{ flexGrow: 1 }}></div>
-                <Button className="me-4" variant="theme" onClick={() => setEdit(true)}>
+                <Button className="me-4" variant="theme" onClick={() => buttonToggle()}>
                     <div style={{ display: "flex", alignItems: "center" }}>
-                        <FontAwesomeIcon className="ms-1 mt-1 me-2" icon={faPen} size="2x" />
-                        <h2 className="mt-2 me-1">Edit</h2>
+                        <FontAwesomeIcon className="ms-1 mt-1 me-2" icon={edit ? faPlus : faPen} size="2x" />
+                        <h2 className="mt-2 me-1">{edit ? "Update" : "Edit"}</h2>
                     </div>
                 </Button>
             </div>
+            <input
+                id="pictureUpload"
+                type="file"
+                onChange={handleFileChange}
+                style={{ display: "none" }}
+                ref={fileInputRef}
+            />
             <hr />
             <Tabs defaultActiveKey={getDefaultActiveKey()} id="userTabs" className="mb-3">
                 <Tab eventKey="profile" title="Profile">
-                    <ul className="list-group list-group-flush">
-                        <li className="list-group-item">UID: {formData ? formData.id : ""}</li>
-                        <li className="list-group-item">Date Joined: {formData ? formData.created_at : ""}</li>
-                        <li className="list-group-item">Last Active: {formData ? formData.updated_at : ""}</li>
-                        <li className="list-group-item">Email: {formData ? formData.email : ""}</li>
-                    </ul>
+                    <Formik
+                        innerRef={formikRef}
+                        validationSchema={profileValidationSchema}
+                        onSubmit={formSubmission}
+                        initialValues={formData}
+                        enableReinitialize
+                    >
+                        {({ handleSubmit, handleChange, values, touched, errors }) => (
+                            <Form noValidate onSubmit={handleSubmit}>
+                                <Form.Group as={Row} className="mb-1" controlId="UID">
+                                    <Form.Label column sm={w1}>
+                                        <h5>UID</h5>
+                                    </Form.Label>
+                                    <Col sm={w2}>
+                                        <Form.Control type="text" name="id" value={values.id} disabled />
+                                    </Col>
+                                </Form.Group>
+                                <Form.Group as={Row} className="mb-1" controlId="DateJoined">
+                                    <Form.Label column sm={w1}>
+                                        <h5>Date Joined</h5>
+                                    </Form.Label>
+                                    <Col sm={w2}>
+                                        <Form.Control
+                                            type="text"
+                                            name="created_at"
+                                            value={values.created_at}
+                                            disabled
+                                        />
+                                    </Col>
+                                </Form.Group>
+                                <Form.Group as={Row} className="mb-1" controlId="LastActive">
+                                    <Form.Label column sm={w1}>
+                                        <h5>Last Active</h5>
+                                    </Form.Label>
+                                    <Col sm={w2}>
+                                        <Form.Control
+                                            type="text"
+                                            name="updated_at"
+                                            value={values.updated_at}
+                                            disabled
+                                        />
+                                    </Col>
+                                </Form.Group>
+                                <Form.Group as={Row} className="mb-1" controlId="Email">
+                                    <Form.Label column sm={w1}>
+                                        <h5>Email</h5>
+                                    </Form.Label>
+                                    <Col sm={w2}>
+                                        <Form.Control
+                                            type="email"
+                                            name="email"
+                                            value={values.email}
+                                            onChange={handleChange}
+                                            isInvalid={touched.email && errors.email}
+                                            disabled={!edit}
+                                        />
+                                        <Form.Control.Feedback type="invalid">{errors.email}</Form.Control.Feedback>
+                                    </Col>
+                                </Form.Group>
+                            </Form>
+                        )}
+                    </Formik>
                 </Tab>
                 <Tab eventKey="settings" title="Settings">
                     Tab content for Settings
