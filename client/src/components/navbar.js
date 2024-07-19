@@ -39,7 +39,16 @@ function MyNavbar({ toggleSideNav }) {
         >
             {children}
             {gettingUser ? "..." : user ? user.name : "Not logged in"}
-            <FontAwesomeIcon className="ms-3" icon={faUser} />
+            {!gettingUser && user.image_url ? (
+                <img
+                    src={user.image_url}
+                    alt="User"
+                    className="ms-2 rounded-circle"
+                    style={{ width: "2rem", height: "2rem" }}
+                />
+            ) : (
+                <FontAwesomeIcon className="ms-3" icon={faUser} />
+            )}
         </a>
     ));
 
