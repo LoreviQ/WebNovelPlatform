@@ -13,6 +13,7 @@ import * as yup from "yup";
 
 import { getFictionByID, putFiction, uploadFileToGCS } from "../utils/api";
 import { useAuth } from "../utils/auth";
+import LoadingAnimation from "../components/loading";
 
 function EditFiction() {
     const { fictionid } = useParams();
@@ -102,6 +103,9 @@ function EditFiction() {
 
         fetchFictionData();
     }, []);
+    if (formData.id === "") {
+        return <LoadingAnimation />;
+    }
     return (
         <Container fluid className="my-4 ms-2">
             <div style={{ display: "flex", alignItems: "center" }}>
