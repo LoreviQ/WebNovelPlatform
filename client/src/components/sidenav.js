@@ -30,7 +30,7 @@ function MySideNav() {
                             My Fictions
                         </a>
                         <div className="sb-sidenav-menu-heading">Demo</div>
-                        <a className="nav-link" href="/example">
+                        <a className="nav-link" href="/">
                             <FontAwesomeIcon className="sb-nav-link-icon" icon={faTachometerAlt} />
                             Dashboard
                         </a>
