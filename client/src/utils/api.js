@@ -169,8 +169,29 @@ async function uploadFileToGCS(accessToken, args) {
     return false;
 }
 
+// Updates a users profile
+async function putUser(accessToken, args) {
+    const [userData, imageUrl] = args;
+    const response = await fetch(apiBaseUrl + "/v1/users/profile", {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + accessToken,
+        },
+        body: JSON.stringify({
+            email: userData.email,
+            image_url: imageUrl,
+        }),
+    });
+    if (response.status === 200) {
+        return true;
+    }
+    return false;
+}
+
 export {
     getUserByUID,
+    putUser,
     getFictionByID,
     getFictions,
     getFictionsByAuthorID,

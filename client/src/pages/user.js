@@ -13,14 +13,14 @@ import * as formik from "formik";
 import * as yup from "yup";
 
 import { useAuth } from "../utils/auth";
-import { getUserByUID } from "../utils/api";
+import { getUserByUID, putUser, uploadFileToGCS } from "../utils/api";
 import LoadingAnimation from "../components/loading";
 import Error from "./error";
 
 function User() {
     const [err404, setErr404] = useState(false);
     const [edit, setEdit] = useState(false);
-    const { user, awaitUser } = useAuth();
+    const { user, awaitUser, authApi } = useAuth();
     const { userid } = useParams();
     const navigate = useNavigate();
     const location = useLocation();
@@ -56,7 +56,7 @@ function User() {
                     throw new Error("Failed to upload image");
                 }
             }
-            if (!(await authApi(putFiction, [values, fictionid, uploadResponse]))) {
+            if (!(await authApi(putUser, [values, uploadResponse]))) {
                 throw new Error("Failed PUT request to API");
             }
             setEdit(!edit);
@@ -115,7 +115,6 @@ function User() {
 
     const getDefaultActiveKey = () => {
         const hash = location.hash;
-        console.log(hash);
         switch (hash) {
             case "#settings":
                 return "settings";
