@@ -3,6 +3,10 @@ import { useParams, useNavigate, useLocation } from "react-router-dom";
 import Container from "react-bootstrap/esm/Container";
 import Tab from "react-bootstrap/Tab";
 import Tabs from "react-bootstrap/Tabs";
+import Button from "react-bootstrap/Button";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPen } from "@fortawesome/free-solid-svg-icons";
+
 import { useAuth } from "../utils/auth";
 import { getUserByUID } from "../utils/api";
 import LoadingAnimation from "../components/loading";
@@ -70,6 +74,13 @@ function User() {
                     alt="ProfilePicture"
                 />
                 <h1>{displayUser ? displayUser.name : ""}</h1>
+                <div style={{ flexGrow: 1 }}></div>
+                <Button className="me-4" variant="theme" onClick={() => navigate("edit")}>
+                    <div style={{ display: "flex", alignItems: "center" }}>
+                        <FontAwesomeIcon className="ms-1 mt-1 me-2" icon={faPen} size="2x" />
+                        <h2 className="mt-2 me-1">Edit</h2>
+                    </div>
+                </Button>
             </div>
             <hr />
             <Tabs defaultActiveKey={getDefaultActiveKey()} id="userTabs" className="mb-3">
