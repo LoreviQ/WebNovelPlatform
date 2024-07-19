@@ -50,4 +50,3 @@ export { default as User } from "./user";
 export { default as Fictions } from "./fictions";
 export { default as SubmitFiction } from "./submit-fiction";
 export { default as EditFiction } from "./edit-fiction";
-export { default as EditUser } from "./edit-user";

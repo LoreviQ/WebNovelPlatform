@@ -29,15 +29,7 @@ function AppRouter() {
                         path="user/:userid"
                         element={
                             <UserIDRouter>
-                                <App Page={Pages.User} />
-                            </UserIDRouter>
-                        }
-                    />
-                    <Route
-                        path="user/:userid/edit"
-                        element={
-                            <UserIDRouter>
-                                <App Page={Pages.EditUser} />
+                                <App Page={Pages.User} pageProps={{ edit: false }} />
                             </UserIDRouter>
                         }
                     />
