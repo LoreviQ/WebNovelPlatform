@@ -155,10 +155,11 @@ func (cfg *apiConfig) putUserProfile(w http.ResponseWriter, r *http.Request, use
 
 	// UPDATE USER
 	_, err = cfg.DB.UpdateUser(r.Context(), database.UpdateUserParams{
-		ID:        user.ID,
-		UpdatedAt: time.Now().UTC().Format(time.RFC3339),
-		Name:      user.Name,
-		Email:     request.Email,
+		ID:           user.ID,
+		UpdatedAt:    time.Now().UTC().Format(time.RFC3339),
+		Name:         user.Name,
+		Email:        request.Email,
+		Passwordhash: user.Passwordhash,
 		ImageUrl: sql.NullString{
 			String: request.ImageUrl,
 			Valid:  (request.ImageUrl != ""),

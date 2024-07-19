@@ -89,7 +89,11 @@ function Fictions() {
             <div style={{ display: "flex", alignItems: "center" }}>
                 <img
                     className="me-4"
-                    src={`${process.env.PUBLIC_URL}/profile-default.webp`}
+                    src={
+                        displayUser && displayUser.image_url
+                            ? displayUser.image_url
+                            : `${process.env.PUBLIC_URL}/profile-default.webp`
+                    }
                     alt="ProfilePicture"
                     style={{ width: "100px", height: "100px" }}
                 />
