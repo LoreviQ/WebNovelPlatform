@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { format } from "date-fns";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCropSimple, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faPen, faPlus } from "@fortawesome/free-solid-svg-icons";
 import Container from "react-bootstrap/esm/Container";
 import Button from "react-bootstrap/Button";
 import Col from "react-bootstrap/Col";
@@ -20,6 +20,8 @@ function EditFiction() {
     const { Formik } = formik;
     const navigate = useNavigate();
     const [selectedFile, setSelectedFile] = useState(null);
+    const [selectedFileUrl, setSelectedFileUrl] = useState(null);
+    const fileInputRef = useRef(null);
 
     const validationSchema = yup.object().shape({
         id: yup
@@ -37,6 +39,7 @@ function EditFiction() {
         description: "",
         published: false,
         publishedAt: Date(),
+        imageLocation: "",
     });
 
     const formSubmission = async (values) => {
@@ -61,8 +64,20 @@ function EditFiction() {
         }
     };
 
+    const triggerFileInputClick = () => {
+        fileInputRef.current.click();
+    };
+
     const handleFileChange = (event) => {
-        setSelectedFile(event.target.files[0]);
+        const file = event.target.files[0];
+        setSelectedFile(file);
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setSelectedFileUrl(reader.result);
+            };
+            reader.readAsDataURL(file);
+        }
     };
 
     useEffect(() => {
@@ -81,19 +96,45 @@ function EditFiction() {
                 description: fictionData.description,
                 published: fictionData.published,
                 publishedAt: fictionData.published_at.Valid ? new Date(fictionData.published_at.String) : Date(),
+                imageLocation: fictionData.imageLocation,
             });
         };
 
         fetchFictionData();
     }, []);
-
     return (
         <Container fluid className="my-4 ms-2">
             <div style={{ display: "flex", alignItems: "center" }}>
-                <h1>{formData.title}</h1>
+                <div style={{ position: "relative", display: "inline-block" }}>
+                    <img
+                        src={
+                            selectedFileUrl ||
+                            formData.imageLocation ||
+                            `${process.env.PUBLIC_URL}/image-placeholder.png`
+                        }
+                        style={{ maxHeight: "200px", width: "auto" }}
+                        alt="ProfilePicture"
+                    />
+                    <FontAwesomeIcon
+                        icon={faPen}
+                        style={{
+                            position: "absolute",
+                            top: "0px",
+                            right: "0px",
+                            cursor: "pointer",
+                        }}
+                        onClick={triggerFileInputClick}
+                    />
+                </div>
+                <h1 className="ms-4">{formData.title}</h1>
             </div>
-            <hr />
-            <input id="pictureUpload" type="file" onChange={handleFileChange} />
+            <input
+                id="pictureUpload"
+                type="file"
+                onChange={handleFileChange}
+                style={{ display: "none" }}
+                ref={fileInputRef}
+            />
             <hr />
             <Formik
                 validationSchema={validationSchema}
