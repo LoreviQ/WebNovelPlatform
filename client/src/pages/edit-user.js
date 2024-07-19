@@ -5,7 +5,7 @@ import Tab from "react-bootstrap/Tab";
 import Tabs from "react-bootstrap/Tabs";
 import Button from "react-bootstrap/Button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPen } from "@fortawesome/free-solid-svg-icons";
+import { faPen, faPlus } from "@fortawesome/free-solid-svg-icons";
 
 import { useAuth } from "../utils/auth";
 import { getUserByUID } from "../utils/api";
@@ -64,21 +64,31 @@ function EditUser() {
     return (
         <Container fluid className="my-4 ms-2">
             <div style={{ display: "flex", alignItems: "center" }}>
-                <img
-                    className="me-4"
-                    src={
-                        displayUser && displayUser.image_url
-                            ? displayUser.image_url
-                            : `${process.env.PUBLIC_URL}/profile-default.webp`
-                    }
-                    alt="ProfilePicture"
-                />
-                <h1>{displayUser ? displayUser.name : ""}</h1>
+                <div style={{ position: "relative", display: "inline-block" }}>
+                    <img
+                        src={
+                            displayUser && displayUser.image_url
+                                ? displayUser.image_url
+                                : `${process.env.PUBLIC_URL}/profile-default.webp`
+                        }
+                        alt="ProfilePicture"
+                    />
+                    <FontAwesomeIcon
+                        icon={faPen}
+                        style={{
+                            position: "absolute",
+                            top: "0px",
+                            right: "0px",
+                            cursor: "pointer",
+                        }}
+                    />
+                </div>
+                <h1 className="ms-4">{displayUser ? displayUser.name : ""}</h1>
                 <div style={{ flexGrow: 1 }}></div>
                 <Button className="me-4" variant="theme" onClick={() => navigate("edit")}>
                     <div style={{ display: "flex", alignItems: "center" }}>
-                        <FontAwesomeIcon className="ms-1 mt-1 me-2" icon={faPen} size="2x" />
-                        <h2 className="mt-2 me-1">Edit</h2>
+                        <FontAwesomeIcon className="ms-1 mt-1 me-2" icon={faPlus} size="2x" />
+                        <h2 className="mt-2 me-1">Update</h2>
                     </div>
                 </Button>
             </div>

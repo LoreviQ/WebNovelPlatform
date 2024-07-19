@@ -12571,3 +12571,21 @@ body {
   object-fit: contain;
   background-color: #f0f0f0;
 }
+
+.image-edit-container:hover .image-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent grey overlay */
+  cursor: pointer;
+}
+
+.image-overlay {
+  display: none;
+}
+
+.image-edit-container:hover .image-overlay {
+  display: block;
+}
