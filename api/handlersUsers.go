@@ -29,12 +29,14 @@ func (cfg *apiConfig) getUser(w http.ResponseWriter, r *http.Request) {
 		UpdatedAt string `json:"updated_at"`
 		Name      string `json:"name"`
 		Email     string `json:"email"`
+		ImageUrl  string `json:"image_url"`
 	}{
 		ID:        user.ID,
 		CreatedAt: user.CreatedAt,
 		UpdatedAt: user.UpdatedAt,
 		Name:      user.Name,
 		Email:     user.Email,
+		ImageUrl:  user.ImageUrl.String,
 	})
 
 }
