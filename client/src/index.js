@@ -34,6 +34,14 @@ function AppRouter() {
                         }
                     />
                     <Route
+                        path="user/:userid/edit"
+                        element={
+                            <UserIDRouter>
+                                <App Page={Pages.EditUser} />
+                            </UserIDRouter>
+                        }
+                    />
+                    <Route
                         path="user/:userid/fictions"
                         element={
                             <PrivateRoute>
