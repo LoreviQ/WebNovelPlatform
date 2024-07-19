@@ -64,15 +64,17 @@ function EditUser() {
     return (
         <Container fluid className="my-4 ms-2">
             <div style={{ display: "flex", alignItems: "center" }}>
-                <div style={{ position: "relative", display: "inline-block" }}>
+                <div className="image-edit-container" style={{ position: "relative", display: "inline-block" }}>
                     <img
                         src={
                             displayUser && displayUser.image_url
                                 ? displayUser.image_url
                                 : `${process.env.PUBLIC_URL}/profile-default.webp`
                         }
+                        style={{ maxHeight: "200px", width: "auto", cursor: "pointer" }}
                         alt="ProfilePicture"
                     />
+                    <div className="image-overlay" style={{ pointerEvents: "none", cursor: "pointer" }}></div>
                     <FontAwesomeIcon
                         icon={faPen}
                         style={{
@@ -80,6 +82,7 @@ function EditUser() {
                             top: "0px",
                             right: "0px",
                             cursor: "pointer",
+                            pointerEvents: "none",
                         }}
                     />
                 </div>
