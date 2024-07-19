@@ -23,6 +23,7 @@ function EditFiction() {
     const [selectedFile, setSelectedFile] = useState(null);
     const [selectedFileUrl, setSelectedFileUrl] = useState(null);
     const fileInputRef = useRef(null);
+    const [w1, w2] = [2, 10];
 
     const [formData, setFormData] = useState({
         id: "",
@@ -151,10 +152,10 @@ function EditFiction() {
                 {({ handleSubmit, handleChange, values, touched, errors }) => (
                     <Form noValidate onSubmit={handleSubmit}>
                         <Form.Group as={Row} className="mb-3" controlId="editID">
-                            <Form.Label column sm={2}>
+                            <Form.Label column sm={w1}>
                                 <h5>UID</h5>
                             </Form.Label>
-                            <Col sm={10}>
+                            <Col sm={w2}>
                                 <Form.Control
                                     type="text"
                                     name="id"
@@ -171,10 +172,10 @@ function EditFiction() {
                             </Col>
                         </Form.Group>
                         <Form.Group as={Row} className="mb-3" controlId="editTitle">
-                            <Form.Label column sm={2}>
+                            <Form.Label column sm={w1}>
                                 <h5>Title</h5>
                             </Form.Label>
-                            <Col sm={10}>
+                            <Col sm={w2}>
                                 <Form.Control
                                     type="text"
                                     name="title"
@@ -187,10 +188,10 @@ function EditFiction() {
                             </Col>
                         </Form.Group>
                         <Form.Group as={Row} className="mb-3" controlId="editDescription">
-                            <Form.Label column sm={2}>
+                            <Form.Label column sm={w1}>
                                 <h5>Description</h5>
                             </Form.Label>
-                            <Col sm={10}>
+                            <Col sm={w2}>
                                 <Form.Control
                                     as="textarea"
                                     rows={5}
@@ -202,10 +203,10 @@ function EditFiction() {
                             </Col>
                         </Form.Group>
                         <Form.Group as={Row} className="mb-3" controlId="editPuiblished">
-                            <Form.Label column sm={2}>
+                            <Form.Label column sm={w1}>
                                 <h5>Published</h5>
                             </Form.Label>
-                            <Col sm={10}>
+                            <Col sm={w2}>
                                 <Form.Check
                                     className="mt-2"
                                     type="switch"
@@ -217,10 +218,10 @@ function EditFiction() {
                         </Form.Group>
                         {values.published ? (
                             <Form.Group as={Row} className="mb-3" controlId="editPublishDate">
-                                <Form.Label column sm={2}>
+                                <Form.Label column sm={w1}>
                                     <h5>Published On</h5>
                                 </Form.Label>
-                                <Col sm={10}>
+                                <Col sm={w2}>
                                     <Form.Control
                                         disabled
                                         type="text"

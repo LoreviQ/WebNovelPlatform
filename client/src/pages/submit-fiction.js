@@ -15,10 +15,10 @@ function SubmitFiction() {
     const { user, authApi } = useAuth();
     const { userid } = useParams();
     const navigate = useNavigate();
-
     const [formData, setFormData] = useState({ title: "", description: "" });
     const [selectedFile, setSelectedFile] = useState(null);
     const [validated, setValidated] = useState(false);
+    const [w1, w2] = [2, 10];
 
     const formSubmission = async (event) => {
         const form = event.currentTarget;
@@ -57,18 +57,18 @@ function SubmitFiction() {
             <hr />
             <Form noValidate validated={validated} onSubmit={formSubmission}>
                 <Form.Group as={Row} className="mb-3" controlId="submitPicture">
-                    <Form.Label column sm={2}>
+                    <Form.Label column sm={w1}>
                         Cover Picture for Fiction
                     </Form.Label>
-                    <Col sm={10}>
+                    <Col sm={w2}>
                         <Form.Control type="file" onChange={(e) => setSelectedFile(e.target.files[0])} />
                     </Col>
                 </Form.Group>
                 <Form.Group as={Row} className="mb-3" controlId="submitTitle">
-                    <Form.Label column sm={2}>
+                    <Form.Label column sm={w1}>
                         Title
                     </Form.Label>
-                    <Col sm={10}>
+                    <Col sm={w2}>
                         <Form.Control
                             type="text"
                             placeholder="Title of Fiction"
@@ -80,10 +80,10 @@ function SubmitFiction() {
                     <Form.Control.Feedback type="invalid">Required</Form.Control.Feedback>
                 </Form.Group>
                 <Form.Group as={Row} className="mb-3" controlId="submitDescription">
-                    <Form.Label column sm={2}>
+                    <Form.Label column sm={w1}>
                         Description
                     </Form.Label>
-                    <Col sm={10}>
+                    <Col sm={w2}>
                         <Form.Control
                             as="textarea"
                             rows={5}
