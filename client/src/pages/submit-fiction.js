@@ -9,7 +9,7 @@ import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 
 import { useAuth } from "../utils/auth";
-import { postFiction } from "../utils/api";
+import { uploadFileToGCS, postFiction } from "../utils/api";
 
 function SubmitFiction() {
     const { user, authApi } = useAuth();
@@ -17,6 +17,7 @@ function SubmitFiction() {
     const navigate = useNavigate();
 
     const [formData, setFormData] = useState({ title: "", description: "" });
+    const [selectedFile, setSelectedFile] = useState(null);
     const [validated, setValidated] = useState(false);
 
     const formSubmission = async (event) => {
@@ -24,12 +25,22 @@ function SubmitFiction() {
         event.preventDefault();
         if (form.checkValidity() === false) {
             event.stopPropagation();
-        } else {
-            if (await authApi(postFiction, [formData, null])) {
-                navigate(-1);
-            } else {
-                alert("Failed to submit fiction");
+            return;
+        }
+        try {
+            let uploadResponse = null;
+            if (selectedFile) {
+                uploadResponse = await authApi(uploadFileToGCS, [selectedFile]);
+                if (!uploadResponse) {
+                    throw new Error("Failed to upload image");
+                }
             }
+            if (!(await authApi(postFiction, [formData, uploadResponse]))) {
+                throw new Error("Failed PUT request to API");
+            }
+            navigate(-1);
+        } catch (error) {
+            alert("Failed to submit fiction, error: " + error);
         }
         setValidated(true);
     };
@@ -45,11 +56,19 @@ function SubmitFiction() {
             </div>
             <hr />
             <Form noValidate validated={validated} onSubmit={formSubmission}>
+                <Form.Group as={Row} className="mb-3" controlId="submitPicture">
+                    <Form.Label column sm={2}>
+                        Cover Picture for Fiction
+                    </Form.Label>
+                    <Col sm={10}>
+                        <Form.Control type="file" onChange={(e) => setSelectedFile(e.target.files[0])} />
+                    </Col>
+                </Form.Group>
                 <Form.Group as={Row} className="mb-3" controlId="submitTitle">
-                    <Form.Label column sm={1}>
+                    <Form.Label column sm={2}>
                         Title
                     </Form.Label>
-                    <Col sm={11}>
+                    <Col sm={10}>
                         <Form.Control
                             type="text"
                             placeholder="Title of Fiction"
@@ -60,12 +79,11 @@ function SubmitFiction() {
                     </Col>
                     <Form.Control.Feedback type="invalid">Required</Form.Control.Feedback>
                 </Form.Group>
-
                 <Form.Group as={Row} className="mb-3" controlId="submitDescription">
-                    <Form.Label column sm={1}>
+                    <Form.Label column sm={2}>
                         Description
                     </Form.Label>
-                    <Col sm={11}>
+                    <Col sm={10}>
                         <Form.Control
                             as="textarea"
                             rows={5}

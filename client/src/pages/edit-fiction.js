@@ -53,7 +53,7 @@ function EditFiction() {
             if (selectedFile) {
                 uploadResponse = await authApi(uploadFileToGCS, [selectedFile]);
                 if (!uploadResponse) {
-                    throw new Error("Failed to get signed URL");
+                    throw new Error("Failed to upload image");
                 }
             }
             if (!(await authApi(putFiction, [values, fictionid, uploadResponse]))) {
