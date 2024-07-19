@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPen, faPlus } from "@fortawesome/free-solid-svg-icons";
@@ -19,16 +19,65 @@ import Error from "./error";
 
 function User() {
     const [err404, setErr404] = useState(false);
-    const [displayUser, setDisplayUser] = useState(null);
     const [edit, setEdit] = useState(false);
     const { user, awaitUser } = useAuth();
     const { userid } = useParams();
     const navigate = useNavigate();
     const location = useLocation();
+    const { Formik } = formik;
+    const [selectedFile, setSelectedFile] = useState(null);
+    const [selectedFileUrl, setSelectedFileUrl] = useState(null);
+    const fileInputRef = useRef(null);
+
+    const [formData, setFormData] = useState({
+        id: "",
+        created_at: "",
+        updated_at: "",
+        email: "",
+        image_url: "",
+    });
 
     const profileValidationSchema = yup.object().shape({
         email: yup.string().required(),
     });
+
+    const formSubmission = async (values) => {
+        const isConfirmed = window.confirm("Are you sure?");
+        if (!isConfirmed) {
+            return;
+        }
+        try {
+            let uploadResponse = null;
+            if (selectedFile) {
+                uploadResponse = await authApi(uploadFileToGCS, [selectedFile]);
+                if (!uploadResponse) {
+                    throw new Error("Failed to upload image");
+                }
+            }
+            if (!(await authApi(putFiction, [values, fictionid, uploadResponse]))) {
+                throw new Error("Failed PUT request to API");
+            }
+            navigate(-1);
+        } catch (error) {
+            alert("Failed to submit fiction, error: " + error);
+        }
+    };
+
+    const triggerFileInputClick = () => {
+        fileInputRef.current.click();
+    };
+
+    const handleFileChange = (event) => {
+        const file = event.target.files[0];
+        setSelectedFile(file);
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setSelectedFileUrl(reader.result);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
 
     useEffect(() => {
         document.title = "User | WebNovelPlatform";
@@ -48,7 +97,7 @@ function User() {
                 setErr404(true);
                 return;
             }
-            setDisplayUser(userData);
+            setFormData(userData);
         };
 
         fetchUserData();
@@ -68,7 +117,7 @@ function User() {
     if (err404) {
         return <Error statusCode={404} />;
     }
-    if (!displayUser) {
+    if (!formData) {
         return <LoadingAnimation />;
     }
     if (edit) {
@@ -78,12 +127,13 @@ function User() {
                     <div className="image-edit-container" style={{ position: "relative", display: "inline-block" }}>
                         <img
                             src={
-                                displayUser && displayUser.image_url
-                                    ? displayUser.image_url
-                                    : `${process.env.PUBLIC_URL}/profile-default.webp`
+                                selectedFileUrl ||
+                                formData.image_url ||
+                                `${process.env.PUBLIC_URL}/profile-default.webp`
                             }
-                            style={{ maxHeight: "200px", width: "auto", cursor: "pointer" }}
+                            style={{ maxHeight: "100px", width: "auto", cursor: "pointer" }}
                             alt="ProfilePicture"
+                            onClick={triggerFileInputClick}
                         />
                         <div className="image-overlay" style={{ pointerEvents: "none", cursor: "pointer" }}></div>
                         <FontAwesomeIcon
@@ -97,7 +147,7 @@ function User() {
                             }}
                         />
                     </div>
-                    <h1 className="ms-4">{displayUser ? displayUser.name : ""}</h1>
+                    <h1 className="ms-4">{formData ? formData.name : ""}</h1>
                     <div style={{ flexGrow: 1 }}></div>
                     <Button className="me-4" variant="theme" onClick={() => setEdit(false)}>
                         <div style={{ display: "flex", alignItems: "center" }}>
@@ -106,9 +156,27 @@ function User() {
                         </div>
                     </Button>
                 </div>
+                <input
+                    id="pictureUpload"
+                    type="file"
+                    onChange={handleFileChange}
+                    style={{ display: "none" }}
+                    ref={fileInputRef}
+                />
                 <hr />
                 <Tabs defaultActiveKey={getDefaultActiveKey()} id="userTabs" className="mb-3">
-                    <Tab eventKey="profile" title="Profile"></Tab>
+                    <Tab eventKey="profile" title="Profile">
+                        <Formik
+                            validationSchema={profileValidationSchema}
+                            onSubmit={formSubmission}
+                            initialValues={formData}
+                            enableReinitialize
+                        >
+                            {({ handleSubmit, handleChange, values, touched, errors }) => (
+                                <Form noValidate onSubmit={handleSubmit}></Form>
+                            )}
+                        </Formik>
+                    </Tab>
                     <Tab eventKey="settings" title="Settings">
                         Tab content for Settings
                     </Tab>
@@ -122,13 +190,13 @@ function User() {
                 <img
                     className="me-4"
                     src={
-                        displayUser && displayUser.image_url
-                            ? displayUser.image_url
+                        formData && formData.image_url
+                            ? formData.image_url
                             : `${process.env.PUBLIC_URL}/profile-default.webp`
                     }
                     alt="ProfilePicture"
                 />
-                <h1>{displayUser ? displayUser.name : ""}</h1>
+                <h1>{formData ? formData.name : ""}</h1>
                 <div style={{ flexGrow: 1 }}></div>
                 <Button className="me-4" variant="theme" onClick={() => setEdit(true)}>
                     <div style={{ display: "flex", alignItems: "center" }}>
@@ -141,10 +209,10 @@ function User() {
             <Tabs defaultActiveKey={getDefaultActiveKey()} id="userTabs" className="mb-3">
                 <Tab eventKey="profile" title="Profile">
                     <ul className="list-group list-group-flush">
-                        <li className="list-group-item">UID: {displayUser ? displayUser.id : ""}</li>
-                        <li className="list-group-item">Date Joined: {displayUser ? displayUser.created_at : ""}</li>
-                        <li className="list-group-item">Last Active: {displayUser ? displayUser.updated_at : ""}</li>
-                        <li className="list-group-item">Email: {displayUser ? displayUser.email : ""}</li>
+                        <li className="list-group-item">UID: {formData ? formData.id : ""}</li>
+                        <li className="list-group-item">Date Joined: {formData ? formData.created_at : ""}</li>
+                        <li className="list-group-item">Last Active: {formData ? formData.updated_at : ""}</li>
+                        <li className="list-group-item">Email: {formData ? formData.email : ""}</li>
                     </ul>
                 </Tab>
                 <Tab eventKey="settings" title="Settings">

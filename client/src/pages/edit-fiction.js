@@ -24,6 +24,15 @@ function EditFiction() {
     const [selectedFileUrl, setSelectedFileUrl] = useState(null);
     const fileInputRef = useRef(null);
 
+    const [formData, setFormData] = useState({
+        id: "",
+        title: "",
+        description: "",
+        published: false,
+        publishedAt: Date(),
+        imageLocation: "",
+    });
+
     const validationSchema = yup.object().shape({
         id: yup
             .string()
@@ -32,15 +41,6 @@ function EditFiction() {
             .required("ID is required"),
         title: yup.string().required(),
         description: yup.string(),
-    });
-
-    const [formData, setFormData] = useState({
-        id: "",
-        title: "",
-        description: "",
-        published: false,
-        publishedAt: Date(),
-        imageLocation: "",
     });
 
     const formSubmission = async (values) => {
