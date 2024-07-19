@@ -141,8 +141,13 @@ export function AuthProvider({ children }) {
         return apiFunction(access.token, ...args);
     };
 
+    const updateUserSessionData = (user) => {
+        localStorage.setItem("user", JSON.stringify(user));
+        setUser(user);
+    };
+
     return (
-        <AuthContext.Provider value={{ user, gettingUser, awaitUser, login, logout, authApi }}>
+        <AuthContext.Provider value={{ user, gettingUser, awaitUser, login, logout, authApi, updateUserSessionData }}>
             {children}
         </AuthContext.Provider>
     );

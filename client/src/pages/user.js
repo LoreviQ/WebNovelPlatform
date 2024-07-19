@@ -20,7 +20,7 @@ import Error from "./error";
 function User() {
     const [err404, setErr404] = useState(false);
     const [edit, setEdit] = useState(false);
-    const { user, awaitUser, authApi } = useAuth();
+    const { user, awaitUser, authApi, updateUserSessionData } = useAuth();
     const { userid } = useParams();
     const navigate = useNavigate();
     const location = useLocation();
@@ -59,6 +59,11 @@ function User() {
             if (!(await authApi(putUser, [values, uploadResponse]))) {
                 throw new Error("Failed PUT request to API");
             }
+            updateUserSessionData({
+                id: user.id,
+                name: user.name,
+                image_url: uploadResponse,
+            });
             setEdit(!edit);
         } catch (error) {
             alert("Failed to submit fiction, error: " + error);
@@ -134,7 +139,12 @@ function User() {
             <div style={{ display: "flex", alignItems: "center" }}>
                 <div className="image-edit-container" style={{ position: "relative", display: "inline-block" }}>
                     <img
-                        src={selectedFileUrl || formData.image_url || `${process.env.PUBLIC_URL}/profile-default.webp`}
+                        src={
+                            selectedFileUrl ||
+                            user.image_url ||
+                            formData.image_url ||
+                            `${process.env.PUBLIC_URL}/profile-default.webp`
+                        }
                         style={{ maxHeight: "100px", width: "auto", cursor: edit ? "pointer" : "default" }}
                         alt="ProfilePicture"
                         onClick={edit ? triggerFileInputClick : null}
