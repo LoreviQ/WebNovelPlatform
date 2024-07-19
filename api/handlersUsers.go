@@ -1,6 +1,7 @@
 package main
 
 import (
+	"database/sql"
 	"log"
 	"net/http"
 	"time"
@@ -136,4 +137,39 @@ func (cfg *apiConfig) putUser(w http.ResponseWriter, r *http.Request, user datab
 		Name:      updatedUser.Name,
 		Email:     updatedUser.Email,
 	})
+}
+
+// Put User Profile Handler
+//
+// Updates a logged in users preferences without changing their username or password
+func (cfg *apiConfig) putUserProfile(w http.ResponseWriter, r *http.Request, user database.User) {
+	// REQUEST
+	request, err := decodeRequest(w, r, struct {
+		Email    string `json:"email"`
+		ImageUrl string `json:"image_url"`
+	}{})
+	if err != nil {
+		respondWithError(w, http.StatusBadRequest, "failed to decode request body")
+		return
+	}
+
+	// UPDATE USER
+	_, err = cfg.DB.UpdateUser(r.Context(), database.UpdateUserParams{
+		ID:        user.ID,
+		UpdatedAt: time.Now().UTC().Format(time.RFC3339),
+		Name:      user.Name,
+		Email:     request.Email,
+		ImageUrl: sql.NullString{
+			String: request.ImageUrl,
+			Valid:  (request.ImageUrl != ""),
+		},
+	})
+	if err != nil {
+		log.Printf("Error updating user: %s", err)
+		respondWithError(w, http.StatusInternalServerError, "Couldn't update user")
+		return
+	}
+
+	// RESPONSE
+	w.WriteHeader(http.StatusOK)
 }

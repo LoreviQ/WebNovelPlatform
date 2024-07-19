@@ -59,6 +59,7 @@ func initialiseServer(cfg apiConfig, mux *http.ServeMux) *http.Server {
 	mux.HandleFunc("GET /v1/users/{id}", cfg.getUser)
 	mux.HandleFunc("POST /v1/users", cfg.postUser)
 	mux.HandleFunc("PUT /v1/users", cfg.AuthMiddleware(cfg.putUser))
+	mux.HandleFunc("PUT /v1/users/profile", cfg.AuthMiddleware(cfg.putUserProfile))
 
 	mux.HandleFunc("GET /v1/users/{id}/fictions", cfg.getFictionsByUser)
 	mux.HandleFunc("GET /v1/users/me/fictions", cfg.AuthMiddleware(cfg.getMyFictions))
