@@ -60,7 +60,15 @@ function User() {
     return (
         <Container fluid className="my-4 ms-2">
             <div style={{ display: "flex", alignItems: "center" }}>
-                <img className="me-4" src={`${process.env.PUBLIC_URL}/profile-default.webp`} alt="ProfilePicture" />
+                <img
+                    className="me-4"
+                    src={
+                        displayUser && displayUser.image_url
+                            ? displayUser.image_url
+                            : `${process.env.PUBLIC_URL}/profile-default.webp`
+                    }
+                    alt="ProfilePicture"
+                />
                 <h1>{displayUser ? displayUser.name : ""}</h1>
             </div>
             <hr />
