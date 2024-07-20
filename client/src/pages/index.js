@@ -25,7 +25,14 @@ function Index() {
                 {fictions.map((fiction, index) => (
                     <Carousel.Item key={index}>
                         <div className="carousel-item-container">
-                            <img className="carousel-image" src={`${process.env.PUBLIC_URL}/image-placeholder.png`} />
+                            <img
+                                className="carousel-image"
+                                src={
+                                    fiction.imageLocation
+                                        ? fiction.imageLocation
+                                        : `${process.env.PUBLIC_URL}/image-placeholder.png`
+                                }
+                            />
                             <div style={{ flexGrow: 1 }}></div>
                             <div className="carousel-text">
                                 <h3>{fiction.title}</h3>

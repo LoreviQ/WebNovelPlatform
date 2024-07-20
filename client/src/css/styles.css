@@ -12551,7 +12551,7 @@ body {
 .carousel-item-container::after {
   content: '';
   position: absolute;
-  left: 350px; /* Adjust this value based on your layout */
+  left: 401px; /* Adjust this value based on your layout */
   height: 100%;
   width: 100px; /* Width of the fade effect */
   background: linear-gradient(to right, rgba(255, 255, 255, 0), white 100%);
@@ -12568,8 +12568,9 @@ body {
 .carousel-image {
   height: 400px;
   width: auto;
-  object-fit: contain;
-  background-color: #f0f0f0;
+  max-width: 500px;
+  object-fit: cover;
+  background-color: #ffffff;
 }
 
 .image-edit-container:hover .image-overlay {
