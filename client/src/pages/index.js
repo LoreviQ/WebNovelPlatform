@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Container from "react-bootstrap/esm/Container";
 import Carousel from "react-bootstrap/Carousel";
+import _ from "lodash";
 
 import LoadingAnimation from "../components/loading";
 import { getFictions } from "../utils/api";
@@ -9,26 +10,12 @@ function Index() {
     const [fictions, setFictions] = useState(null);
     const [carouselFics, setCarouselFics] = useState(null);
 
-    // Function to select n random items from an array
-    function selectRandomItems(arr, n) {
-        let result = new Array(n),
-            len = arr.length,
-            taken = new Array(len);
-        if (n > len) throw new RangeError("selectRandomItems: more elements taken than available");
-        while (n--) {
-            let x = Math.floor(Math.random() * len);
-            result[n] = arr[x in taken ? taken[x] : x];
-            taken[x] = --len in taken ? taken[len] : len;
-        }
-        return result;
-    }
-
     useEffect(() => {
         document.title = "Home | WebNovelPlatform";
         const fetchDisplayData = async () => {
             const fictionData = await getFictions();
             setFictions(fictionData);
-            const selectedFictions = fictionData.length > 5 ? selectRandomItems(fictionData, 5) : fictionData;
+            const selectedFictions = _.sampleSize(fictionData, Math.min(fictionData.length, 5)); // Randomly select 5 fictions
             setCarouselFics(selectedFictions);
         };
         fetchDisplayData();
