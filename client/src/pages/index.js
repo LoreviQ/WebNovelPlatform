@@ -48,20 +48,22 @@ function Index() {
                 ))}
             </Carousel>
             <hr />
-            <div>
-                <div className="fictionTile m-2">
-                    <img
-                        className="fictionTileImage"
-                        src={
-                            fictions[0].imageLocation
-                                ? fictions[0].imageLocation
-                                : `${process.env.PUBLIC_URL}/image-placeholder.png`
-                        }
-                    />
-                    <div style={{ textAlign: "center" }}>
-                        <h5 className="mt-1 pb-2">{fictions[0].title}</h5>
+            <div className="fictionsTilesContainer">
+                {fictions.map((fiction, index) => (
+                    <div className="fictionTile m-2">
+                        <img
+                            className="fictionTileImage"
+                            src={
+                                fiction.imageLocation
+                                    ? fiction.imageLocation
+                                    : `${process.env.PUBLIC_URL}/image-placeholder.png`
+                            }
+                        />
+                        <div style={{ textAlign: "center" }}>
+                            <h5 className="mt-1 pb-2">{fiction.title}</h5>
+                        </div>
                     </div>
-                </div>
+                ))}
             </div>
         </Container>
     );
