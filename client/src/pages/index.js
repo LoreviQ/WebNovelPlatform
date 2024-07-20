@@ -7,22 +7,39 @@ import { getFictions } from "../utils/api";
 
 function Index() {
     const [fictions, setFictions] = useState(null);
+    const [carouselFics, setCarouselFics] = useState(null);
+
+    // Function to select n random items from an array
+    function selectRandomItems(arr, n) {
+        let result = new Array(n),
+            len = arr.length,
+            taken = new Array(len);
+        if (n > len) throw new RangeError("selectRandomItems: more elements taken than available");
+        while (n--) {
+            let x = Math.floor(Math.random() * len);
+            result[n] = arr[x in taken ? taken[x] : x];
+            taken[x] = --len in taken ? taken[len] : len;
+        }
+        return result;
+    }
 
     useEffect(() => {
         document.title = "Home | WebNovelPlatform";
         const fetchDisplayData = async () => {
             const fictionData = await getFictions();
             setFictions(fictionData);
+            const selectedFictions = fictionData.length > 5 ? selectRandomItems(fictionData, 5) : fictionData;
+            setCarouselFics(selectedFictions);
         };
         fetchDisplayData();
     }, []);
-    if (!fictions) {
+    if (!carouselFics) {
         return <LoadingAnimation />;
     }
     return (
         <Container fluid className="my-4 ms-2">
             <Carousel interval={10000} style={{ backgroundColor: "white", height: "400px" }}>
-                {fictions.map((fiction, index) => (
+                {carouselFics.map((fiction, index) => (
                     <Carousel.Item key={index}>
                         <div className="carousel-item-container">
                             <img
