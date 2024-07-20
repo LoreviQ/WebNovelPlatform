@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Container from "react-bootstrap/esm/Container";
 import Carousel from "react-bootstrap/Carousel";
+import ListGroup from "react-bootstrap/ListGroup";
 import _ from "lodash";
 
 import LoadingAnimation from "../components/loading";
@@ -47,6 +48,21 @@ function Index() {
                 ))}
             </Carousel>
             <hr />
+            <div>
+                <div className="fictionTile m-2">
+                    <img
+                        className="fictionTileImage"
+                        src={
+                            fictions[0].imageLocation
+                                ? fictions[0].imageLocation
+                                : `${process.env.PUBLIC_URL}/image-placeholder.png`
+                        }
+                    />
+                    <div style={{ textAlign: "center" }}>
+                        <h5 className="mt-1 pb-2">{fictions[0].title}</h5>
+                    </div>
+                </div>
+            </div>
         </Container>
     );
 }

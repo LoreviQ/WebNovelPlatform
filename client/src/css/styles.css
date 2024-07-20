@@ -12589,3 +12589,17 @@ body {
 .image-edit-container:hover .image-overlay {
   display: block;
 }
+
+.fictionTile {
+  width: 150px;
+  background-color: var(--bs-secondary-bg);
+  outline: 1px solid var(--bs-secondary-border-subtle);
+  
+}
+
+.fictionTileImage {
+  height: 200px;
+  width: auto;
+  max-width: 150px;
+  object-fit: cover;
+}
