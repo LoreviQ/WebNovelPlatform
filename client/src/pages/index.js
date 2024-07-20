@@ -21,7 +21,7 @@ function Index() {
     }
     return (
         <Container fluid className="my-4 ms-2">
-            <Carousel style={{ backgroundColor: "white", height: "400px" }}>
+            <Carousel interval={10000} style={{ backgroundColor: "white", height: "400px" }}>
                 {fictions.map((fiction, index) => (
                     <Carousel.Item key={index}>
                         <div className="carousel-item-container">
@@ -35,7 +35,7 @@ function Index() {
                             />
                             <div style={{ flexGrow: 1 }}></div>
                             <div className="carousel-text">
-                                <h3>{fiction.title}</h3>
+                                <h1>{fiction.title}</h1>
                                 <p>{fiction.description}</p>
                             </div>
                         </div>

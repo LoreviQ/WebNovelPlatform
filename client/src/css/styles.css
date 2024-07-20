@@ -12561,8 +12561,7 @@ body {
 .carousel-text {
   color: black;
   width: 400px;
-  position: relative;
-  z-index: 2; /* Ensure text is above the fade effect */
+  pointer-events: none;
 }
 
 .carousel-image {
