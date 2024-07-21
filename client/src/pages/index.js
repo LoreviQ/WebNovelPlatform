@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import Container from "react-bootstrap/esm/Container";
 import Carousel from "react-bootstrap/Carousel";
-import ListGroup from "react-bootstrap/ListGroup";
 import _ from "lodash";
 
 import LoadingAnimation from "../components/loading";
@@ -50,22 +50,27 @@ function Index() {
             <hr />
             <div className="fictionsTilesContainer">
                 {fictions.map((fiction, index) => (
-                    <div className="fictionTile m-2">
-                        <img
-                            className="fictionTileImage"
-                            src={
-                                fiction.imageLocation
-                                    ? fiction.imageLocation
-                                    : `${process.env.PUBLIC_URL}/image-placeholder.png`
-                            }
-                        />
-                        <div>
-                            <h5 className="ms-2 mt-1">{fiction.title}</h5>
-                            <div className="ms-2 pb-2">
-                                By: <a href={`/user/${fiction.authorid}`}>{fiction.author}</a>
+                    <Link to={`/fictions/${fiction.id}`} style={{ textDecoration: "none", color: "inherit" }}>
+                        <div className="fictionTile m-2">
+                            <img
+                                className="fictionTileImage"
+                                src={
+                                    fiction.imageLocation
+                                        ? fiction.imageLocation
+                                        : `${process.env.PUBLIC_URL}/image-placeholder.png`
+                                }
+                            />
+                            <div>
+                                <h5 className="ms-2 mt-1">{fiction.title}</h5>
+                                <div className="ms-2 pb-2">
+                                    By:{" "}
+                                    <a href={`/user/${fiction.authorid}`} onClick={(e) => e.stopPropagation()}>
+                                        {fiction.author}
+                                    </a>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    </Link>
                 ))}
             </div>
         </Container>
