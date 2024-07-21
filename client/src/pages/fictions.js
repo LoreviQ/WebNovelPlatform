@@ -122,7 +122,7 @@ function Fictions() {
                             key={fiction.id}
                             action
                             onClick={() => navigate(`/fictions/${fiction.id}`)}
-                            style={{ padding: 0 }}
+                            style={{ padding: 0, cursor: "pointer" }}
                         >
                             <div style={{ display: "flex", alignItems: "center" }}>
                                 <img
