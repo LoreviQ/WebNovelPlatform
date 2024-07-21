@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Container from "react-bootstrap/esm/Container";
 import Carousel from "react-bootstrap/Carousel";
 import _ from "lodash";
@@ -10,6 +10,7 @@ import { getFictions } from "../utils/api";
 function Index() {
     const [fictions, setFictions] = useState(null);
     const [carouselFics, setCarouselFics] = useState(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
         document.title = "Home | WebNovelPlatform";
@@ -28,7 +29,11 @@ function Index() {
         <Container fluid className="my-4 ms-2">
             <Carousel interval={10000} style={{ backgroundColor: "white", height: "400px" }}>
                 {carouselFics.map((fiction, index) => (
-                    <Carousel.Item key={index}>
+                    <Carousel.Item
+                        key={index}
+                        onClick={() => navigate(`/fictions/${fiction.id}`)}
+                        style={{ cursor: "pointer" }}
+                    >
                         <div className="carousel-item-container">
                             <img
                                 className="carousel-image"
@@ -50,27 +55,29 @@ function Index() {
             <hr />
             <div className="fictionsTilesContainer">
                 {fictions.map((fiction, index) => (
-                    <Link to={`/fictions/${fiction.id}`} style={{ textDecoration: "none", color: "inherit" }}>
-                        <div className="fictionTile m-2">
-                            <img
-                                className="fictionTileImage"
-                                src={
-                                    fiction.imageLocation
-                                        ? fiction.imageLocation
-                                        : `${process.env.PUBLIC_URL}/image-placeholder.png`
-                                }
-                            />
-                            <div>
-                                <h5 className="ms-2 mt-1">{fiction.title}</h5>
-                                <div className="ms-2 pb-2">
-                                    By:{" "}
-                                    <a href={`/user/${fiction.authorid}`} onClick={(e) => e.stopPropagation()}>
-                                        {fiction.author}
-                                    </a>
-                                </div>
+                    <div
+                        className="fictionTile m-2"
+                        onClick={() => navigate(`/fictions/${fiction.id}`)}
+                        style={{ cursor: "pointer" }}
+                    >
+                        <img
+                            className="fictionTileImage"
+                            src={
+                                fiction.imageLocation
+                                    ? fiction.imageLocation
+                                    : `${process.env.PUBLIC_URL}/image-placeholder.png`
+                            }
+                        />
+                        <div>
+                            <h5 className="ms-2 mt-1">{fiction.title}</h5>
+                            <div className="ms-2 pb-2">
+                                By:{" "}
+                                <a href={`/user/${fiction.authorid}`} onClick={(e) => e.stopPropagation()}>
+                                    {fiction.author}
+                                </a>
                             </div>
                         </div>
-                    </Link>
+                    </div>
                 ))}
             </div>
         </Container>
