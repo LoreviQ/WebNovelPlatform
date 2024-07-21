@@ -29,5 +29,8 @@ UPDATE fictions SET published_at = ?, published = ? WHERE id = ? RETURNING *;
 DELETE FROM fictions WHERE id = ?;
 
 -- name: GetPublishedFictions :many
-SELECT * FROM fictions WHERE published = 1
+SELECT fictions.*, users.name AS author_name
+FROM fictions
+JOIN users ON users.id = fictions.authorid
+WHERE fictions.published = 1
 LIMIT ?;

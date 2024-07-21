@@ -62,7 +62,7 @@ function Index() {
                         <div>
                             <h5 className="ms-2 mt-1">{fiction.title}</h5>
                             <div className="ms-2 pb-2">
-                                By: <a href={`/user/${fiction.authorId}`}>{fiction.author}</a>
+                                By: <a href={`/user/${fiction.authorid}`}>{fiction.author}</a>
                             </div>
                         </div>
                     </div>

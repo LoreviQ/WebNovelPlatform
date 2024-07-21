@@ -194,19 +194,35 @@ func (q *Queries) GetFictionsByAuthorIdIfPublished(ctx context.Context, arg GetF
 }
 
 const getPublishedFictions = `-- name: GetPublishedFictions :many
-SELECT id, title, authorid, description, created_at, updated_at, published_at, published, image_url FROM fictions WHERE published = 1
+SELECT fictions.id, fictions.title, fictions.authorid, fictions.description, fictions.created_at, fictions.updated_at, fictions.published_at, fictions.published, fictions.image_url, users.name AS author_name
+FROM fictions
+JOIN users ON users.id = fictions.authorid
+WHERE fictions.published = 1
 LIMIT ?
 `
 
-func (q *Queries) GetPublishedFictions(ctx context.Context, limit int64) ([]Fiction, error) {
+type GetPublishedFictionsRow struct {
+	ID          string
+	Title       string
+	Authorid    string
+	Description string
+	CreatedAt   string
+	UpdatedAt   string
+	PublishedAt sql.NullString
+	Published   int64
+	ImageUrl    sql.NullString
+	AuthorName  string
+}
+
+func (q *Queries) GetPublishedFictions(ctx context.Context, limit int64) ([]GetPublishedFictionsRow, error) {
 	rows, err := q.db.QueryContext(ctx, getPublishedFictions, limit)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []Fiction
+	var items []GetPublishedFictionsRow
 	for rows.Next() {
-		var i Fiction
+		var i GetPublishedFictionsRow
 		if err := rows.Scan(
 			&i.ID,
 			&i.Title,
@@ -217,6 +233,7 @@ func (q *Queries) GetPublishedFictions(ctx context.Context, limit int64) ([]Fict
 			&i.PublishedAt,
 			&i.Published,
 			&i.ImageUrl,
+			&i.AuthorName,
 		); err != nil {
 			return nil, err
 		}

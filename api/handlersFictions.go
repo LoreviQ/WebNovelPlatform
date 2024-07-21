@@ -10,6 +10,9 @@ import (
 	"github.com/LoreviQ/WebNovelPlatform/api/internal/database"
 )
 
+// Get Fictions Handler (GET /fictions)
+//
+// Returns the 20 most recently published fictions
 func (cfg *apiConfig) getFictions(w http.ResponseWriter, r *http.Request) {
 	// GET FICTIONS
 	fictions, err := cfg.DB.GetPublishedFictions(r.Context(), 20)
@@ -24,6 +27,7 @@ func (cfg *apiConfig) getFictions(w http.ResponseWriter, r *http.Request) {
 		ID          string         `json:"id"`
 		Title       string         `json:"title"`
 		Authorid    string         `json:"authorid"`
+		Author      string         `json:"author"`
 		Description string         `json:"description"`
 		CreatedAt   string         `json:"created_at"`
 		UpdatedAt   string         `json:"updated_at"`
@@ -36,6 +40,7 @@ func (cfg *apiConfig) getFictions(w http.ResponseWriter, r *http.Request) {
 			ID:          fiction.ID,
 			Title:       fiction.Title,
 			Authorid:    fiction.Authorid,
+			Author:      fiction.AuthorName,
 			Description: fiction.Description,
 			CreatedAt:   fiction.CreatedAt,
 			UpdatedAt:   fiction.UpdatedAt,
