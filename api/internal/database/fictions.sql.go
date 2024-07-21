@@ -199,7 +199,13 @@ FROM fictions
 JOIN users ON users.id = fictions.authorid
 WHERE fictions.published = 1
 LIMIT ?
+OFFSET ?
 `
+
+type GetPublishedFictionsParams struct {
+	Limit  int64
+	Offset int64
+}
 
 type GetPublishedFictionsRow struct {
 	ID          string
@@ -214,8 +220,8 @@ type GetPublishedFictionsRow struct {
 	AuthorName  string
 }
 
-func (q *Queries) GetPublishedFictions(ctx context.Context, limit int64) ([]GetPublishedFictionsRow, error) {
-	rows, err := q.db.QueryContext(ctx, getPublishedFictions, limit)
+func (q *Queries) GetPublishedFictions(ctx context.Context, arg GetPublishedFictionsParams) ([]GetPublishedFictionsRow, error) {
+	rows, err := q.db.QueryContext(ctx, getPublishedFictions, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}

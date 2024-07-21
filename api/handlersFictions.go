@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"log"
 	"net/http"
+	"strconv"
 	"strings"
 	"time"
 
@@ -14,8 +15,35 @@ import (
 //
 // Returns the 20 most recently published fictions
 func (cfg *apiConfig) getFictions(w http.ResponseWriter, r *http.Request) {
+	// Default Values
+	var err error
+	params := map[string]int64{
+		"limit": 20,
+		"page":  1,
+	}
+	queryValues := r.URL.Query()
+
+	// Iterate over parameter names and parse them
+	for paramName := range params {
+		if paramValue := queryValues.Get(paramName); paramValue != "" {
+			params[paramName], err = strconv.ParseInt(paramValue, 10, 64)
+			if err != nil || params[paramName] <= 0 {
+				respondWithError(w, http.StatusBadRequest, "Invalid "+paramName+" value")
+				return
+			}
+		}
+	}
+
+	// Calculate offset
+	limit := params["limit"]
+	page := params["page"]
+	offset := (page - 1) * limit
+
 	// GET FICTIONS
-	fictions, err := cfg.DB.GetPublishedFictions(r.Context(), 20)
+	fictions, err := cfg.DB.GetPublishedFictions(r.Context(), database.GetPublishedFictionsParams{
+		Limit:  limit,
+		Offset: offset,
+	})
 	if err != nil {
 		log.Printf("Error getting fictions: %s", err)
 		respondWithError(w, http.StatusInternalServerError, "Couldn't get fictions")
