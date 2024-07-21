@@ -59,8 +59,11 @@ function Index() {
                                     : `${process.env.PUBLIC_URL}/image-placeholder.png`
                             }
                         />
-                        <div style={{ textAlign: "center" }}>
-                            <h5 className="mt-1 pb-2">{fiction.title}</h5>
+                        <div>
+                            <h5 className="ms-2 mt-1">{fiction.title}</h5>
+                            <div className="ms-2 pb-2">
+                                By: <a href={`/user/${fiction.authorId}`}>{fiction.author}</a>
+                            </div>
                         </div>
                     </div>
                 ))}
