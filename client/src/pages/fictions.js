@@ -133,7 +133,12 @@ function Fictions() {
                                             : `${process.env.PUBLIC_URL}/image-placeholder.png`
                                     }
                                     alt="ProfilePicture"
-                                    style={{ width: "100px", height: "100px", backgroundColor: "#f0f0f0" }}
+                                    style={{
+                                        width: "100px",
+                                        height: "100px",
+                                        backgroundColor: "#f0f0f0",
+                                        objectFit: "cover",
+                                    }}
                                 />
                                 <div className="ms-2 me-auto">
                                     <div className="fw-bold">{fiction.title}</div>
