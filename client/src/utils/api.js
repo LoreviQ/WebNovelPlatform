@@ -16,15 +16,8 @@ async function getUserByUID(uid) {
 }
 
 // Gets all fictions
-async function getFictions(keyword, title, author, limit, page) {
-    // Construct query parameters
-    const params = new URLSearchParams();
-    if (keyword) params.append("keyword", keyword);
-    if (title) params.append("title", title);
-    if (author) params.append("author", author);
-    if (limit) params.append("limit", limit);
-    if (page) params.append("page", page);
-    const url = `${apiBaseUrl}/v1/fictions?${params.toString()}`;
+async function getFictions(search) {
+    const url = `${apiBaseUrl}/v1/fictions${search}`;
 
     // Fetch fictions
     const response = await fetch(url, {

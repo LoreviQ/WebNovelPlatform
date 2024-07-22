@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Container from "react-bootstrap/esm/Container";
 import ListGroup from "react-bootstrap/ListGroup";
 
@@ -9,16 +9,17 @@ import LoadingAnimation from "../components/loading";
 function Fictions() {
     const [fictions, setFictions] = useState(null);
     const navigate = useNavigate();
+    const location = useLocation();
 
     useEffect(() => {
         document.title = "Fictions | WebNovelPlatform";
 
         const fetchDisplayData = async () => {
-            const fictionData = await getFictions();
+            const fictionData = await getFictions(location.search);
             setFictions(fictionData);
         };
         fetchDisplayData();
-    }, []);
+    }, [location.search]);
     if (!fictions) {
         return <LoadingAnimation />;
     }
