@@ -2,6 +2,12 @@ import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Container from "react-bootstrap/esm/Container";
 import ListGroup from "react-bootstrap/ListGroup";
+import Form from "react-bootstrap/Form";
+import FormControl from "react-bootstrap/FormControl";
+import InputGroup from "react-bootstrap/InputGroup";
+import Button from "react-bootstrap/Button";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
 import { getFictions } from "../utils/api";
 import LoadingAnimation from "../components/loading";
@@ -10,6 +16,16 @@ function Fictions() {
     const [fictions, setFictions] = useState(null);
     const navigate = useNavigate();
     const location = useLocation();
+    const [searchInput, setSearchInput] = useState("");
+
+    // Function to handle search
+    const searchFictions = () => {
+        if (searchInput === "") {
+            navigate(`/fictions`);
+        } else {
+            navigate(`/fictions?keyword=${searchInput}`);
+        }
+    };
 
     useEffect(() => {
         document.title = "Fictions | WebNovelPlatform";
@@ -25,7 +41,20 @@ function Fictions() {
     }
     return (
         <Container fluid className="my-4 ms-2">
-            <h1>Search functionality here: Not yet implemented</h1>
+            <Form>
+                <InputGroup>
+                    <FormControl
+                        type="text"
+                        placeholder="Search for..."
+                        aria-label="Search for..."
+                        aria-describedby="btnNavbarSearch"
+                        onChange={(e) => setSearchInput(e.target.value)}
+                    />
+                    <Button id="btnNavbarSearch" type="button" onClick={searchFictions}>
+                        <FontAwesomeIcon icon={faSearch} />
+                    </Button>
+                </InputGroup>
+            </Form>
             <hr />
             {!fictions || fictions.length === 0 ? (
                 <h1>No fictions!</h1>
