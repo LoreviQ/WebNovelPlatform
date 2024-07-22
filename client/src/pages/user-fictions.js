@@ -18,7 +18,7 @@ import { getUserByUID, getFictionsByAuthorID, getMyFictions, publishFiction, del
 import LoadingAnimation from "../components/loading";
 import Error from "./error";
 
-function Fictions() {
+function UserFictions() {
     const [loggedInUser, setLoggedInUser] = useState(false);
     const [err404, setErr404] = useState(false);
     const [displayUser, setDisplayUser] = useState(null);
@@ -204,4 +204,4 @@ function Fictions() {
     );
 }
 
-export default Fictions;
+export default UserFictions;

@@ -37,7 +37,7 @@ function AppRouter() {
                         path="user/:userid/fictions"
                         element={
                             <PrivateRoute>
-                                <App Page={Pages.Fictions} />
+                                <App Page={Pages.UserFictions} />
                             </PrivateRoute>
                         }
                     />
