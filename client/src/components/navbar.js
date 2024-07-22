@@ -14,6 +14,12 @@ import { useAuth } from "../utils/auth";
 function MyNavbar({ toggleSideNav }) {
     const { user, gettingUser, logout } = useAuth();
     const [theme, setTheme] = useState("dark");
+    const [searchInput, setSearchInput] = useState("");
+
+    // Function to handle search
+    const searchFictions = () => {
+        alert(searchInput); // Or any other logic you want to perform with searchInput
+    };
 
     const toggleSidebar = () => {
         const isToggled = document.body.classList.toggle("sb-sidenav-toggled");
@@ -70,8 +76,9 @@ function MyNavbar({ toggleSideNav }) {
                             placeholder="Search for..."
                             aria-label="Search for..."
                             aria-describedby="btnNavbarSearch"
+                            onChange={(e) => setSearchInput(e.target.value)}
                         />
-                        <Button id="btnNavbarSearch" type="button">
+                        <Button id="btnNavbarSearch" type="button" onClick={searchFictions}>
                             <FontAwesomeIcon icon={faSearch} />
                         </Button>
                     </InputGroup>
