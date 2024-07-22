@@ -33,5 +33,8 @@ SELECT fictions.*, users.name AS author_name
 FROM fictions
 JOIN users ON users.id = fictions.authorid
 WHERE fictions.published = 1
+AND (? IS NULL OR fictions.title LIKE '%' || ? || '%')
+AND (? IS NULL OR users.name LIKE '%' || ? || '%')
+AND (? IS NULL OR fictions.title LIKE '%' || ? || '%' OR users.name LIKE '%' || ? || '%')
 LIMIT ?
 OFFSET ?;

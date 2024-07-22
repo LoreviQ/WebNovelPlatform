@@ -11,38 +11,58 @@ import (
 	"github.com/LoreviQ/WebNovelPlatform/api/internal/database"
 )
 
-// Get Fictions Handler (GET /fictions)
+// Get Fictions Handler (GET /v1/fictions)
 //
 // Returns the 20 most recently published fictions
 func (cfg *apiConfig) getFictions(w http.ResponseWriter, r *http.Request) {
 	// Default Values
 	var err error
-	params := map[string]int64{
+	intParams := map[string]int64{
 		"limit": 20,
 		"page":  1,
 	}
+	// String parameters
+	stringParams := map[string]sql.NullString{
+		"title":   {Valid: false},
+		"author":  {Valid: false},
+		"keyword": {Valid: false},
+	}
 	queryValues := r.URL.Query()
 
-	// Iterate over parameter names and parse them
-	for paramName := range params {
+	// Parse parameters
+	for paramName := range intParams {
 		if paramValue := queryValues.Get(paramName); paramValue != "" {
-			params[paramName], err = strconv.ParseInt(paramValue, 10, 64)
-			if err != nil || params[paramName] <= 0 {
+			intParams[paramName], err = strconv.ParseInt(paramValue, 10, 64)
+			if err != nil || intParams[paramName] <= 0 {
 				respondWithError(w, http.StatusBadRequest, "Invalid "+paramName+" value")
 				return
 			}
 		}
 	}
+	for paramName := range stringParams {
+		queryVal := queryValues.Get(paramName)
+		stringParams[paramName] = sql.NullString{
+			String: queryVal,
+			Valid:  queryVal != "",
+		}
+	}
 
 	// Calculate offset
-	limit := params["limit"]
-	page := params["page"]
+	limit := intParams["limit"]
+	page := intParams["page"]
 	offset := (page - 1) * limit
 
 	// GET FICTIONS
 	fictions, err := cfg.DB.GetPublishedFictions(r.Context(), database.GetPublishedFictionsParams{
-		Limit:  limit,
-		Offset: offset,
+		Column1: stringParams["title"],
+		Column2: stringParams["title"],
+		Column3: stringParams["author"],
+		Column4: stringParams["author"],
+		Column5: stringParams["keyword"],
+		Column6: stringParams["keyword"],
+		Column7: stringParams["keyword"],
+		Limit:   limit,
+		Offset:  offset,
 	})
 	if err != nil {
 		log.Printf("Error getting fictions: %s", err)

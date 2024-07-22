@@ -198,13 +198,23 @@ SELECT fictions.id, fictions.title, fictions.authorid, fictions.description, fic
 FROM fictions
 JOIN users ON users.id = fictions.authorid
 WHERE fictions.published = 1
+AND (? IS NULL OR fictions.title LIKE '%' || ? || '%')
+AND (? IS NULL OR users.name LIKE '%' || ? || '%')
+AND (? IS NULL OR fictions.title LIKE '%' || ? || '%' OR users.name LIKE '%' || ? || '%')
 LIMIT ?
 OFFSET ?
 `
 
 type GetPublishedFictionsParams struct {
-	Limit  int64
-	Offset int64
+	Column1 interface{}
+	Column2 sql.NullString
+	Column3 interface{}
+	Column4 sql.NullString
+	Column5 interface{}
+	Column6 sql.NullString
+	Column7 sql.NullString
+	Limit   int64
+	Offset  int64
 }
 
 type GetPublishedFictionsRow struct {
@@ -221,7 +231,17 @@ type GetPublishedFictionsRow struct {
 }
 
 func (q *Queries) GetPublishedFictions(ctx context.Context, arg GetPublishedFictionsParams) ([]GetPublishedFictionsRow, error) {
-	rows, err := q.db.QueryContext(ctx, getPublishedFictions, arg.Limit, arg.Offset)
+	rows, err := q.db.QueryContext(ctx, getPublishedFictions,
+		arg.Column1,
+		arg.Column2,
+		arg.Column3,
+		arg.Column4,
+		arg.Column5,
+		arg.Column6,
+		arg.Column7,
+		arg.Limit,
+		arg.Offset,
+	)
 	if err != nil {
 		return nil, err
 	}
