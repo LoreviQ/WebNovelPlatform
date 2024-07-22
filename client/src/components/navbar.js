@@ -21,7 +21,11 @@ function MyNavbar({ toggleSideNav }) {
 
     // Function to handle search
     const searchFictions = () => {
-        navigate(`/fictions?keyword=${searchInput}`);
+        if (searchInput === "") {
+            navigate(`/fictions`);
+        } else {
+            navigate(`/fictions?keyword=${searchInput}`);
+        }
     };
 
     const toggleSidebar = () => {

@@ -24,6 +24,7 @@ function Fictions() {
     }
     return (
         <Container fluid className="my-4 ms-2">
+            <h1>Search functionality here: Not yet implemented</h1>
             <hr />
             {!fictions || fictions.length === 0 ? (
                 <h1>No fictions!</h1>
