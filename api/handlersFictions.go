@@ -13,7 +13,13 @@ import (
 
 // Get Fictions Handler (GET /v1/fictions)
 //
-// Returns the 20 most recently published fictions
+// Returns the all published fictions
+// Accepts the following query parameters:
+// - limit: the number of fictions to return (default 20)
+// - page: the page number to return (default 1)
+// - title: the title of the fiction to search for (default null)
+// - author: the author of the fiction to search for (default null)
+// - keyword: a keyword to search for in the title/author (default null)
 func (cfg *apiConfig) getFictions(w http.ResponseWriter, r *http.Request) {
 	// Default Values
 	var err error
