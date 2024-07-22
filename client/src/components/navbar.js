@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Container from "react-bootstrap/Container";
 import Navbar from "react-bootstrap/Navbar";
 import Form from "react-bootstrap/Form";
@@ -8,6 +9,7 @@ import InputGroup from "react-bootstrap/InputGroup";
 import Dropdown from "react-bootstrap/Dropdown";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faMoon, faSun, faSearch, faUser } from "@fortawesome/free-solid-svg-icons";
+
 import { toggleTheme } from "../utils/theme";
 import { useAuth } from "../utils/auth";
 
@@ -15,10 +17,11 @@ function MyNavbar({ toggleSideNav }) {
     const { user, gettingUser, logout } = useAuth();
     const [theme, setTheme] = useState("dark");
     const [searchInput, setSearchInput] = useState("");
+    const navigate = useNavigate();
 
     // Function to handle search
     const searchFictions = () => {
-        alert(searchInput); // Or any other logic you want to perform with searchInput
+        navigate(`/fictions?keyword=${searchInput}`);
     };
 
     const toggleSidebar = () => {
