@@ -49,6 +49,7 @@ function AppRouter() {
                             </UserIDRouter>
                         }
                     />
+                    <Route path="fictions" element={<App Page={Pages.Fictions} />} />
                     <Route
                         path="fictions/:fictionid/Edit"
                         element={
