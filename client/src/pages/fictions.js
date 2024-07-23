@@ -21,6 +21,11 @@ function Fictions() {
     const location = useLocation();
     const [searchInput, setSearchInput] = useState("");
     const [open, setOpen] = useState(false);
+    const [advancedSearchInput, setAdvancedSearchInput] = useState({
+        title: "",
+        author: "",
+        keyword: "",
+    });
 
     // Function to handle search
     const searchFictions = () => {
@@ -29,6 +34,20 @@ function Fictions() {
         } else {
             navigate(`/fictions?keyword=${searchInput}`);
         }
+    };
+
+    const advancedSearchFictions = () => {
+        let search = "";
+        if (advancedSearchInput.title) {
+            search += `&title=${advancedSearchInput.title}`;
+        }
+        if (advancedSearchInput.author) {
+            search += `&author=${advancedSearchInput.author}`;
+        }
+        if (advancedSearchInput.keyword) {
+            search += `&keyword=${advancedSearchInput.keyword}`;
+        }
+        navigate(`/fictions?${search}`);
     };
 
     useEffect(() => {
@@ -80,7 +99,12 @@ function Fictions() {
                                     placeholder="Title..."
                                     aria-label="Title..."
                                     aria-describedby="btnNavbarSearch"
-                                    onChange={(e) => setSearchInput(e.target.value)}
+                                    onChange={(e) =>
+                                        setAdvancedSearchInput((prevState) => ({
+                                            ...prevState,
+                                            title: e.target.value,
+                                        }))
+                                    }
                                 />
                             </Col>
                             <Col className="advancedSearchPadding">
@@ -89,7 +113,12 @@ function Fictions() {
                                     placeholder="Author..."
                                     aria-label="Author..."
                                     aria-describedby="btnNavbarSearch"
-                                    onChange={(e) => setSearchInput(e.target.value)}
+                                    onChange={(e) =>
+                                        setAdvancedSearchInput((prevState) => ({
+                                            ...prevState,
+                                            author: e.target.value,
+                                        }))
+                                    }
                                 />
                             </Col>
                             <Col className="advancedSearchPaddingLast">
@@ -98,16 +127,21 @@ function Fictions() {
                                     placeholder="Keyword..."
                                     aria-label="Keyword..."
                                     aria-describedby="btnNavbarSearch"
-                                    onChange={(e) => setSearchInput(e.target.value)}
+                                    onChange={(e) =>
+                                        setAdvancedSearchInput((prevState) => ({
+                                            ...prevState,
+                                            keyword: e.target.value,
+                                        }))
+                                    }
                                 />
                             </Col>
                         </Row>
                         <Row>
-                            <Col className="advancedSearchPaddingFirst">
+                            <Col>
                                 <div className="d-grid gap-2 mb-2">
                                     <Button
                                         variant="primary"
-                                        onClick={() => searchFictions()}
+                                        onClick={() => advancedSearchFictions()}
                                         aria-controls="advanced-search"
                                         aria-expanded={open}
                                         style={{ textAlign: "left" }}
