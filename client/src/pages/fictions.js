@@ -6,7 +6,7 @@ import Form from "react-bootstrap/Form";
 import FormControl from "react-bootstrap/FormControl";
 import InputGroup from "react-bootstrap/InputGroup";
 import Button from "react-bootstrap/Button";
-import Accordion from "react-bootstrap/Accordion";
+import Collapse from "react-bootstrap/Collapse";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
@@ -18,6 +18,7 @@ function Fictions() {
     const navigate = useNavigate();
     const location = useLocation();
     const [searchInput, setSearchInput] = useState("");
+    const [open, setOpen] = useState(false);
 
     // Function to handle search
     const searchFictions = () => {
@@ -43,7 +44,7 @@ function Fictions() {
     return (
         <Container fluid className="my-4 ms-2">
             <Form className="mb-2">
-                <InputGroup style={{ height: "53.6px" }}>
+                <InputGroup>
                     <FormControl
                         type="text"
                         placeholder="Search for..."
@@ -56,18 +57,27 @@ function Fictions() {
                     </Button>
                 </InputGroup>
             </Form>
-            <Accordion>
-                <Accordion.Item eventKey="0">
-                    <Accordion.Header>Advanced Search</Accordion.Header>
-                    <Accordion.Body>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-                        labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                        laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in
-                        voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat
-                        non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-                    </Accordion.Body>
-                </Accordion.Item>
-            </Accordion>
+            <>
+                <div className="d-grid gap-2">
+                    <Button
+                        variant="outline-secondary"
+                        onClick={() => setOpen(!open)}
+                        aria-controls="advanced-search"
+                        aria-expanded={open}
+                        style={{ color: "var(--bs-secondary-color)", textAlign: "left" }}
+                    >
+                        Advanced Search
+                    </Button>
+                </div>
+                <Collapse in={open}>
+                    <div id="example-collapse-text">
+                        Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid.
+                        Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea
+                        proident.
+                    </div>
+                </Collapse>
+            </>
+
             <hr />
             {!fictions || fictions.length === 0 ? (
                 <h1>No fictions!</h1>
