@@ -12608,3 +12608,16 @@ body {
   max-width: 150px;
   object-fit: cover;
 }
+
+.advancedSearchPaddingFirst {
+  padding-right: 0.25rem; 
+}
+
+.advancedSearchPaddingLast {
+  padding-left: 0.25rem; 
+}
+
+.advancedSearchPadding {
+  padding-right: 0.25rem; 
+  padding-left: 0.25rem;
+}

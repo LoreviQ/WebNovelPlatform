@@ -7,6 +7,8 @@ import FormControl from "react-bootstrap/FormControl";
 import InputGroup from "react-bootstrap/InputGroup";
 import Button from "react-bootstrap/Button";
 import Collapse from "react-bootstrap/Collapse";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
@@ -58,7 +60,7 @@ function Fictions() {
                 </InputGroup>
             </Form>
             <>
-                <div className="d-grid gap-2">
+                <div className="d-grid gap-2 mb-2">
                     <Button
                         variant="outline-secondary"
                         onClick={() => setOpen(!open)}
@@ -70,11 +72,52 @@ function Fictions() {
                     </Button>
                 </div>
                 <Collapse in={open}>
-                    <div id="example-collapse-text">
-                        Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid.
-                        Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea
-                        proident.
-                    </div>
+                    <Form>
+                        <Row className="mb-2">
+                            <Col className="advancedSearchPaddingFirst">
+                                <FormControl
+                                    type="text"
+                                    placeholder="Title..."
+                                    aria-label="Title..."
+                                    aria-describedby="btnNavbarSearch"
+                                    onChange={(e) => setSearchInput(e.target.value)}
+                                />
+                            </Col>
+                            <Col className="advancedSearchPadding">
+                                <FormControl
+                                    type="text"
+                                    placeholder="Author..."
+                                    aria-label="Author..."
+                                    aria-describedby="btnNavbarSearch"
+                                    onChange={(e) => setSearchInput(e.target.value)}
+                                />
+                            </Col>
+                            <Col className="advancedSearchPaddingLast">
+                                <FormControl
+                                    type="text"
+                                    placeholder="Keyword..."
+                                    aria-label="Keyword..."
+                                    aria-describedby="btnNavbarSearch"
+                                    onChange={(e) => setSearchInput(e.target.value)}
+                                />
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col className="advancedSearchPaddingFirst">
+                                <div className="d-grid gap-2 mb-2">
+                                    <Button
+                                        variant="primary"
+                                        onClick={() => searchFictions()}
+                                        aria-controls="advanced-search"
+                                        aria-expanded={open}
+                                        style={{ textAlign: "left" }}
+                                    >
+                                        Search
+                                    </Button>
+                                </div>
+                            </Col>
+                        </Row>
+                    </Form>
                 </Collapse>
             </>
 
