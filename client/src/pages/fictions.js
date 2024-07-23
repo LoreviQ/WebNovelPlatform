@@ -6,6 +6,7 @@ import Form from "react-bootstrap/Form";
 import FormControl from "react-bootstrap/FormControl";
 import InputGroup from "react-bootstrap/InputGroup";
 import Button from "react-bootstrap/Button";
+import Accordion from "react-bootstrap/Accordion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
@@ -41,8 +42,8 @@ function Fictions() {
     }
     return (
         <Container fluid className="my-4 ms-2">
-            <Form>
-                <InputGroup>
+            <Form className="mb-2">
+                <InputGroup style={{ height: "53.6px" }}>
                     <FormControl
                         type="text"
                         placeholder="Search for..."
@@ -55,6 +56,18 @@ function Fictions() {
                     </Button>
                 </InputGroup>
             </Form>
+            <Accordion>
+                <Accordion.Item eventKey="0">
+                    <Accordion.Header>Advanced Search</Accordion.Header>
+                    <Accordion.Body>
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
+                        labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
+                        laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in
+                        voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat
+                        non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                    </Accordion.Body>
+                </Accordion.Item>
+            </Accordion>
             <hr />
             {!fictions || fictions.length === 0 ? (
                 <h1>No fictions!</h1>
