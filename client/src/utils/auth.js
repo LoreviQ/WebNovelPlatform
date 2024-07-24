@@ -152,7 +152,7 @@ export function AuthProvider({ children }) {
         </AuthContext.Provider>
     );
 }
-
+// User must be logged in to access children
 const PrivateRoute = ({ children }) => {
     const { user, gettingUser } = useAuth();
     if (gettingUser) {
@@ -161,6 +161,7 @@ const PrivateRoute = ({ children }) => {
     return user ? children : <Login />;
 };
 
+// User must be logged in and the user id in the URL must match the logged in user's id
 const PrivateRouteUserID = ({ children }) => {
     const { userid } = useParams();
     const { user, gettingUser } = useAuth();
@@ -180,6 +181,7 @@ const UserIDRouter = ({ children }) => {
     }
 };
 
+// User must be logged in and the author of the fiction id in the URL must be the logged in user
 const PrivateRouteFictionId = ({ children }) => {
     const { user, gettingUser } = useAuth(); // Get user from AuthContext
     const { fictionid } = useParams(); // Get fictionid from URL
@@ -204,6 +206,32 @@ const PrivateRouteFictionId = ({ children }) => {
         return <App Page={Error} pageProps={{ statusCode: 404 }} />;
     }
     return fiction.authorid === user.id ? children : <App Page={Error} pageProps={{ statusCode: 401 }} />;
+};
+
+// Automatically applies the correct routing based on if the provided fiction id is published
+const FictionIDRouter = ({ children }) => {
+    const { fictionid } = useParams();
+    const [gettingFiction, setGettingFiction] = useState(true);
+    const [fiction, setFiction] = useState(null);
+
+    useEffect(() => {
+        const checkFiction = async () => {
+            const fictionData = await getFictionByID(fictionid);
+            if (fictionData) {
+                setFiction(fictionData);
+            }
+            setGettingFiction(false);
+        };
+        checkFiction();
+    }, []);
+
+    if (gettingFiction) {
+        return <App Page={LoadingAnimation} />;
+    }
+    if (!fiction) {
+        return <App Page={Error} pageProps={{ statusCode: 404 }} />;
+    }
+    return fiction.published ? children : <App Page={Error} pageProps={{ statusCode: 401 }} />;
 };
 
 export const useAuth = () => useContext(AuthContext);

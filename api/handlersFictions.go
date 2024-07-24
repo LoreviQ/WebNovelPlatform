@@ -120,6 +120,11 @@ func (cfg *apiConfig) getFiction(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// CHECK FICTION IS PUBLISHED
+	if fiction.Published == 0 {
+		respondWithError(w, http.StatusUnauthorized, "Fiction not published")
+	}
+
 	// RESPONSE
 	type response struct {
 		ID          string         `json:"id"`
@@ -143,6 +148,7 @@ func (cfg *apiConfig) getFiction(w http.ResponseWriter, r *http.Request) {
 		Published:   fiction.Published,
 		ImageUrl:    fiction.ImageUrl.String,
 	})
+
 }
 
 // Post fiction handler
