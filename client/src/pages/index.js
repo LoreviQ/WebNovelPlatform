@@ -91,6 +91,7 @@ export { default as Login } from "./login";
 export { default as Register } from "./register";
 export { default as ForgotPassword } from "./forgotpassword";
 export { default as User } from "./user";
+export { default as Fiction } from "./fiction";
 export { default as Fictions } from "./fictions";
 export { default as UserFictions } from "./user-fictions";
 export { default as SubmitFiction } from "./submit-fiction";
