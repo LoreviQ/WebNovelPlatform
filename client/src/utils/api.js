@@ -17,7 +17,8 @@ async function getUserByUID(uid) {
 
 // Gets all fictions
 async function getFictions(search) {
-    const url = `${apiBaseUrl}/v1/fictions${search}`;
+    const query = search ? `${search}` : "";
+    const url = `${apiBaseUrl}/v1/fictions${query}`;
 
     // Fetch fictions
     const response = await fetch(url, {
