@@ -105,7 +105,7 @@ func (cfg *apiConfig) getFictions(w http.ResponseWriter, r *http.Request) {
 	respondWithJSON(w, http.StatusOK, responseSlice)
 }
 
-func (cfg *apiConfig) getFiction(w http.ResponseWriter, r *http.Request) {
+func (cfg *apiConfig) getFiction(w http.ResponseWriter, r *http.Request, user database.User) {
 	// GET FICTION ID
 	id := r.PathValue("id")
 	if id == "" {
@@ -121,8 +121,9 @@ func (cfg *apiConfig) getFiction(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// CHECK FICTION IS PUBLISHED
-	if fiction.Published == 0 {
-		respondWithError(w, http.StatusUnauthorized, "Fiction not published")
+	if fiction.Published == 0 && fiction.Authorid != user.ID {
+		respondWithError(w, http.StatusForbidden, "Fiction is not published")
+		return
 	}
 
 	// RESPONSE
@@ -148,7 +149,6 @@ func (cfg *apiConfig) getFiction(w http.ResponseWriter, r *http.Request) {
 		Published:   fiction.Published,
 		ImageUrl:    fiction.ImageUrl.String,
 	})
-
 }
 
 // Post fiction handler

@@ -9,7 +9,7 @@ import (
 
 type authedHandler func(http.ResponseWriter, *http.Request, database.User)
 
-func (cfg *apiConfig) AuthMiddleware(handler authedHandler) http.HandlerFunc {
+func (cfg *apiConfig) AuthMiddleware(next authedHandler) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		// GET ACCESS TOKEN FROM HEADER
 		header := r.Header.Get("Authorization")
@@ -32,7 +32,23 @@ func (cfg *apiConfig) AuthMiddleware(handler authedHandler) http.HandlerFunc {
 			respondWithError(w, http.StatusUnauthorized, "Invalid subject in token")
 			return
 		}
-		handler(w, r, user)
+		next(w, r, user)
+	}
+}
+
+func (cfg *apiConfig) IsPublishedMiddleware(next authedHandler) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		id := r.PathValue("id")
+		fiction, err := cfg.DB.GetFictionById(r.Context(), id)
+		if err != nil {
+			respondWithError(w, http.StatusInternalServerError, "Couldn't get fiction")
+			return
+		}
+		if fiction.Published == 1 {
+			next(w, r, database.User{})
+		} else {
+			cfg.AuthMiddleware(next)
+		}
 	}
 }
 
