@@ -59,7 +59,8 @@ async function getMyFictions(accessToken) {
 }
 
 // Gets fictions details from fiction ID
-async function getFictionByID(fictionID, accessToken) {
+async function getFictionByID(accessToken, args) {
+    const [fictionID] = args;
     const authHeader = accessToken ? { Authorization: "Bearer " + accessToken } : {};
     const response = await fetch(apiBaseUrl + "/v1/fictions/" + fictionID, {
         method: "GET",

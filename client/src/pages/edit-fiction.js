@@ -86,7 +86,7 @@ function EditFiction() {
         document.title = "Edit | WebNovelPlatform";
 
         const fetchFictionData = async () => {
-            const fictionData = await getFictionByID(fictionid);
+            const fictionData = await authApi(getFictionByID, [fictionid]);
             if (!fictionData) {
                 alert("Failed to fetch fiction data");
                 navigate(-1);
