@@ -17,7 +17,9 @@ import LoadingAnimation from "../components/loading";
 
 function EditFiction() {
     const { fictionid } = useParams();
-    const { authApi } = useAuth();
+    const {
+        accessToken: { token: accessToken },
+    } = useAuth();
     const { Formik } = formik;
     const navigate = useNavigate();
     const [selectedFile, setSelectedFile] = useState(null);
@@ -52,12 +54,12 @@ function EditFiction() {
         try {
             let uploadResponse = null;
             if (selectedFile) {
-                uploadResponse = await authApi(uploadFileToGCS, [selectedFile]);
+                uploadResponse = await uploadFileToGCS(accessToken, [selectedFile]);
                 if (!uploadResponse) {
                     throw new Error("Failed to upload image");
                 }
             }
-            if (!(await authApi(putFiction, [values, fictionid, uploadResponse]))) {
+            if (!(await putFiction(accessToken, [values, fictionid, uploadResponse]))) {
                 throw new Error("Failed PUT request to API");
             }
             navigate(-1);
@@ -86,7 +88,7 @@ function EditFiction() {
         document.title = "Edit | WebNovelPlatform";
 
         const fetchFictionData = async () => {
-            const fictionData = await authApi(getFictionByID, [fictionid]);
+            const fictionData = await getFictionByID(fictionid, accessToken);
             if (!fictionData) {
                 alert("Failed to fetch fiction data");
                 navigate(-1);
