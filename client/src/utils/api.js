@@ -1,5 +1,6 @@
 // Utility functions for making API calls
 
+import axiosInstance from "./axiosInstance";
 const apiBaseUrl = process.env.API_URL || "https://webnovelapi-y5hewbdc4a-nw.a.run.app";
 //const apiBaseUrl = "http://localhost:8080";
 
@@ -59,19 +60,21 @@ async function getMyFictions(accessToken) {
 }
 
 // Gets fictions details from fiction ID
-async function getFictionByID(fictionID, accessToken) {
-    const authHeader = accessToken ? { Authorization: "Bearer " + accessToken } : {};
-    const response = await fetch(apiBaseUrl + "/v1/fictions/" + fictionID, {
-        method: "GET",
-        headers: {
-            ...authHeader,
-        },
-    });
-    if (response.status === 200) {
-        let body = await response.json();
-        return body;
+async function getFictionByID(fictionID) {
+    try {
+        const response = await axiosInstance.get(`/v1/fictions/${fictionID}`);
+        return response.data;
+    } catch (error) {
+        if (error.response) {
+            // The request was made and the server responded with a status code
+            // that falls out of the range of 2xx
+            return error.response.status;
+        } else {
+            // Something happened in setting up the request that triggered an Error
+            console.error("Error fetching fiction:", error);
+            return null;
+        }
     }
-    return response.status;
 }
 
 //Submits a fiction to the logged in user's account

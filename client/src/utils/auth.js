@@ -10,29 +10,24 @@ const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
     const [user, setUser] = useState(null);
-    const [accessToken, setAccessToken] = useState(null);
-    const [refreshToken, setRefreshToken] = useState(null);
     const [gettingUser, setGettingUser] = useState(true);
     const apiBaseUrl = process.env.API_URL || "https://webnovelapi-y5hewbdc4a-nw.a.run.app";
 
     // Gets the user data from local storage and checks if the user is authenticated
     useEffect(() => {
         setGettingUser(true);
-        refreshState();
-        setGettingUser(false);
-    }, []);
-
-    useEffect(() => {
-        if (!accessToken) {
-            return;
+        const storedUser = localStorage.getItem("user");
+        if (storedUser) {
+            setUser(JSON.parse(storedUser));
         }
+        setGettingUser(false);
         const verifyAuth = async () => {
             if (!(await checkAuth())) {
                 logout();
             }
         };
         verifyAuth();
-    }, [accessToken]);
+    }, []);
 
     // Logs the user in and stores the user data and access token
     const login = async (email, password, remember_me) => {
@@ -46,14 +41,12 @@ export function AuthProvider({ children }) {
             });
             const data = await response.json();
             if (response.ok) {
-                setUser(data.user);
                 localStorage.setItem("user", JSON.stringify(data.user));
-                setAccessToken(data.auth.access);
                 localStorage.setItem("access", JSON.stringify(data.auth.access));
                 if (remember_me) {
-                    setRefreshToken(data.auth.refresh);
                     localStorage.setItem("refresh", JSON.stringify(data.auth.refresh));
                 }
+                setUser(data.user);
                 return true;
             } else {
                 console.error("Login failed:", data.message);
@@ -67,11 +60,9 @@ export function AuthProvider({ children }) {
 
     // Checks the current time against the expiry time of the access token
     const checkAuth = async () => {
-        if (!accessToken) {
-            await refreshState();
-        }
-        if (accessToken) {
-            const expires = new Date(accessToken.expires);
+        const access = JSON.parse(localStorage.getItem("access"));
+        if (access) {
+            const expires = new Date(access.expires);
             if (expires > new Date()) {
                 return true;
             }
@@ -81,13 +72,11 @@ export function AuthProvider({ children }) {
 
     // Refreshes the access token using the refresh token
     const refreshAuth = async () => {
-        if (!refreshToken) {
-            await refreshState();
-        }
-        if (!refreshToken) {
+        const refresh = JSON.parse(localStorage.getItem("refresh"));
+        if (!refresh) {
             return false;
         }
-        const expires = new Date(refreshToken.expires);
+        const expires = new Date(refresh.expires);
         if (expires < new Date()) {
             return false;
         }
@@ -96,7 +85,7 @@ export function AuthProvider({ children }) {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: "Bearer " + refreshToken.token,
+                    Authorization: "Bearer " + refresh.token,
                 },
             });
             const data = await response.json();
@@ -116,8 +105,6 @@ export function AuthProvider({ children }) {
     // Logs the user out by removing all stored data
     const logout = () => {
         setUser(null);
-        setAccessToken(null);
-        setRefreshToken(null);
         localStorage.removeItem("user");
         localStorage.removeItem("access");
         revokeRefresh();
@@ -135,7 +122,6 @@ export function AuthProvider({ children }) {
             });
         }
         localStorage.removeItem("refresh");
-        setRefreshToken(null);
     };
 
     const awaitUser = async () => {
@@ -151,28 +137,8 @@ export function AuthProvider({ children }) {
     };
 
     const authApi = async (apiFunction, ...args) => {
-        if (!accessToken) {
-            await refreshState();
-        }
-        return apiFunction(accessToken.token, ...args);
-    };
-
-    const refreshState = () => {
-        return new Promise((resolve) => {
-            const storedUser = JSON.parse(localStorage.getItem("user"));
-            if (storedUser) {
-                setUser(storedUser);
-            }
-            const storedAccess = localStorage.getItem("access");
-            if (storedAccess) {
-                setAccessToken(JSON.parse(storedAccess));
-            }
-            const storedRefresh = JSON.parse(localStorage.getItem("refresh"));
-            if (storedRefresh) {
-                setRefreshToken(storedRefresh);
-            }
-            resolve();
-        });
+        const access = JSON.parse(localStorage.getItem("access"));
+        return apiFunction(access.token, ...args);
     };
 
     const updateUserSessionData = (user) => {
@@ -181,9 +147,7 @@ export function AuthProvider({ children }) {
     };
 
     return (
-        <AuthContext.Provider
-            value={{ user, accessToken, gettingUser, awaitUser, login, logout, authApi, updateUserSessionData }}
-        >
+        <AuthContext.Provider value={{ user, gettingUser, awaitUser, login, logout, authApi, updateUserSessionData }}>
             {children}
         </AuthContext.Provider>
     );

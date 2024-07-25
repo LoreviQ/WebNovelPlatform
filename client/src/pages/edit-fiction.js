@@ -17,9 +17,7 @@ import LoadingAnimation from "../components/loading";
 
 function EditFiction() {
     const { fictionid } = useParams();
-    const {
-        accessToken: { token: accessToken },
-    } = useAuth();
+    const { user, accessToken, authApi } = useAuth();
     const { Formik } = formik;
     const navigate = useNavigate();
     const [selectedFile, setSelectedFile] = useState(null);
@@ -54,12 +52,12 @@ function EditFiction() {
         try {
             let uploadResponse = null;
             if (selectedFile) {
-                uploadResponse = await uploadFileToGCS(accessToken, [selectedFile]);
+                uploadResponse = await uploadFileToGCS(accessToken.token, [selectedFile]);
                 if (!uploadResponse) {
                     throw new Error("Failed to upload image");
                 }
             }
-            if (!(await putFiction(accessToken, [values, fictionid, uploadResponse]))) {
+            if (!(await putFiction(accessToken.token, [values, fictionid, uploadResponse]))) {
                 throw new Error("Failed PUT request to API");
             }
             navigate(-1);
@@ -88,7 +86,7 @@ function EditFiction() {
         document.title = "Edit | WebNovelPlatform";
 
         const fetchFictionData = async () => {
-            const fictionData = await getFictionByID(fictionid, accessToken);
+            const fictionData = await getFictionByID(fictionid);
             if (!fictionData) {
                 alert("Failed to fetch fiction data");
                 navigate(-1);
@@ -99,7 +97,10 @@ function EditFiction() {
                 title: fictionData.title,
                 description: fictionData.description,
                 published: fictionData.published,
-                publishedAt: fictionData.published_at.Valid ? new Date(fictionData.published_at.String) : Date(),
+                publishedAt:
+                    fictionData.published_at && fictionData.published_at.Valid
+                        ? new Date(fictionData.published_at.String)
+                        : Date(),
                 imageLocation: fictionData.imageLocation,
             });
         };
