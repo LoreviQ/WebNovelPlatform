@@ -59,15 +59,19 @@ async function getMyFictions(accessToken) {
 }
 
 // Gets fictions details from fiction ID
-async function getFictionByID(fictionID) {
+async function getFictionByID(fictionID, accessToken) {
+    const authHeader = accessToken ? { Authorization: "Bearer " + accessToken } : {};
     const response = await fetch(apiBaseUrl + "/v1/fictions/" + fictionID, {
         method: "GET",
+        headers: {
+            ...authHeader,
+        },
     });
     if (response.status === 200) {
         let body = await response.json();
         return body;
     }
-    return false;
+    return response.status;
 }
 
 //Submits a fiction to the logged in user's account

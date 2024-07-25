@@ -46,7 +46,7 @@ func TestServerEndpoints(t *testing.T) {
 	t.Run("TEST: FICTIONS", func(t *testing.T) {
 		accessToken, _ := testPostLogin(t)
 		testPostFiction(t, accessToken)
-		testGetFiction(t)
+		testGetFiction(t, accessToken)
 		testGetFictions(t)
 		testPutFiction(t, accessToken)
 		testDeleteFiction(t, accessToken)

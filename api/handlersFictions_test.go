@@ -38,12 +38,15 @@ func testGetFictions(t *testing.T) {
 	}
 }
 
-func testGetFiction(t *testing.T) {
+func testGetFiction(t *testing.T, accessToken string) {
 	// Test the GET /v1/fictions/{id} endpoint
 
 	// Create a new request to the /v1/fictions/{id} endpoint
 	requestURL := "http://localhost:8080/v1/fictions/the-great-gatsby"
-	res := loopSendRequest(requestURL, http.MethodGet, nil, nil, t)
+	headers := map[string]string{
+		"Authorization": fmt.Sprintf("Bearer %s", accessToken),
+	}
+	res := loopSendRequest(requestURL, http.MethodGet, nil, headers, t)
 
 	// Compare Response
 	if res.StatusCode != http.StatusOK {

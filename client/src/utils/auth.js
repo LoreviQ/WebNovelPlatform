@@ -182,27 +182,25 @@ const UserIDRouter = ({ children }) => {
 };
 
 // User must be logged in and the author of the fiction id in the URL must be the logged in user
-const PrivateRouteFictionId = ({ children }) => {
+const PrivateRouteFictionId = ({ children, preFetchedFiction }) => {
     const { user, gettingUser } = useAuth(); // Get user from AuthContext
     const { fictionid } = useParams(); // Get fictionid from URL
-    const [gettingAuthor, setGettingAuthor] = useState(true);
-    const [fiction, setFiction] = useState(null);
+    const [fiction, setFiction] = useState(preFetchedFiction || null);
 
     useEffect(() => {
-        const checkAuthorization = async () => {
-            const fictionData = await getFictionByID(fictionid);
-            if (fictionData) {
+        if (!preFetchedFiction) {
+            const checkAuthorization = async () => {
+                const fictionData = await getFictionByID(fictionid);
                 setFiction(fictionData);
-            }
-            setGettingAuthor(false);
-        };
-        checkAuthorization();
-    }, []);
+            };
+            checkAuthorization();
+        }
+    }, [preFetchedFiction, fictionid]);
 
-    if (gettingUser || gettingAuthor) {
+    if (gettingUser || !fiction) {
         return <App Page={LoadingAnimation} />;
     }
-    if (!fiction) {
+    if (fiction === 404) {
         return <App Page={Error} pageProps={{ statusCode: 404 }} />;
     }
     return fiction.authorid === user.id ? children : <App Page={Error} pageProps={{ statusCode: 401 }} />;
@@ -210,29 +208,29 @@ const PrivateRouteFictionId = ({ children }) => {
 
 // Automatically applies the correct routing based on if the provided fiction id is published
 const FictionIDRouter = ({ children }) => {
-    const { fictionid } = useParams();
-    const [gettingFiction, setGettingFiction] = useState(true);
+    const { fictionid } = useParams(); // Get fictionid from URL
     const [fiction, setFiction] = useState(null);
+    const [processing, setProcessing] = useState(true);
 
     useEffect(() => {
-        const checkFiction = async () => {
+        const checkAuthorization = async () => {
             const fictionData = await getFictionByID(fictionid);
-            if (fictionData) {
-                setFiction(fictionData);
-            }
-            setGettingFiction(false);
+            setFiction(fictionData);
+            setProcessing(false);
         };
-        checkFiction();
+        checkAuthorization();
     }, []);
-
-    if (gettingFiction) {
+    if (!fiction) {
         return <App Page={LoadingAnimation} />;
     }
-    if (!fiction) {
+    if (fiction === 404) {
         return <App Page={Error} pageProps={{ statusCode: 404 }} />;
     }
-    return fiction.published ? children : <App Page={Error} pageProps={{ statusCode: 401 }} />;
+    if (fiction == 403) {
+        return <PrivateRouteFictionId preFetchedFiction={fiction}>{children}</PrivateRouteFictionId>;
+    }
+    return <>{children}</>;
 };
 
 export const useAuth = () => useContext(AuthContext);
-export { PrivateRoute, PrivateRouteUserID, UserIDRouter, PrivateRouteFictionId };
+export { PrivateRoute, PrivateRouteUserID, UserIDRouter, PrivateRouteFictionId, FictionIDRouter };

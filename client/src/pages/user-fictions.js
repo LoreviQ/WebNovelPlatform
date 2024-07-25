@@ -63,7 +63,6 @@ function UserFictions() {
                     navigate("/login");
                     return;
                 }
-                console.log(user);
                 setDisplayUser(user);
                 fictionData = await authApi(getMyFictions);
             } else {
