@@ -4,16 +4,21 @@ import axiosInstance from "./axiosInstance";
 const apiBaseUrl = process.env.API_URL || "https://webnovelapi-y5hewbdc4a-nw.a.run.app";
 //const apiBaseUrl = "http://localhost:8080";
 
+const apiEndpoints = {
+    getMyFictions: "/v1/users/me/fictions",
+    getFictionByID: "/v1/fictions/", // + fictionID
+};
+
 async function axiosAuthed(url) {
     try {
         const response = await axiosInstance.get(url);
-        return response.data;
+        return { data: response.data, error: null };
     } catch (error) {
         if (error.response) {
-            return error.response.status;
+            return { data: null, error: error.response.status };
         } else {
             console.error("Error fetching fiction:", error);
-            return null;
+            return { data: null, error: "Unknown error" };
         }
     }
 }
@@ -56,17 +61,6 @@ async function getFictionsByAuthorID(uid) {
         return body;
     }
     return false;
-}
-
-async function getMyFictions() {
-    const response = await axiosAuthed("/v1/users/me/fictions");
-    return response;
-}
-
-// Gets fictions details from fiction ID
-async function getFictionByID(fictionID) {
-    const response = await axiosAuthed(`/v1/fictions/${fictionID}`);
-    return response;
 }
 
 //Submits a fiction to the logged in user's account
@@ -193,12 +187,12 @@ async function putUser(accessToken, args) {
 }
 
 export {
+    apiEndpoints,
+    axiosAuthed,
     getUserByUID,
     putUser,
-    getFictionByID,
     getFictions,
     getFictionsByAuthorID,
-    getMyFictions,
     postFiction,
     publishFiction,
     deleteFiction,

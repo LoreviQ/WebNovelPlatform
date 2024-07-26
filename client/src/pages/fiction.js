@@ -1,9 +1,24 @@
 import React, { useEffect, useState } from "react";
 
+import { apiEndpoints, axiosAuthed } from "../utils/api";
 import Container from "react-bootstrap/esm/Container";
 
 function Fiction() {
+    const { fictionid } = useParams();
+    const [fictionData, setFictionData] = useState(null);
+
     useEffect(() => {
+        const fetchFictionData = async () => {
+            const { data, error } = await axiosAuthed(apiEndpoints.getFictionByID + fictionid);
+            if (error) {
+                alert("Failed to fetch fiction data");
+                navigate(-1);
+                return;
+            }
+            setFictionData(data);
+        };
+
+        fetchFictionData();
         document.title = " | WebNovelPlatform";
     }, []);
 

@@ -11,7 +11,7 @@ import Row from "react-bootstrap/Row";
 import * as formik from "formik";
 import * as yup from "yup";
 
-import { getFictionByID, putFiction, uploadFileToGCS } from "../utils/api";
+import { apiEndpoints, axiosAuthed, putFiction, uploadFileToGCS } from "../utils/api";
 import { useAuth } from "../utils/auth";
 import LoadingAnimation from "../components/loading";
 
@@ -86,22 +86,19 @@ function EditFiction() {
         document.title = "Edit | WebNovelPlatform";
 
         const fetchFictionData = async () => {
-            const fictionData = await getFictionByID(fictionid);
-            if (!fictionData) {
+            const { data, error } = await axiosAuthed(apiEndpoints.getFictionByID + fictionid);
+            if (error) {
                 alert("Failed to fetch fiction data");
                 navigate(-1);
                 return;
             }
             setFormData({
-                id: fictionData.id,
-                title: fictionData.title,
-                description: fictionData.description,
-                published: fictionData.published,
-                publishedAt:
-                    fictionData.published_at && fictionData.published_at.Valid
-                        ? new Date(fictionData.published_at.String)
-                        : Date(),
-                imageLocation: fictionData.imageLocation,
+                id: data.id,
+                title: data.title,
+                description: data.description,
+                published: data.published,
+                publishedAt: data.published_at && data.published_at.Valid ? new Date(data.published_at.String) : Date(),
+                imageLocation: data.imageLocation,
             });
         };
 

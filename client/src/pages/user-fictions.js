@@ -14,13 +14,20 @@ import {
 import { faCircleCheck as faCircleCheckRegular } from "@fortawesome/free-regular-svg-icons";
 
 import { useAuth } from "../utils/auth";
-import { getUserByUID, getFictionsByAuthorID, getMyFictions, publishFiction, deleteFiction } from "../utils/api";
+import {
+    apiEndpoints,
+    axiosAuthed,
+    getUserByUID,
+    getFictionsByAuthorID,
+    publishFiction,
+    deleteFiction,
+} from "../utils/api";
 import LoadingAnimation from "../components/loading";
 import Error from "./error";
 
 function UserFictions() {
     const [loggedInUser, setLoggedInUser] = useState(false);
-    const [err404, setErr404] = useState(false);
+    const [error, setError] = useState(false);
     const [displayUser, setDisplayUser] = useState(null);
     const [fictions, setFictions] = useState(null);
     const { user, awaitUser, authApi } = useAuth();
@@ -53,7 +60,6 @@ function UserFictions() {
 
         const fetchDisplayData = async () => {
             let uid = userid;
-            let fictionData;
             await awaitUser();
             if (uid === "me" || (user && uid === user.id)) {
                 setLoggedInUser(true);
@@ -64,22 +70,29 @@ function UserFictions() {
                     return;
                 }
                 setDisplayUser(user);
-                fictionData = await getMyFictions();
+                const { data, error } = await axiosAuthed(apiEndpoints.getMyFictions);
+                console.log(data);
+                console.log(error);
+                if (error) {
+                    setError(error);
+                    return;
+                }
+                setFictions(data);
             } else {
                 const userData = await getUserByUID(uid);
                 if (!userData) {
-                    setErr404(true);
+                    setError(404);
                     return;
                 }
                 setDisplayUser(userData);
-                fictionData = await getFictionsByAuthorID(uid);
+                const data = await getFictionsByAuthorID(uid);
+                setFictions(data);
             }
-            setFictions(fictionData);
         };
         fetchDisplayData();
     }, []);
-    if (err404) {
-        return <Error statusCode={404} />;
+    if (error) {
+        return <Error statusCode={error} />;
     }
     if (!fictions) {
         return <LoadingAnimation />;
