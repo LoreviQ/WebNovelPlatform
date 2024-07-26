@@ -231,7 +231,7 @@ const FictionIDRouter = ({ children }) => {
     if (fiction === 404) {
         return <App Page={Error} pageProps={{ statusCode: 404 }} />;
     }
-    if (fiction == 403) {
+    if (fiction == 403 || 401) {
         return <PrivateRouteFictionId preFetchedFiction={fiction}>{children}</PrivateRouteFictionId>;
     }
     return <>{children}</>;
