@@ -172,12 +172,14 @@ const PrivateRouteUserID = ({ children }) => {
 };
 
 //automatically applies correct router based on userid
-const UserIDRouter = ({ children }) => {
+const UserIDRouter = ({ children, restricted = true }) => {
     const { userid } = useParams();
     if (userid === "me") {
         return <PrivateRoute>{children}</PrivateRoute>;
-    } else {
+    } else if (restricted) {
         return <PrivateRouteUserID>{children}</PrivateRouteUserID>;
+    } else {
+        return <>{children}</>;
     }
 };
 

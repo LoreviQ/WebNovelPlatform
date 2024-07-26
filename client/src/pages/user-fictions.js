@@ -64,7 +64,7 @@ function UserFictions() {
                     return;
                 }
                 setDisplayUser(user);
-                fictionData = await authApi(getMyFictions);
+                fictionData = await getMyFictions();
             } else {
                 const userData = await getUserByUID(uid);
                 if (!userData) {

@@ -4,6 +4,20 @@ import axiosInstance from "./axiosInstance";
 const apiBaseUrl = process.env.API_URL || "https://webnovelapi-y5hewbdc4a-nw.a.run.app";
 //const apiBaseUrl = "http://localhost:8080";
 
+async function axiosAuthed(url) {
+    try {
+        const response = await axiosInstance.get(url);
+        return response.data;
+    } catch (error) {
+        if (error.response) {
+            return error.response.status;
+        } else {
+            console.error("Error fetching fiction:", error);
+            return null;
+        }
+    }
+}
+
 // Gets a user by their UID
 async function getUserByUID(uid) {
     const response = await fetch(apiBaseUrl + "/v1/users/" + uid, {
@@ -44,37 +58,15 @@ async function getFictionsByAuthorID(uid) {
     return false;
 }
 
-async function getMyFictions(accessToken) {
-    const response = await fetch(apiBaseUrl + "/v1/users/me/fictions", {
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json",
-            Authorization: "Bearer " + accessToken,
-        },
-    });
-    if (response.status === 200) {
-        let body = await response.json();
-        return body;
-    }
-    return false;
+async function getMyFictions() {
+    const response = await axiosAuthed("/v1/users/me/fictions");
+    return response;
 }
 
 // Gets fictions details from fiction ID
 async function getFictionByID(fictionID) {
-    try {
-        const response = await axiosInstance.get(`/v1/fictions/${fictionID}`);
-        return response.data;
-    } catch (error) {
-        if (error.response) {
-            // The request was made and the server responded with a status code
-            // that falls out of the range of 2xx
-            return error.response.status;
-        } else {
-            // Something happened in setting up the request that triggered an Error
-            console.error("Error fetching fiction:", error);
-            return null;
-        }
-    }
+    const response = await axiosAuthed(`/v1/fictions/${fictionID}`);
+    return response;
 }
 
 //Submits a fiction to the logged in user's account
