@@ -35,16 +35,14 @@ function Fiction() {
                     alt="ProfilePicture"
                     style={{
                         width: "auto",
+                        maxWidth: "25%",
                         maxHeight: "200px",
                         backgroundColor: "#f0f0f0",
                         objectFit: "cover",
                     }}
                 />
-                <div
-                    id="div2"
-                    style={{ position: "absolute", left: "50%", transform: "translateX(-50%)", textAlign: "center" }}
-                >
-                    <h1 className="mt-2">{fictionData.title}</h1>
+                <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center" }}>
+                    <h1 style={{ textAlign: "center", transform: "translateX(-12.5%)" }}>{fictionData.title}</h1>
                     <p style={{ textAlign: "left", margin: "0 auto" }}>{fictionData.description}</p>
                 </div>
             </div>
