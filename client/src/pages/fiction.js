@@ -9,7 +9,7 @@ function Fiction() {
 
     useEffect(() => {
         const fetchFictionData = async () => {
-            const { data, error } = await axiosAuthed(apiEndpoints.getFictionByID + fictionid);
+            const { data, error } = await axiosAuthed("GET", apiEndpoints.getFictionByID + fictionid);
             if (error) {
                 alert("Failed to fetch fiction data");
                 navigate(-1);

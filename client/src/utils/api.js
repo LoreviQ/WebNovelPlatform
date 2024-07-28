@@ -7,17 +7,34 @@ const apiBaseUrl = process.env.API_URL || "https://webnovelapi-y5hewbdc4a-nw.a.r
 const apiEndpoints = {
     getMyFictions: "/v1/users/me/fictions",
     getFictionByID: "/v1/fictions/", // + fictionID
+    putFiction: "/v1/fictions/", // + fictionID
+    getGcsSignedUrl: "/v1/gcs-signed-url",
 };
 
-async function axiosAuthed(url) {
+// axios function that includes the access token in the request
+async function axiosAuthed(method, url, body = null) {
     try {
-        const response = await axiosInstance.get(url);
+        let response;
+        switch (method.toUpperCase()) {
+            case "GET":
+                response = await axiosInstance.get(url);
+                break;
+            case "POST":
+                response = await axiosInstance.post(url, body);
+                break;
+            case "PUT":
+                response = await axiosInstance.put(url, body);
+                break;
+            // Add other methods as needed (PUT, DELETE, etc.)
+            default:
+                throw new Error(`Unsupported method: ${method}`);
+        }
         return { data: response.data, error: null };
     } catch (error) {
         if (error.response) {
             return { data: null, error: error.response.status };
         } else {
-            console.error("Error fetching fiction:", error);
+            console.error(`Error with ${method} request:`, error);
             return { data: null, error: "Unknown error" };
         }
     }
@@ -114,45 +131,16 @@ async function deleteFiction(accessToken, fictionID) {
     return false;
 }
 
-// Updates the fiction with the given ID
-async function putFiction(accessToken, args) {
-    const [fictionData, fictionid, imageLocation] = args;
-    const response = await fetch(apiBaseUrl + "/v1/fictions/" + fictionid, {
-        method: "PUT",
-        headers: {
-            "Content-Type": "application/json",
-            Authorization: "Bearer " + accessToken,
-        },
-        body: JSON.stringify({
-            new_id: fictionData.id,
-            title: fictionData.title,
-            description: fictionData.description,
-            published: fictionData.published ? 1 : 0,
-            imageLocation: imageLocation,
-        }),
-    });
-    if (response.status === 200) {
-        return true;
-    }
-    return false;
-}
-
 // Uploads a file to GCS
-async function uploadFileToGCS(accessToken, args) {
-    const [file] = args;
-    const response = await fetch(apiBaseUrl + "/v1/gcs-signed-url", {
-        method: "POST",
-        body: JSON.stringify({ filename: file.name, filetype: file.type }),
-        headers: {
-            "Content-Type": "application/json",
-            Authorization: "Bearer " + accessToken,
-        },
+async function uploadFileToGCS(file) {
+    const { data, error } = await axiosAuthed("POST", apiEndpoints.getGcsSignedUrl, {
+        filename: file.name,
+        filetype: file.type,
     });
-    if (response.status != 200) {
+    if (error) {
         return false;
     }
-    let body = await response.json();
-    const signedUrl = body.url;
+    const signedUrl = data.url;
     const uploadResponse = await fetch(signedUrl, {
         method: "PUT",
         body: file,
@@ -196,6 +184,5 @@ export {
     postFiction,
     publishFiction,
     deleteFiction,
-    putFiction,
     uploadFileToGCS,
 };

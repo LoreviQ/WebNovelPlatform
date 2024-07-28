@@ -11,13 +11,12 @@ import Row from "react-bootstrap/Row";
 import * as formik from "formik";
 import * as yup from "yup";
 
-import { apiEndpoints, axiosAuthed, putFiction, uploadFileToGCS } from "../utils/api";
+import { apiEndpoints, axiosAuthed, uploadFileToGCS } from "../utils/api";
 import { useAuth } from "../utils/auth";
 import LoadingAnimation from "../components/loading";
 
 function EditFiction() {
     const { fictionid } = useParams();
-    const { user, accessToken, authApi } = useAuth();
     const { Formik } = formik;
     const navigate = useNavigate();
     const [selectedFile, setSelectedFile] = useState(null);
@@ -52,12 +51,19 @@ function EditFiction() {
         try {
             let uploadResponse = null;
             if (selectedFile) {
-                uploadResponse = await uploadFileToGCS(accessToken.token, [selectedFile]);
+                uploadResponse = await uploadFileToGCS(selectedFile);
                 if (!uploadResponse) {
                     throw new Error("Failed to upload image");
                 }
             }
-            if (!(await putFiction(accessToken.token, [values, fictionid, uploadResponse]))) {
+            const { data, error } = await axiosAuthed("PUT", apiEndpoints.putFiction + fictionid, {
+                new_id: values.id,
+                title: values.title,
+                description: values.description,
+                published: values.published ? 1 : 0,
+                imageLocation: uploadResponse,
+            });
+            if (error) {
                 throw new Error("Failed PUT request to API");
             }
             navigate(-1);
@@ -86,7 +92,7 @@ function EditFiction() {
         document.title = "Edit | WebNovelPlatform";
 
         const fetchFictionData = async () => {
-            const { data, error } = await axiosAuthed(apiEndpoints.getFictionByID + fictionid);
+            const { data, error } = await axiosAuthed("GET", apiEndpoints.getFictionByID + fictionid);
             if (error) {
                 alert("Failed to fetch fiction data");
                 navigate(-1);

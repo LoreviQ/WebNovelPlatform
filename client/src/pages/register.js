@@ -38,7 +38,6 @@ function Register() {
                 body: JSON.stringify(postData),
             });
             await response.json();
-            console.log("Response:", response);
             if (response.status === 201) {
                 window.location.href = "/login";
             } else {
