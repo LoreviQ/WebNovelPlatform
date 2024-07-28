@@ -8,6 +8,11 @@ import LoadingAnimation from "../components/loading";
 function Fiction() {
     const { fictionid } = useParams();
     const [fictionData, setFictionData] = useState(null);
+    const [isExpanded, setIsExpanded] = useState(false);
+
+    const toggleExpand = () => {
+        setIsExpanded(!isExpanded);
+    };
 
     useEffect(() => {
         const fetchFictionData = async () => {
@@ -23,12 +28,16 @@ function Fiction() {
         fetchFictionData();
         document.title = " | WebNovelPlatform";
     }, []);
+
     if (!fictionData) {
         return <LoadingAnimation />;
     }
     return (
         <Container fluid className="my-4 ms-2">
-            <div id="div1" style={{ display: "flex", alignItems: "flex-start", position: "relative" }}>
+            <div
+                className={`fictionHeader ${isExpanded ? "fictionHeaderExpanded" : "fictionHeaderTruncated"}`}
+                onClick={toggleExpand}
+            >
                 <img
                     className="me-4"
                     src={fictionData.imageLocation || `${process.env.PUBLIC_URL}/image-placeholder.png`}
@@ -41,9 +50,11 @@ function Fiction() {
                         objectFit: "cover",
                     }}
                 />
-                <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center" }}>
+                <div style={{ flex: 1 }}>
                     <h1 style={{ textAlign: "center", transform: "translateX(-12.5%)" }}>{fictionData.title}</h1>
-                    <p style={{ textAlign: "left", margin: "0 auto" }}>{fictionData.description}</p>
+                    <p style={{ textAlign: "left", margin: "0 auto", whiteSpace: "pre-line" }}>
+                        {fictionData.description}
+                    </p>
                 </div>
             </div>
             <hr />

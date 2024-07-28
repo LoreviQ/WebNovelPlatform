@@ -12621,3 +12621,23 @@ body {
   padding-right: 0.25rem; 
   padding-left: 0.25rem;
 }
+
+.fictionHeader {
+  display: flex;
+  align-items: flex-start;
+  position: relative;
+  cursor: pointer;
+  transition: max-height 1s ease-in-out; /* Adjust timing function for smoother effect */
+}
+
+.fictionHeaderTruncated {
+  max-height: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: max-height 0.6s ease-in; /* Faster transition for truncating */
+}
+
+.fictionHeaderExpanded {
+  max-height: 1000px; /* Set a large enough max-height to accommodate expanded content */
+  transition: max-height 1s ease-out; /* Slower transition for expanding */
+}
