@@ -12,7 +12,6 @@ import * as formik from "formik";
 import * as yup from "yup";
 
 import { apiEndpoints, axiosAuthed, uploadFileToGCS } from "../utils/api";
-import { useAuth } from "../utils/auth";
 import LoadingAnimation from "../components/loading";
 
 function EditFiction() {
