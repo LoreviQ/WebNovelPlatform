@@ -22,6 +22,7 @@ function Index() {
         };
         fetchDisplayData();
     }, []);
+
     if (!carouselFics) {
         return <LoadingAnimation />;
     }
@@ -56,6 +57,7 @@ function Index() {
             <div className="fictionsTilesContainer">
                 {fictions.map((fiction, index) => (
                     <div
+                        key={fiction.id}
                         className="fictionTile m-2"
                         onClick={() => navigate(`/fictions/${fiction.id}`)}
                         style={{ cursor: "pointer" }}
