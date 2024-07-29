@@ -148,6 +148,7 @@ function UserFictions() {
                                         height: "100px",
                                         backgroundColor: "#f0f0f0",
                                         objectFit: "cover",
+                                        flexShrink: 0,
                                     }}
                                 />
                                 <div className="ms-2 me-auto">
