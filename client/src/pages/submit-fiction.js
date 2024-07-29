@@ -30,7 +30,7 @@ function SubmitFiction() {
         try {
             let uploadResponse = null;
             if (selectedFile) {
-                uploadResponse = await authApi(uploadFileToGCS, [selectedFile]);
+                uploadResponse = await uploadFileToGCS(selectedFile);
                 if (!uploadResponse) {
                     throw new Error("Failed to upload image");
                 }
