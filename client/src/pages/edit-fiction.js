@@ -60,7 +60,7 @@ function EditFiction() {
                 title: values.title,
                 description: values.description,
                 published: values.published ? 1 : 0,
-                imageLocation: uploadResponse,
+                imageLocation: uploadResponse || values.imageLocation,
             });
             if (error) {
                 throw new Error("Failed PUT request to API");
