@@ -114,6 +114,7 @@ function User() {
             const { data, error } = await axiosAuthed("GET", apiEndpoints.user(uid));
             if (error) {
                 setError(error);
+                return;
             }
             setFormData(data);
         };

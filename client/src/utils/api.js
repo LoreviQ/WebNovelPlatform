@@ -44,18 +44,6 @@ async function axiosAuthed(method, url, body = null) {
     }
 }
 
-// Gets a user by their UID
-async function getUserByUID(uid) {
-    const response = await fetch(apiBaseUrl + "/v1/users/" + uid, {
-        method: "GET",
-    });
-    if (response.status === 200) {
-        let body = await response.json();
-        return body;
-    }
-    return false;
-}
-
 // Gets all fictions
 async function getFictions(search) {
     const query = search ? `${search}` : "";
@@ -143,13 +131,4 @@ async function uploadFileToGCS(file) {
     return false;
 }
 
-export {
-    apiEndpoints,
-    axiosAuthed,
-    getUserByUID,
-    getFictions,
-    getFictionsByAuthorID,
-    postFiction,
-    publishFiction,
-    uploadFileToGCS,
-};
+export { apiEndpoints, axiosAuthed, getFictions, getFictionsByAuthorID, postFiction, publishFiction, uploadFileToGCS };

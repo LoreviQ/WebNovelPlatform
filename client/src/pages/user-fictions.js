@@ -14,7 +14,7 @@ import {
 import { faCircleCheck as faCircleCheckRegular } from "@fortawesome/free-regular-svg-icons";
 
 import { useAuth } from "../utils/auth";
-import { apiEndpoints, axiosAuthed, getUserByUID, getFictionsByAuthorID, publishFiction } from "../utils/api";
+import { apiEndpoints, axiosAuthed, getFictionsByAuthorID, publishFiction } from "../utils/api";
 import LoadingAnimation from "../components/loading";
 import Error from "./error";
 
@@ -70,14 +70,14 @@ function UserFictions() {
                 }
                 setFictions(data);
             } else {
-                const userData = await getUserByUID(uid);
-                if (!userData) {
-                    setError(404);
+                const { data, error } = await axiosAuthed("GET", apiEndpoints.user(uid));
+                if (error) {
+                    setError(error);
                     return;
                 }
-                setDisplayUser(userData);
-                const data = await getFictionsByAuthorID(uid);
-                setFictions(data);
+                setDisplayUser(data);
+                const ficData = await getFictionsByAuthorID(uid);
+                setFictions(ficData);
             }
         };
         fetchDisplayData();
