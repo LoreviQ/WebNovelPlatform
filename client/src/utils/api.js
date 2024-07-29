@@ -44,27 +44,6 @@ async function axiosAuthed(method, url, body = null) {
     }
 }
 
-//Submits a fiction to the logged in user's account
-async function postFiction(accessToken, args) {
-    const [fictionData, imageLocation] = args;
-    const response = await fetch(apiBaseUrl + "/v1/fictions", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            Authorization: "Bearer " + accessToken,
-        },
-        body: JSON.stringify({
-            title: fictionData.title,
-            description: fictionData.description,
-            imageLocation: imageLocation,
-        }),
-    });
-    if (response.status === 201) {
-        return true;
-    }
-    return false;
-}
-
 // Publishes the fiction with the given ID
 async function publishFiction(accessToken, fictionID) {
     const response = await fetch(apiBaseUrl + "/v1/fictions/" + fictionID + "/publish", {
@@ -103,4 +82,4 @@ async function uploadFileToGCS(file) {
     return false;
 }
 
-export { apiEndpoints, axiosAuthed, postFiction, publishFiction, uploadFileToGCS };
+export { apiEndpoints, axiosAuthed, publishFiction, uploadFileToGCS };

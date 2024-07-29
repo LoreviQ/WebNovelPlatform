@@ -9,7 +9,7 @@ import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 
 import { useAuth } from "../utils/auth";
-import { uploadFileToGCS, postFiction } from "../utils/api";
+import { apiEndpoints, axiosAuthed, uploadFileToGCS } from "../utils/api";
 
 function SubmitFiction() {
     const { user, authApi } = useAuth();
@@ -35,7 +35,12 @@ function SubmitFiction() {
                     throw new Error("Failed to upload image");
                 }
             }
-            if (!(await authApi(postFiction, [formData, uploadResponse]))) {
+            const { data, error } = await axiosAuthed("POST", apiEndpoints.fictions(), {
+                title: formData.title,
+                description: formData.description,
+                imageLocation: uploadResponse,
+            });
+            if (error) {
                 throw new Error("Failed PUT request to API");
             }
             navigate(-1);
