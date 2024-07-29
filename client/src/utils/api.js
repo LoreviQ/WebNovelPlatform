@@ -5,28 +5,13 @@ const apiBaseUrl = process.env.API_URL || "https://webnovelapi-y5hewbdc4a-nw.a.r
 //const apiBaseUrl = "http://localhost:8080";
 
 const apiEndpoints = {
-    user: userEndpoint, // (userID)
-    fiction: fictionEndpoint, // (fictionID)
-    fictions: fictionsEndpoint, // (query)
-    userFictions: userFictionsEndpoint, // (userID || me)
+    user: (userID) => `/v1/users/${userID}`, // (userID, mandatory)
+    fiction: (fictionID) => `/v1/fictions/${fictionID}`, // (fictionID, mandatory)
+    fictions: (query) => `/v1/fictions${query ? query : ""}`, // (Search query, optional)
+    userFictions: (userID) => `/v1/users/${userID}/fictions`, // (userID || 'me', mandatory)
+    publishFiction: (fictionID) => `/v1/fictions/${fictionID}/publish`, // (fictionID, mandatory)
     gcsSignedUrl: "/v1/gcs-signed-url",
 };
-
-function userEndpoint(userID) {
-    return `/v1/users/${userID}`;
-}
-
-function fictionEndpoint(fictionID) {
-    return `/v1/fictions/${fictionID}`;
-}
-
-function fictionsEndpoint(query) {
-    return `/v1/fictions${query}`;
-}
-
-function userFictionsEndpoint(userID) {
-    return `/v1/users/${userID}/fictions`;
-}
 
 // axios function that includes the access token in the request
 async function axiosAuthed(method, url, body = null) {
