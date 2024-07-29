@@ -41,7 +41,7 @@ function UserFictions() {
         const userInput = window.prompt(`Please type the fiction ID (${fictionID}) to confirm deletion:`);
 
         if (userInput === fictionID.toString()) {
-            await axiosAuthed("DELETE", apiEndpoints.fiction + fictionID);
+            await axiosAuthed("DELETE", apiEndpoints.fiction(fictionID));
             navigate(0); // Reloads the current page
         } else if (userInput) {
             window.alert("The fiction ID does not match.");
