@@ -12560,7 +12560,7 @@ body {
 
 .carousel-text {
   color: black;
-  width: 400px;
+  width: 550px;
   pointer-events: none;
 }
 
@@ -12604,8 +12604,7 @@ body {
 
 .fictionTileImage {
   height: 200px;
-  width: auto;
-  max-width: 150px;
+  width: 150px;
   object-fit: cover;
 }
 
