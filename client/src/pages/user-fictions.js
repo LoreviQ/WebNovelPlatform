@@ -63,7 +63,7 @@ function UserFictions() {
                     return;
                 }
                 setDisplayUser(user);
-                const { data, error } = await axiosAuthed("GET", apiEndpoints.myFictions);
+                const { data, error } = await axiosAuthed("GET", apiEndpoints.userFictions("me"));
                 if (error) {
                     setError(error);
                     return;

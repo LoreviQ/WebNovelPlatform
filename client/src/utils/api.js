@@ -8,8 +8,7 @@ const apiEndpoints = {
     user: userEndpoint, // (userID)
     fiction: fictionEndpoint, // (fictionID)
     fictions: fictionsEndpoint, // (query)
-    myFictions: "/v1/users/me/fictions",
-    userFictions: userFictionsEndpoint, // (userID)
+    userFictions: userFictionsEndpoint, // (userID || me)
     gcsSignedUrl: "/v1/gcs-signed-url",
 };
 
