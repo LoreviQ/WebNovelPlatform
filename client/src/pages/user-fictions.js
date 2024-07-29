@@ -14,7 +14,7 @@ import {
 import { faCircleCheck as faCircleCheckRegular } from "@fortawesome/free-regular-svg-icons";
 
 import { useAuth } from "../utils/auth";
-import { apiEndpoints, axiosAuthed, publishFiction } from "../utils/api";
+import { apiEndpoints, axiosAuthed } from "../utils/api";
 import LoadingAnimation from "../components/loading";
 import Error from "./error";
 
@@ -23,7 +23,7 @@ function UserFictions() {
     const [error, setError] = useState(false);
     const [displayUser, setDisplayUser] = useState(null);
     const [fictions, setFictions] = useState(null);
-    const { user, awaitUser, authApi } = useAuth();
+    const { user, awaitUser } = useAuth();
     const { userid } = useParams();
     const navigate = useNavigate();
 
@@ -32,7 +32,11 @@ function UserFictions() {
         const isConfirmed = window.confirm("Are you sure you want to publish this fiction?");
 
         if (isConfirmed) {
-            await authApi(publishFiction, fictionID);
+            const { data, error } = await axiosAuthed("PUT", apiEndpoints.publishFiction(fictionID));
+            if (error) {
+                alert("Failed to publish fiction: " + error);
+                return;
+            }
             navigate(0); // Reloads the current page
         }
     };

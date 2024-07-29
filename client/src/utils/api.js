@@ -44,21 +44,6 @@ async function axiosAuthed(method, url, body = null) {
     }
 }
 
-// Publishes the fiction with the given ID
-async function publishFiction(accessToken, fictionID) {
-    const response = await fetch(apiBaseUrl + "/v1/fictions/" + fictionID + "/publish", {
-        method: "PUT",
-        headers: {
-            "Content-Type": "application/json",
-            Authorization: "Bearer " + accessToken,
-        },
-    });
-    if (response.status === 200) {
-        return true;
-    }
-    return false;
-}
-
 // Uploads a file to GCS
 async function uploadFileToGCS(file) {
     const { data, error } = await axiosAuthed("POST", apiEndpoints.gcsSignedUrl, {
@@ -82,4 +67,4 @@ async function uploadFileToGCS(file) {
     return false;
 }
 
-export { apiEndpoints, axiosAuthed, publishFiction, uploadFileToGCS };
+export { apiEndpoints, axiosAuthed, uploadFileToGCS };
