@@ -25,10 +25,15 @@ function Fiction() {
             }
             setFictionData(data);
         };
-
         fetchFictionData();
-        document.title = " | WebNovelPlatform";
     }, []);
+
+    useEffect(() => {
+        if (!fictionData) {
+            return;
+        }
+        document.title = fictionData.title + " | WebNovelPlatform";
+    }, [fictionData]);
 
     if (!fictionData) {
         return <LoadingAnimation />;
