@@ -5,7 +5,7 @@ import Carousel from "react-bootstrap/Carousel";
 import _ from "lodash";
 
 import LoadingAnimation from "../components/loading";
-import { getFictions } from "../utils/api";
+import { apiEndpoints, axiosAuthed } from "../utils/api";
 
 function Index() {
     const [fictions, setFictions] = useState(null);
@@ -15,7 +15,12 @@ function Index() {
     useEffect(() => {
         document.title = "Home | WebNovelPlatform";
         const fetchDisplayData = async () => {
-            const fictionData = await getFictions();
+            const { data: fictionData, error } = await axiosAuthed("GET", apiEndpoints.fictions());
+            if (error) {
+                alert("Failed to fetch fictions");
+                navigate(-1);
+                return;
+            }
             setFictions(fictionData);
             const selectedFictions = _.sampleSize(fictionData, Math.min(fictionData.length, 5)); // Randomly select 5 fictions
             setCarouselFics(selectedFictions);

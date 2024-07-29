@@ -12,7 +12,7 @@ import Col from "react-bootstrap/Col";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
-import { getFictions } from "../utils/api";
+import { apiEndpoints, axiosAuthed } from "../utils/api";
 import LoadingAnimation from "../components/loading";
 
 function Fictions() {
@@ -54,8 +54,13 @@ function Fictions() {
         document.title = "Fictions | WebNovelPlatform";
 
         const fetchDisplayData = async () => {
-            const fictionData = await getFictions(location.search);
-            setFictions(fictionData);
+            const { data, error } = await axiosAuthed("GET", apiEndpoints.fictions(location.search));
+            if (error) {
+                alert("Failed to fetch fictions");
+                navigate(-1);
+                return;
+            }
+            setFictions(data);
         };
         fetchDisplayData();
     }, [location.search]);

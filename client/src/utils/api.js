@@ -44,22 +44,6 @@ async function axiosAuthed(method, url, body = null) {
     }
 }
 
-// Gets all fictions
-async function getFictions(search) {
-    const query = search ? `${search}` : "";
-    const url = `${apiBaseUrl}/v1/fictions${query}`;
-
-    // Fetch fictions
-    const response = await fetch(url, {
-        method: "GET",
-    });
-    if (response.status === 200) {
-        let body = await response.json();
-        return body;
-    }
-    return false;
-}
-
 //Submits a fiction to the logged in user's account
 async function postFiction(accessToken, args) {
     const [fictionData, imageLocation] = args;
@@ -119,4 +103,4 @@ async function uploadFileToGCS(file) {
     return false;
 }
 
-export { apiEndpoints, axiosAuthed, getFictions, postFiction, publishFiction, uploadFileToGCS };
+export { apiEndpoints, axiosAuthed, postFiction, publishFiction, uploadFileToGCS };
