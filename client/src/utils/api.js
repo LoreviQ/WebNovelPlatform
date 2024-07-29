@@ -6,8 +6,8 @@ const apiBaseUrl = process.env.API_URL || "https://webnovelapi-y5hewbdc4a-nw.a.r
 
 const apiEndpoints = {
     fiction: "/v1/fictions/", // + fictionID
-    getMyFictions: "/v1/users/me/fictions",
-    getGcsSignedUrl: "/v1/gcs-signed-url",
+    myFictions: "/v1/users/me/fictions",
+    gcsSignedUrl: "/v1/gcs-signed-url",
 };
 
 // axios function that includes the access token in the request
@@ -118,7 +118,7 @@ async function publishFiction(accessToken, fictionID) {
 
 // Uploads a file to GCS
 async function uploadFileToGCS(file) {
-    const { data, error } = await axiosAuthed("POST", apiEndpoints.getGcsSignedUrl, {
+    const { data, error } = await axiosAuthed("POST", apiEndpoints.gcsSignedUrl, {
         filename: file.name,
         filetype: file.type,
     });
