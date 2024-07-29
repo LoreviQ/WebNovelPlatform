@@ -8,6 +8,7 @@ import LoadingAnimation from "../components/loading";
 function Fiction() {
     const { fictionid } = useParams();
     const [fictionData, setFictionData] = useState(null);
+    const [chapters, setChapters] = useState(null);
     const [isExpanded, setIsExpanded] = useState(false);
 
     const toggleExpand = () => {
@@ -58,6 +59,30 @@ function Fiction() {
                 </div>
             </div>
             <hr />
+            {!chapters || chapters.length === 0 ? (
+                <h1>Chapters not yet implemented</h1>
+            ) : (
+                <ListGroup as="ul">
+                    {chapters.map((chapter) => (
+                        <ListGroup.Item
+                            as="li"
+                            key={chapter.id}
+                            action
+                            onClick={() => navigate(`/`)}
+                            style={{ padding: 0, cursor: "pointer" }}
+                        >
+                            <div style={{ display: "flex", alignItems: "center" }}>
+                                <div className="ms-2 me-auto">
+                                    <div className="fw-bold">{chapter.title}</div>
+                                    <div className="ms-2 userFictionsTextTruncate">{chapter.description}</div>
+                                </div>
+                            </div>
+                        </ListGroup.Item>
+                    ))}
+                </ListGroup>
+            )}
+            <hr />
+            <h1>Comments not yet implemented</h1>
         </Container>
     );
 }
