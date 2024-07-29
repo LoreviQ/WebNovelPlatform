@@ -13,12 +13,12 @@ import * as formik from "formik";
 import * as yup from "yup";
 
 import { useAuth } from "../utils/auth";
-import { getUserByUID, putUser, uploadFileToGCS } from "../utils/api";
+import { apiEndpoints, axiosAuthed, uploadFileToGCS } from "../utils/api";
 import LoadingAnimation from "../components/loading";
 import Error from "./error";
 
 function User() {
-    const [err404, setErr404] = useState(false);
+    const [error, setError] = useState(null);
     const [edit, setEdit] = useState(false);
     const { user, awaitUser, authApi, updateUserSessionData } = useAuth();
     const { userid } = useParams();
@@ -51,13 +51,17 @@ function User() {
         try {
             let uploadResponse = null;
             if (selectedFile) {
-                uploadResponse = await authApi(uploadFileToGCS, [selectedFile]);
+                uploadResponse = await uploadFileToGCS(selectedFile);
                 if (!uploadResponse) {
                     throw new Error("Failed to upload image");
                 }
             }
-            if (!(await authApi(putUser, [values, uploadResponse]))) {
-                throw new Error("Failed PUT request to API");
+            const { data, error } = await axiosAuthed("PUT", apiEndpoints.userProfile, {
+                email: values.email,
+                image_url: uploadResponse,
+            });
+            if (error) {
+                throw new Error("Failed PUT request to API: " + error);
             }
             updateUserSessionData({
                 id: user.id,
@@ -107,12 +111,11 @@ function User() {
                 }
                 uid = user.id;
             }
-            const userData = await getUserByUID(uid);
-            if (!userData) {
-                setErr404(true);
-                return;
+            const { data, error } = await axiosAuthed("GET", apiEndpoints.user(uid));
+            if (error) {
+                setError(error);
             }
-            setFormData(userData);
+            setFormData(data);
         };
 
         fetchUserData();
@@ -128,8 +131,8 @@ function User() {
         }
     };
 
-    if (err404) {
-        return <Error statusCode={404} />;
+    if (error) {
+        return <Error statusCode={error} />;
     }
     if (!formData) {
         return <LoadingAnimation />;
