@@ -60,18 +60,6 @@ async function getFictions(search) {
     return false;
 }
 
-// Gets fictions by the author's UID
-async function getFictionsByAuthorID(uid) {
-    const response = await fetch(apiBaseUrl + "/v1/users/" + uid + "/fictions", {
-        method: "GET",
-    });
-    if (response.status === 200) {
-        let body = await response.json();
-        return body;
-    }
-    return false;
-}
-
 //Submits a fiction to the logged in user's account
 async function postFiction(accessToken, args) {
     const [fictionData, imageLocation] = args;
@@ -131,4 +119,4 @@ async function uploadFileToGCS(file) {
     return false;
 }
 
-export { apiEndpoints, axiosAuthed, getFictions, getFictionsByAuthorID, postFiction, publishFiction, uploadFileToGCS };
+export { apiEndpoints, axiosAuthed, getFictions, postFiction, publishFiction, uploadFileToGCS };

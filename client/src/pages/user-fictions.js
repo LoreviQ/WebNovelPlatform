@@ -70,14 +70,21 @@ function UserFictions() {
                 }
                 setFictions(data);
             } else {
-                const { data, error } = await axiosAuthed("GET", apiEndpoints.user(uid));
-                if (error) {
-                    setError(error);
+                const { data: userData, error: userError } = await axiosAuthed("GET", apiEndpoints.user(uid));
+                if (userError) {
+                    setError(userError);
                     return;
                 }
-                setDisplayUser(data);
-                const ficData = await getFictionsByAuthorID(uid);
-                setFictions(ficData);
+                setDisplayUser(userData);
+                const { data: fictionsData, error: fictionsError } = await axiosAuthed(
+                    "GET",
+                    apiEndpoints.userFictions(uid)
+                );
+                if (fictionsError) {
+                    setError(fictionsError);
+                    return;
+                }
+                setFictions(fictionsData);
             }
         };
         fetchDisplayData();
