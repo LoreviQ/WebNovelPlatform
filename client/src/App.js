@@ -7,7 +7,7 @@ import MyHead from "./components/head";
 import { initTheme } from "./utils/theme";
 
 function App({ Page, pageProps }) {
-    const [isSideNavVisible, setIsSideNavVisible] = useState(true);
+    const [isSideNavVisible, setIsSideNavVisible] = useState(localStorage.getItem("sb|sidebar-toggle") != "true");
     const toggleSideNav = () => {
         setIsSideNavVisible(!isSideNavVisible);
     };
@@ -22,7 +22,7 @@ function App({ Page, pageProps }) {
                 <Container fluid="xl" id="layoutSidenav">
                     <MySideNav />
                     <div id="layoutSidenav_content" className="sb-sidenav-dark">
-                        <main id="content_main">{React.createElement(Page, pageProps)}</main>
+                        <main id="content_main">{React.createElement(Page, { ...pageProps, isSideNavVisible })}</main>
                     </div>
                 </Container>
             </div>

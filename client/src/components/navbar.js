@@ -31,7 +31,7 @@ function MyNavbar({ toggleSideNav }) {
     const toggleSidebar = () => {
         const isToggled = document.body.classList.toggle("sb-sidenav-toggled");
         localStorage.setItem("sb|sidebar-toggle", isToggled);
-        toggleSideNav;
+        toggleSideNav();
     };
     const localToggleTheme = () => {
         var newTheme = toggleTheme();

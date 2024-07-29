@@ -12551,23 +12551,23 @@ body {
 .carousel-item-container::after {
   content: '';
   position: absolute;
-  left: 401px; /* Adjust this value based on your layout */
+  left: 30%;
   height: 100%;
-  width: 100px; /* Width of the fade effect */
+  width: 10%;
   background: linear-gradient(to right, rgba(255, 255, 255, 0), white 100%);
   z-index: 1;
 }
 
 .carousel-text {
   color: black;
-  width: 550px;
+  width: 58%;
   pointer-events: none;
 }
 
 .carousel-image {
   height: 400px;
   width: auto;
-  max-width: 500px;
+  max-width: 40%;
   object-fit: cover;
   background-color: #ffffff;
 }

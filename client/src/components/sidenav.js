@@ -3,7 +3,6 @@ import Nav from "react-bootstrap/Nav";
 import Collapse from "react-bootstrap/Collapse";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleDown, faBook, faBookOpen, faTachometerAlt } from "@fortawesome/free-solid-svg-icons";
-import { useAuth } from "../utils/auth";
 
 function MySideNav() {
     const [openSegments, setOpenSegments] = useState({
