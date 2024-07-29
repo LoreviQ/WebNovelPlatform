@@ -12641,3 +12641,11 @@ body {
   max-height: 1000px; /* Set a large enough max-height to accommodate expanded content */
   transition: max-height 1s ease-out; /* Slower transition for expanding */
 }
+
+.userFictionsTextTruncate {
+  display: -webkit-box;
+  -webkit-line-clamp: 3; /* Number of lines to show */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

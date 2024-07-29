@@ -152,7 +152,7 @@ function UserFictions() {
                                 />
                                 <div className="ms-2 me-auto">
                                     <div className="fw-bold">{fiction.title}</div>
-                                    <div className="ms-2">{fiction.description}</div>
+                                    <div className="ms-2 userFictionsTextTruncate">{fiction.description}</div>
                                 </div>
                                 {loggedInUser ? (
                                     <ButtonGroup style={{ height: "100px", width: "150px" }} aria-label="ownerTools">
