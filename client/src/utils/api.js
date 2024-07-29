@@ -5,9 +5,8 @@ const apiBaseUrl = process.env.API_URL || "https://webnovelapi-y5hewbdc4a-nw.a.r
 //const apiBaseUrl = "http://localhost:8080";
 
 const apiEndpoints = {
+    fiction: "/v1/fictions/", // + fictionID
     getMyFictions: "/v1/users/me/fictions",
-    getFictionByID: "/v1/fictions/", // + fictionID
-    putFiction: "/v1/fictions/", // + fictionID
     getGcsSignedUrl: "/v1/gcs-signed-url",
 };
 
@@ -25,7 +24,8 @@ async function axiosAuthed(method, url, body = null) {
             case "PUT":
                 response = await axiosInstance.put(url, body);
                 break;
-            // Add other methods as needed (PUT, DELETE, etc.)
+            case "DELETE":
+                response = await axiosInstance.delete(url);
             default:
                 throw new Error(`Unsupported method: ${method}`);
         }

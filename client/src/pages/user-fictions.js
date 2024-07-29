@@ -14,14 +14,7 @@ import {
 import { faCircleCheck as faCircleCheckRegular } from "@fortawesome/free-regular-svg-icons";
 
 import { useAuth } from "../utils/auth";
-import {
-    apiEndpoints,
-    axiosAuthed,
-    getUserByUID,
-    getFictionsByAuthorID,
-    publishFiction,
-    deleteFiction,
-} from "../utils/api";
+import { apiEndpoints, axiosAuthed, getUserByUID, getFictionsByAuthorID, publishFiction } from "../utils/api";
 import LoadingAnimation from "../components/loading";
 import Error from "./error";
 

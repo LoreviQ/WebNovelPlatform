@@ -193,7 +193,7 @@ const PrivateRouteFictionId = ({ children, preFetchedFiction }) => {
     useEffect(() => {
         if (!preFetchedFiction) {
             const checkAuthorization = async () => {
-                const { data, error } = await axiosAuthed("GET", apiEndpoints.getFictionByID + fictionid);
+                const { data, error } = await axiosAuthed("GET", apiEndpoints.fiction + fictionid);
                 setFiction(data);
                 setError(error);
             };
@@ -222,7 +222,7 @@ const FictionIDRouter = ({ children }) => {
 
     useEffect(() => {
         const checkAuthorization = async () => {
-            const { data, error } = await axiosAuthed("GET", apiEndpoints.getFictionByID + fictionid);
+            const { data, error } = await axiosAuthed("GET", apiEndpoints.fiction + fictionid);
             setFiction(data);
             setError(error);
             setProcessing(false);

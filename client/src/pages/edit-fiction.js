@@ -55,7 +55,7 @@ function EditFiction() {
                     throw new Error("Failed to upload image");
                 }
             }
-            const { data, error } = await axiosAuthed("PUT", apiEndpoints.putFiction + fictionid, {
+            const { data, error } = await axiosAuthed("PUT", apiEndpoints.fiction + fictionid, {
                 new_id: values.id,
                 title: values.title,
                 description: values.description,
@@ -91,7 +91,7 @@ function EditFiction() {
         document.title = "Edit | WebNovelPlatform";
 
         const fetchFictionData = async () => {
-            const { data, error } = await axiosAuthed("GET", apiEndpoints.getFictionByID + fictionid);
+            const { data, error } = await axiosAuthed("GET", apiEndpoints.fiction + fictionid);
             if (error) {
                 alert("Failed to fetch fiction data");
                 navigate(-1);
