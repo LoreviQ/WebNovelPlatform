@@ -6,6 +6,7 @@ const apiBaseUrl = process.env.API_URL || "https://webnovelapi-y5hewbdc4a-nw.a.r
 
 const apiEndpoints = {
     user: (userID) => `/v1/users/${userID}`, // (userID, mandatory)
+    userProfile: "/v1/users/profile",
     fiction: (fictionID) => `/v1/fictions/${fictionID}`, // (fictionID, mandatory)
     fictions: (query) => `/v1/fictions${query ? query : ""}`, // (Search query, optional)
     userFictions: (userID) => `/v1/users/${userID}/fictions`, // (userID || 'me', mandatory)
