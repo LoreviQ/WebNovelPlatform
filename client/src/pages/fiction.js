@@ -14,7 +14,9 @@ function Fiction() {
     const fictionHeaderRef = useRef(null);
 
     const toggleExpand = () => {
-        setIsExpanded(!isExpanded);
+        if (overflow) {
+            setIsExpanded(!isExpanded);
+        }
     };
 
     useEffect(() => {
