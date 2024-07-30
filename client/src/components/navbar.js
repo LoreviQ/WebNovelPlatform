@@ -76,7 +76,13 @@ function MyNavbar({ toggleSideNav }) {
                 </Button>
 
                 <div style={{ flexGrow: 1 }}></div>
-                <Form className="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
+                <Form
+                    className="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0"
+                    onSubmit={(e) => {
+                        e.preventDefault();
+                        searchFictions();
+                    }}
+                >
                     <InputGroup>
                         <FormControl
                             type="text"
