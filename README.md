@@ -76,7 +76,7 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-[![Product Name Screen Shot][product-screenshot]](https://www.oliver.tj/assets/img/WebNovelPlatform-Screenshot.png)
+[![Product Name Screen Shot][product-screenshot]](https://webnovelclient-y5hewbdc4a-nw.a.run.app/demo.mp4)
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>

@@ -154,7 +154,7 @@ function EditFiction() {
                 initialValues={formData}
                 enableReinitialize
             >
-                {({ handleSubmit, handleChange, values, touched, errors }) => (
+                {({ handleSubmit, handleChange, values, touched, errors, setFieldValue }) => (
                     <Form noValidate onSubmit={handleSubmit}>
                         <Form.Group as={Row} className="mb-3" controlId="editID">
                             <Form.Label column sm={w1}>
@@ -217,7 +217,9 @@ function EditFiction() {
                                     type="switch"
                                     name="published"
                                     checked={values.published}
-                                    onChange={handleChange}
+                                    onChange={(e) => {
+                                        setFieldValue("published", e.target.checked);
+                                    }}
                                 />
                             </Col>
                         </Form.Group>
