@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
 import Container from "react-bootstrap/esm/Container";
 
@@ -10,6 +10,8 @@ function Fiction() {
     const [fictionData, setFictionData] = useState(null);
     const [chapters, setChapters] = useState(null);
     const [isExpanded, setIsExpanded] = useState(false);
+    const [overflow, setOverflow] = useState(false);
+    const fictionHeaderRef = useRef(null);
 
     const toggleExpand = () => {
         setIsExpanded(!isExpanded);
@@ -33,6 +35,9 @@ function Fiction() {
             return;
         }
         document.title = fictionData.title + " | WebNovelPlatform";
+        if (fictionHeaderRef.current) {
+            setOverflow(fictionHeaderRef.current.scrollHeight > fictionHeaderRef.current.clientHeight);
+        }
     }, [fictionData]);
 
     if (!fictionData) {
@@ -41,8 +46,10 @@ function Fiction() {
     return (
         <Container fluid className="my-4 ms-2">
             <div
+                ref={fictionHeaderRef}
                 className={`fictionHeader ${isExpanded ? "fictionHeaderExpanded" : "fictionHeaderTruncated"}`}
                 onClick={toggleExpand}
+                style={{ cursor: overflow ? "pointer" : "default" }}
             >
                 <img
                     className="me-4"

@@ -12631,7 +12631,6 @@ body {
   display: flex;
   align-items: flex-start;
   position: relative;
-  cursor: pointer;
   transition: max-height 1s ease-in-out; /* Adjust timing function for smoother effect */
 }
 
