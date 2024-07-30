@@ -56,18 +56,20 @@ func initialiseServer(cfg apiConfig, mux *http.ServeMux) *http.Server {
 	mux.HandleFunc("GET /v1/login", cfg.AuthMiddleware(cfg.getLogin))
 	mux.HandleFunc("POST /v1/login", cfg.postLogin)
 
-	mux.HandleFunc("GET /v1/users/{id}", cfg.getUser)
-	mux.HandleFunc("POST /v1/users", cfg.postUser)
-	mux.HandleFunc("PUT /v1/users", cfg.AuthMiddleware(cfg.putUser))
-	mux.HandleFunc("PUT /v1/users/profile", cfg.AuthMiddleware(cfg.putUserProfile))
-
-	mux.HandleFunc("GET /v1/users/{id}/fictions", cfg.getFictionsByUser)
-	mux.HandleFunc("GET /v1/users/me/fictions", cfg.AuthMiddleware(cfg.getMyFictions))
-
 	mux.HandleFunc("GET /v1/refresh", cfg.getRefresh)
 	mux.HandleFunc("POST /v1/refresh", cfg.postRefresh)
 
 	mux.HandleFunc("POST /v1/revoke", cfg.postRevoke)
+
+	mux.HandleFunc("POST /v1/users", cfg.postUser)
+	mux.HandleFunc("PUT /v1/users", cfg.AuthMiddleware(cfg.putUser))
+
+	mux.HandleFunc("GET /v1/users/{id}", cfg.getUser)
+
+	mux.HandleFunc("PUT /v1/users/profile", cfg.AuthMiddleware(cfg.putUserProfile))
+
+	mux.HandleFunc("GET /v1/users/{id}/fictions", cfg.getFictionsByUser)
+	mux.HandleFunc("GET /v1/users/me/fictions", cfg.AuthMiddleware(cfg.getMyFictions))
 
 	mux.HandleFunc("GET /v1/fictions", cfg.getFictions)
 	mux.HandleFunc("POST /v1/fictions", cfg.AuthMiddleware(cfg.postFiction))
