@@ -69,7 +69,13 @@ function Fictions() {
     }
     return (
         <Container fluid className="my-4 ms-2">
-            <Form className="mb-2">
+            <Form
+                className="mb-2"
+                onSubmit={(e) => {
+                    e.preventDefault();
+                    searchFictions();
+                }}
+            >
                 <InputGroup>
                     <FormControl
                         type="text"
@@ -96,7 +102,12 @@ function Fictions() {
                     </Button>
                 </div>
                 <Collapse in={open}>
-                    <Form>
+                    <Form
+                        onSubmit={(e) => {
+                            e.preventDefault();
+                            advancedSearchFictions();
+                        }}
+                    >
                         <Row className="mb-2">
                             <Col className="advancedSearchPaddingFirst">
                                 <FormControl
