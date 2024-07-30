@@ -57,7 +57,6 @@ function UserFictions() {
 
         const fetchDisplayData = async () => {
             let uid = userid;
-            await awaitUser();
             if (uid === "me" || (user && uid === user.id)) {
                 setLoggedInUser(true);
             }
@@ -74,12 +73,14 @@ function UserFictions() {
                 }
                 setFictions(data);
             } else {
+                console.log("Fetching user data");
                 const { data: userData, error: userError } = await axiosAuthed("GET", apiEndpoints.user(uid));
                 if (userError) {
                     setError(userError);
                     return;
                 }
                 setDisplayUser(userData);
+                console.log("Fetching user fictions");
                 const { data: fictionsData, error: fictionsError } = await axiosAuthed(
                     "GET",
                     apiEndpoints.userFictions(uid)

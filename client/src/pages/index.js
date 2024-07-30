@@ -79,7 +79,7 @@ function Index() {
                             <h5 className="ms-2 mt-1">{fiction.title}</h5>
                             <div className="ms-2 pb-2">
                                 By:{" "}
-                                <a href={`/user/${fiction.authorid}`} onClick={(e) => e.stopPropagation()}>
+                                <a href={`/user/${fiction.authorid}/fictions`} onClick={(e) => e.stopPropagation()}>
                                     {fiction.author}
                                 </a>
                             </div>
