@@ -187,11 +187,12 @@ function Fictions() {
                                         height: "100px",
                                         backgroundColor: "#f0f0f0",
                                         objectFit: "cover",
+                                        flexShrink: 0,
                                     }}
                                 />
                                 <div className="ms-2 me-auto">
                                     <div className="fw-bold">{fiction.title}</div>
-                                    <div className="ms-2">{fiction.description}</div>
+                                    <div className="ms-2 userFictionsTextTruncate">{fiction.description}</div>
                                 </div>
                             </div>
                         </ListGroup.Item>
