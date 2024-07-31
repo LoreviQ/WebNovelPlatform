@@ -163,9 +163,24 @@ The Project is divided into two parts, client and server(api).
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
+Welcome to this versatile web app designed for writers and readers alike. Built with a React front end and a Go back end, this application offers a seamless experience for managing and enjoying fiction and other text works. 
 
-_For more examples, please refer to the [Documentation](https://example.com)_
+### Key Features
+
+- **Chapter Uploads and Scheduled Releases**: Effortlessly upload chapters and schedule their release dates to keep your audience engaged and coming back for more.
+- **User Accounts and Comments**: Create a vibrant community with support for user accounts and interactive comment sections.
+- **User Tiers and Payments**: Monetize your content with tiered membership options and integrated payment processing.
+
+### Expansion
+
+The app's architecture allows for easy expansion. Consider adding functionalities such as:
+- Writing contests
+- Book clubs
+- AI-driven recommendations for personalized reader experiences
+
+### About
+
+I built this for my personal use for distributing my own works, but it supports account systems so anyone can contribute. In addition, it acts as a robust template for developers looking to create similar web applications. Explore the codebase to see a practical implementation of scalable, user-friendly design.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
