@@ -33,7 +33,7 @@ function Index() {
     }
     return (
         <Container fluid className="my-4 ms-2">
-            <Carousel interval={1000000} style={{ backgroundColor: "white", height: "400px" }}>
+            <Carousel interval={10000} style={{ backgroundColor: "white", height: "400px" }}>
                 {carouselFics.map((fiction, index) => (
                     <Carousel.Item
                         key={index}
