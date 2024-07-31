@@ -163,7 +163,7 @@ The Project is divided into two parts, client and server(api).
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-Welcome to this versatile web app designed for writers and readers alike. Built with a React front end and a Go back end, this application offers a seamless experience for managing and enjoying fiction and other text works. 
+A versatile web app designed for writers and readers alike. Built with a React front end and a Go back end, this application offers a seamless experience for managing and enjoying fiction and other text works. 
 
 ### Key Features
 
