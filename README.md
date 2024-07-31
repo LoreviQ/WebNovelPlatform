@@ -77,7 +77,7 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-[demo.webm](https://github.com/user-attachments/assets/0e45e133-0978-4aa6-8c46-23925199c2f5)
+[Demo Video](https://github.com/user-attachments/assets/0e45e133-0978-4aa6-8c46-23925199c2f5)
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
