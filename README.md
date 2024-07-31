@@ -189,12 +189,13 @@ I built this for my personal use for distributing my own works, but it supports 
 <!-- ROADMAP -->
 ## Roadmap
 
-- [ ] Feature 1
-- [ ] Feature 2
-- [ ] Feature 3
-    - [ ] Nested Feature
-
-See the [open issues](https://github.com/LoreviQ/WebNovelPlatform/issues) for a full list of proposed features (and known issues).
+- [ ] Chapters
+    - [ ] Sheduling
+- [ ] Comments
+    - [ ] Upvotes
+- [ ] Tiers
+    - [ ] Tier based scheduling
+    - [ ] Payment
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
