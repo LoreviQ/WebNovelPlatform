@@ -17,10 +17,17 @@ func (cfg apiConfig) postChapter(w http.ResponseWriter, r *http.Request, user da
 	fictionId := r.PathValue("fiction_id")
 
 	// Get fiction from database
-	_, err := cfg.DB.GetFictionById(r.Context(), fictionId)
+	fiction, err := cfg.DB.GetFictionById(r.Context(), fictionId)
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, "Couldn't get fiction")
 		return
 	}
+
+	// Check if user is the owner of the fiction
+	if fiction.Authorid != user.ID {
+		respondWithError(w, http.StatusForbidden, "You are not the owner of this fiction")
+		return
+	}
+
 	w.WriteHeader(200)
 }
