@@ -10,7 +10,7 @@ import (
 //
 // This handler is responsible for creating a new chapter for a fiction.
 // This is a protected endpoint, so the user must be authenticated to access it.
-// It first checks if the fiction exists and if the user is the owner of the fiction.
+// It checks if the fiction exists and if the user is the owner of the fiction.
 // If all checks pass, it creates a new chapter and returns the new chapter.
 func (cfg apiConfig) postChapter(w http.ResponseWriter, r *http.Request, user database.User) {
 	// Get the fiction ID from the URL
@@ -29,5 +29,16 @@ func (cfg apiConfig) postChapter(w http.ResponseWriter, r *http.Request, user da
 		return
 	}
 
-	w.WriteHeader(200)
+	// Parse the request body
+	request, err := decodeRequest(w, r, struct {
+		Title     string `json:"title"`
+		Body      string `json:"body"`
+		Published int64  `json:"published"`
+	}{})
+	if err != nil {
+		respondWithError(w, http.StatusBadRequest, "failed to decode request body")
+		return
+	}
+
+	respondWithJSON(w, http.StatusOK, request)
 }
