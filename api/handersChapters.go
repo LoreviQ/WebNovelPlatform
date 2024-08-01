@@ -78,8 +78,6 @@ func (cfg apiConfig) postChapter(w http.ResponseWriter, r *http.Request, user da
 // This is a conditionally protected endpoint
 //   - If the chapter and fiction is published, it can be accessed by anyone
 //   - If the chapter or fiction is not published, the user must be the owner of the fiction to access it
-//
-// It returns the chapter if it exists and is accessible.
 func (cfg apiConfig) getChapter(w http.ResponseWriter, r *http.Request) {
 	// Get the fiction ID and chapter ID from the URL
 	fictionId := r.PathValue("fiction_id")
@@ -125,4 +123,79 @@ func (cfg apiConfig) getChapter(w http.ResponseWriter, r *http.Request) {
 		Published:   chapter.Published,
 		PublishedAt: chapter.PublishedAt.String,
 	})
+}
+
+// Get Chapters Handler (GET /v1/fictions/{fiction_id}/chapters/)
+//
+// This handler is responsible for getting all chapters from a fiction available to the user.
+// This is a conditionally protected endpoint
+//   - If the fiction is published, it can be accessed by anyone
+//   - If the fiction is not published, the user must be the owner of the fiction to access it
+//   - The function will onyl return the chapters that are published unless the user is the owner of the fiction
+func (cfg apiConfig) getChapters(w http.ResponseWriter, r *http.Request) {
+	// Get the fiction ID from the URL
+	fictionId := r.PathValue("fiction_id")
+
+	// Get fiction from database
+	fiction, err := cfg.DB.GetFictionById(r.Context(), fictionId)
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, "Couldn't get fiction")
+		return
+	}
+
+	// Check authoirzation
+	user, authErr := cfg.authenticateRequest(r)
+	owner := fiction.Authorid == user.ID
+
+	// Check if the fiction is published
+	if fiction.Published == 0 {
+		// Check authoirzation
+		if authErr != nil {
+			respondWithError(w, http.StatusUnauthorized, authErr.Error())
+			return
+		}
+		if !owner {
+			respondWithError(w, http.StatusForbidden, "This fiction is not published")
+			return
+		}
+	}
+
+	// Get chapters from database
+	chapters, err := cfg.DB.GetChaptersByFictionId(r.Context(), database.GetChaptersByFictionIdParams{
+		FictionID: fictionId,
+		Limit:     20,
+	})
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, "Couldn't get chapters")
+		return
+	}
+
+	// Filter out unpublished chapters if user is not the owner
+	if !owner {
+		filteredChapters := make([]database.Chapter, 0, len(chapters))
+		for _, chapter := range chapters {
+			if chapter.Published == 1 {
+				filteredChapters = append(filteredChapters, chapter)
+			}
+		}
+		chapters = filteredChapters
+	}
+
+	// Respond with chapters
+	type chapterResponse struct {
+		Title       string `json:"title"`
+		Body        string `json:"body"`
+		Published   int64  `json:"published"`
+		PublishedAt string `json:"published_at"`
+	}
+	responseSlice := make([]chapterResponse, 0, len(chapters))
+	for _, chapter := range chapters {
+		responseSlice = append(responseSlice, chapterResponse{
+			Title:       chapter.Title,
+			Body:        chapter.Body,
+			Published:   chapter.Published,
+			PublishedAt: chapter.PublishedAt.String,
+		})
+	}
+	respondWithJSON(w, http.StatusOK, responseSlice)
 }
