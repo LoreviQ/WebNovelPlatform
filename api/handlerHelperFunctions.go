@@ -56,13 +56,3 @@ func decodeRequest[T any](w http.ResponseWriter, r *http.Request, _ T) (T, error
 	}
 	return request, nil
 }
-
-func decodeRequest2[T any](w http.ResponseWriter, r *http.Request, request *T) error {
-	err := json.NewDecoder(r.Body).Decode(request)
-	if err != nil {
-		log.Printf("Error decoding parameters: %s", err)
-		w.WriteHeader(500)
-		return err
-	}
-	return nil
-}

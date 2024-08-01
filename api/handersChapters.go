@@ -230,12 +230,11 @@ func (cfg apiConfig) putChapter(w http.ResponseWriter, r *http.Request, user dat
 	}
 
 	// Parse the request body
-	request := struct {
+	request, err := decodeRequest(w, r, struct {
 		Title     string `json:"title"`
 		Body      string `json:"body"`
 		Published *int64 `json:"published"`
-	}{}
-	err = decodeRequest2(w, r, &request)
+	}{})
 	if err != nil {
 		respondWithError(w, http.StatusBadRequest, "failed to decode request body")
 		return
