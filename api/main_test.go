@@ -55,6 +55,16 @@ func TestServerEndpoints(t *testing.T) {
 		testDeleteFictionFail(t)
 	})
 
+	t.Run("TEST: CHAPTERS", func(t *testing.T) {
+		accessToken := setupChapterTests(t)
+		testPostChapter(t, accessToken)
+		//testGetChapter(t, accessToken)
+		//testGetChapters(t)
+		//testPutChapter(t, accessToken)
+		//testDeleteChapter(t, accessToken)
+		//testGetChapterFail(t)
+		//testDeleteChapterFail(t)
+	})
 }
 
 func testReadiness(t *testing.T) {
@@ -375,6 +385,7 @@ func setupConfigTest() apiConfig {
 func emptyDB(db *sql.DB) {
 	var tables = []string{
 		"tokens",
+		"chapters",
 		"fictions",
 		"users",
 	}
