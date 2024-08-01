@@ -190,6 +190,7 @@ I built this for my personal use for distributing my own works, but it supports 
 ## Roadmap
 
 - [ ] Chapters
+    - [ ] Automatic epub generation
     - [ ] Sheduling
 - [ ] Comments
     - [ ] Upvotes
