@@ -199,3 +199,73 @@ func (cfg apiConfig) getChapters(w http.ResponseWriter, r *http.Request) {
 	}
 	respondWithJSON(w, http.StatusOK, responseSlice)
 }
+
+// Put Chapter Handler (PUT /v1/fictions/{fiction_id}/chapters/{chapter_id})
+//
+// This handler is responsible for updating a specific chapter from a fiction.
+// This is a protected endpoint, so the user must be authenticated to access it.
+func (cfg apiConfig) putChapter(w http.ResponseWriter, r *http.Request, user database.User) {
+	// Get the fiction ID and chapter ID from the URL
+	fictionId := r.PathValue("fiction_id")
+	chapterId := r.PathValue("chapter_id")
+
+	// Get fiction from database
+	fiction, err := cfg.DB.GetFictionById(r.Context(), fictionId)
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, "Couldn't get fiction")
+		return
+	}
+
+	// Check if user is the owner of the fiction
+	if fiction.Authorid != user.ID {
+		respondWithError(w, http.StatusForbidden, "You are not the owner of this fiction")
+		return
+	}
+
+	// Get chapter from database
+	chapter, err := cfg.DB.GetChapterById(r.Context(), chapterId)
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, "Couldn't get chapter")
+		return
+	}
+
+	// Parse the request body
+	request, err := decodeRequest(w, r, struct {
+		Title     string `json:"title"`
+		Body      string `json:"body"`
+		Published int64  `json:"published"`
+	}{})
+	if err != nil {
+		respondWithError(w, http.StatusBadRequest, "failed to decode request body")
+		return
+	}
+
+	// Generate chapter vars
+	var publishedAt sql.NullString
+	if chapter.Published == 0 && request.Published == 1 {
+		publishedAt = sql.NullString{String: time.Now().Format(time.RFC3339), Valid: true}
+	} else {
+		publishedAt = chapter.PublishedAt
+	}
+
+	// Update the chapter
+	_, err = cfg.DB.UpdateChapter(r.Context(), database.UpdateChapterParams{
+		ID:          chapter.ID,
+		Title:       request.Title,
+		Body:        request.Body,
+		Published:   request.Published,
+		PublishedAt: publishedAt,
+		UpdatedAt:   time.Now().Format(time.RFC3339),
+	})
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, "Couldn't update chapter")
+		return
+	}
+
+	// Respond with success
+	respondWithJSON(w, http.StatusOK, struct {
+		ID string `json:"id"`
+	}{
+		ID: chapter.ID,
+	})
+}
