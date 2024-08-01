@@ -67,3 +67,58 @@ func (cfg apiConfig) postChapter(w http.ResponseWriter, r *http.Request, user da
 	}
 	w.WriteHeader(http.StatusCreated)
 }
+
+// Get Chapter Handler (GET /v1/fictions/{fiction_id}/chapters/{chapter_id})
+//
+// This handler is responsible for getting a specific chapter from a fiction.
+// This is a conditionally protected endpoint
+//   - If the chapter and fiction is published, it can be accessed by anyone
+//   - If the chapter or fiction is not published, the user must be the owner of the fiction to access it
+//
+// It returns the chapter if it exists and is accessible.
+func (cfg apiConfig) getChapter(w http.ResponseWriter, r *http.Request) {
+	// Get the fiction ID and chapter ID from the URL
+	fictionId := r.PathValue("fiction_id")
+	chapterId := r.PathValue("chapter_id")
+
+	// Get chapter from database
+	chapter, err := cfg.DB.GetChapterById(r.Context(), chapterId)
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, "Couldn't get chapter")
+		return
+	}
+
+	// Get fiction from database
+	fiction, err := cfg.DB.GetFictionById(r.Context(), fictionId)
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, "Couldn't get fiction")
+		return
+	}
+
+	// Check if the chapter or fiction is published
+	if chapter.Published == 0 || fiction.Published == 0 {
+		// Check authoirzation
+		user, err := cfg.authenticateRequest(r)
+		if err != nil {
+			respondWithError(w, http.StatusUnauthorized, err.Error())
+			return
+		}
+		if fiction.Authorid != user.ID {
+			respondWithError(w, http.StatusForbidden, "This fiction is not published")
+			return
+		}
+	}
+
+	// Respond with chapter
+	respondWithJSON(w, http.StatusOK, struct {
+		Title       string `json:"title"`
+		Body        string `json:"body"`
+		Published   int64  `json:"published"`
+		PublishedAt string `json:"published_at"`
+	}{
+		Title:       chapter.Title,
+		Body:        chapter.Body,
+		Published:   chapter.Published,
+		PublishedAt: chapter.PublishedAt.String,
+	})
+}
