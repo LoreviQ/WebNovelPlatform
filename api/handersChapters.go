@@ -51,7 +51,7 @@ func (cfg apiConfig) postChapter(w http.ResponseWriter, r *http.Request, user da
 	}
 
 	// Create the new chapter
-	_, err = cfg.DB.CreateChapter(r.Context(), database.CreateChapterParams{
+	chapter, err := cfg.DB.CreateChapter(r.Context(), database.CreateChapterParams{
 		ID:          chapterId,
 		FictionID:   fictionId,
 		Title:       request.Title,
@@ -65,7 +65,11 @@ func (cfg apiConfig) postChapter(w http.ResponseWriter, r *http.Request, user da
 		respondWithError(w, http.StatusInternalServerError, "Couldn't create chapter")
 		return
 	}
-	w.WriteHeader(http.StatusCreated)
+	respondWithJSON(w, http.StatusCreated, struct {
+		ID string `json:"id"`
+	}{
+		ID: chapter.ID,
+	})
 }
 
 // Get Chapter Handler (GET /v1/fictions/{fiction_id}/chapters/{chapter_id})

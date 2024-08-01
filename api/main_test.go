@@ -57,8 +57,8 @@ func TestServerEndpoints(t *testing.T) {
 
 	t.Run("TEST: CHAPTERS", func(t *testing.T) {
 		accessToken := setupChapterTests(t)
-		testPostChapter(t, accessToken)
-		//testGetChapter(t, accessToken)
+		id1, _ := testPostChapter(t, accessToken)
+		testGetChapter(t, accessToken, id1)
 		//testGetChapters(t)
 		//testPutChapter(t, accessToken)
 		//testDeleteChapter(t, accessToken)
