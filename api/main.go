@@ -77,7 +77,7 @@ func initialiseServer(cfg apiConfig, mux *http.ServeMux) *http.Server {
 	mux.HandleFunc("PUT /v1/fictions/{id}/publish", cfg.AuthMiddleware(cfg.publishFiction))
 
 	// Chapter Endpoints
-	//mux.HandleFunc("POST /v1/fictions/{fiction_id}/chapters", cfg.postChapter)
+	mux.HandleFunc("POST /v1/fictions/{fiction_id}/chapters", cfg.AuthMiddleware(cfg.postChapter))
 	//mux.HandleFunc("GET /v1/fictions/{fiction_id}/chapters", cfg.getChapters)
 	//mux.HandleFunc("GET /v1/fictions/{fiction_id}/chapters/{chapter_id}", cfg.getChapter)
 	//mux.HandleFunc("PUT /v1/fictions/{fiction_id}/chapters/{chapter_id}", cfg.putChapter)
