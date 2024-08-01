@@ -230,19 +230,35 @@ func (cfg apiConfig) putChapter(w http.ResponseWriter, r *http.Request, user dat
 	}
 
 	// Parse the request body
-	request, err := decodeRequest(w, r, struct {
+	request := struct {
 		Title     string `json:"title"`
 		Body      string `json:"body"`
-		Published int64  `json:"published"`
-	}{})
+		Published *int64 `json:"published"`
+	}{}
+	err = decodeRequest2(w, r, &request)
 	if err != nil {
 		respondWithError(w, http.StatusBadRequest, "failed to decode request body")
 		return
 	}
+	// Use original values if request fields are empty or nil
+	title := chapter.Title
+	if request.Title != "" {
+		title = request.Title
+	}
+
+	body := chapter.Body
+	if request.Body != "" {
+		body = request.Body
+	}
+
+	published := chapter.Published
+	if request.Published != nil {
+		published = *request.Published
+	}
 
 	// Generate chapter vars
 	var publishedAt sql.NullString
-	if chapter.Published == 0 && request.Published == 1 {
+	if request.Published != nil && chapter.Published == 0 && *request.Published == 1 {
 		publishedAt = sql.NullString{String: time.Now().Format(time.RFC3339), Valid: true}
 	} else {
 		publishedAt = chapter.PublishedAt
@@ -251,9 +267,9 @@ func (cfg apiConfig) putChapter(w http.ResponseWriter, r *http.Request, user dat
 	// Update the chapter
 	_, err = cfg.DB.UpdateChapter(r.Context(), database.UpdateChapterParams{
 		ID:          chapter.ID,
-		Title:       request.Title,
-		Body:        request.Body,
-		Published:   request.Published,
+		Title:       title,
+		Body:        body,
+		Published:   published,
 		PublishedAt: publishedAt,
 		UpdatedAt:   time.Now().Format(time.RFC3339),
 	})

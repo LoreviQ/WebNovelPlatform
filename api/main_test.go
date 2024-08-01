@@ -61,7 +61,7 @@ func TestServerEndpoints(t *testing.T) {
 		testGetChapter(t, id1)
 		testGetUnpublishedChapter(t, id2, accessToken)
 		testGetChapters(t, accessToken)
-		//testPutChapter(t, accessToken)
+		testPutChapter(t, id2, accessToken)
 		//testDeleteChapter(t, accessToken)
 		//testGetChapterFail(t)
 		//testDeleteChapterFail(t)

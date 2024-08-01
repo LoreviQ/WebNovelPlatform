@@ -206,3 +206,41 @@ func testGetChapters(t *testing.T, accessToken string) {
 		t.Errorf("Expected 2 chapters, got %d", len(response))
 	}
 }
+
+// Test the PUT /v1/fictions/{fiction_id}/chapters/{chapter_id} endpoint
+func testPutChapter(t *testing.T, id, accessToken string) {
+	// Update the second chapter
+	body := bytes.NewBuffer([]byte(`{
+		"published": 1
+	}`))
+	requestURL := fmt.Sprintf("http://localhost:8080/v1/fictions/the-chapters/chapters/%s", id)
+	headers := map[string]string{
+		"Authorization": fmt.Sprintf("Bearer %s", accessToken),
+	}
+	res := loopSendRequest(requestURL, http.MethodPut, body, headers, t)
+	if res.StatusCode != http.StatusOK {
+		t.Errorf("Expected status code %d, got %d", http.StatusOK, res.StatusCode)
+	}
+	// get the chapter to check if it was updated
+	requestURL = fmt.Sprintf("http://localhost:8080/v1/fictions/the-chapters/chapters/%s", id)
+	res = loopSendRequest(requestURL, http.MethodGet, nil, nil, t)
+	if res.StatusCode != http.StatusOK {
+		t.Errorf("Expected status code %d, got %d", http.StatusOK, res.StatusCode)
+	}
+	var response struct {
+		Title       string `json:"title"`
+		Body        string `json:"body"`
+		Published   int64  `json:"published"`
+		PublishedAt string `json:"published_at"`
+	}
+	err := json.NewDecoder(res.Body).Decode(&response)
+	if err != nil {
+		t.Fatalf("could not read response body: %v", err)
+	}
+	if response.Published != 1 {
+		t.Errorf("Expected published %d, got %d", 1, response.Published)
+	}
+	if response.Title != "Chapter 2" {
+		t.Errorf("Expected title %s, got %s", "Chapter 2", response.Title)
+	}
+}
