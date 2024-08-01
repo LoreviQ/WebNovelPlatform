@@ -53,39 +53,37 @@ func setupConfig() apiConfig {
 func initialiseServer(cfg apiConfig, mux *http.ServeMux) *http.Server {
 	mux.HandleFunc("GET /v1/readiness", cfg.getReadiness)
 
+	// Auth Endpoints
 	mux.HandleFunc("GET /v1/login", cfg.AuthMiddleware(cfg.getLogin))
 	mux.HandleFunc("POST /v1/login", cfg.postLogin)
-
 	mux.HandleFunc("GET /v1/refresh", cfg.getRefresh)
 	mux.HandleFunc("POST /v1/refresh", cfg.postRefresh)
-
 	mux.HandleFunc("POST /v1/revoke", cfg.postRevoke)
 
+	// User Endpoints
 	mux.HandleFunc("POST /v1/users", cfg.postUser)
 	mux.HandleFunc("PUT /v1/users", cfg.AuthMiddleware(cfg.putUser))
-
 	mux.HandleFunc("GET /v1/users/{id}", cfg.getUser)
-
 	mux.HandleFunc("PUT /v1/users/profile", cfg.AuthMiddleware(cfg.putUserProfile))
-
 	mux.HandleFunc("GET /v1/users/{id}/fictions", cfg.getFictionsByUser)
 	mux.HandleFunc("GET /v1/users/me/fictions", cfg.AuthMiddleware(cfg.getMyFictions))
 
+	// Fiction Endpoints
 	mux.HandleFunc("GET /v1/fictions", cfg.getFictions)
 	mux.HandleFunc("POST /v1/fictions", cfg.AuthMiddleware(cfg.postFiction))
-
 	mux.HandleFunc("GET /v1/fictions/{id}", cfg.IsPublishedMiddleware(cfg.getFiction))
 	mux.HandleFunc("PUT /v1/fictions/{id}", cfg.AuthMiddleware(cfg.putFiction))
 	mux.HandleFunc("DELETE /v1/fictions/{id}", cfg.AuthMiddleware(cfg.deleteFiction))
-
 	mux.HandleFunc("PUT /v1/fictions/{id}/publish", cfg.AuthMiddleware(cfg.publishFiction))
 
+	// Chapter Endpoints
 	//mux.HandleFunc("POST /v1/fictions/{fiction_id}/chapters", cfg.postChapter)
 	//mux.HandleFunc("GET /v1/fictions/{fiction_id}/chapters", cfg.getChapters)
 	//mux.HandleFunc("GET /v1/fictions/{fiction_id}/chapters/{chapter_id}", cfg.getChapter)
 	//mux.HandleFunc("PUT /v1/fictions/{fiction_id}/chapters/{chapter_id}", cfg.putChapter)
 	//mux.HandleFunc("DELETE /v1/fictions/{fiction_id}/chapters/{chapter_id}", cfg.deleteChapter)
 
+	// GCS Endpoints
 	mux.HandleFunc("POST /v1/gcs-signed-url", cfg.AuthMiddleware(cfg.postSignedURL))
 
 	corsMux := cfg.CorsMiddleware(mux)
