@@ -80,6 +80,12 @@ func initialiseServer(cfg apiConfig, mux *http.ServeMux) *http.Server {
 
 	mux.HandleFunc("PUT /v1/fictions/{id}/publish", cfg.AuthMiddleware(cfg.publishFiction))
 
+	//mux.HandleFunc("POST /v1/fictions/{fiction_id}/chapters", cfg.postChapter)
+	//mux.HandleFunc("GET /v1/fictions/{fiction_id}/chapters", cfg.getChapters)
+	//mux.HandleFunc("GET /v1/fictions/{fiction_id}/chapters/{chapter_id}", cfg.getChapter)
+	//mux.HandleFunc("PUT /v1/fictions/{fiction_id}/chapters/{chapter_id}", cfg.putChapter)
+	//mux.HandleFunc("DELETE /v1/fictions/{fiction_id}/chapters/{chapter_id}", cfg.deleteChapter)
+
 	mux.HandleFunc("POST /v1/gcs-signed-url", cfg.AuthMiddleware(cfg.postSignedURL))
 
 	corsMux := cfg.CorsMiddleware(mux)
