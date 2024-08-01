@@ -1,8 +1,11 @@
 package main
 
 import (
+	"database/sql"
 	"net/http"
+	"time"
 
+	"github.com/LoreviQ/WebNovelPlatform/api/internal/auth"
 	"github.com/LoreviQ/WebNovelPlatform/api/internal/database"
 )
 
@@ -40,5 +43,27 @@ func (cfg apiConfig) postChapter(w http.ResponseWriter, r *http.Request, user da
 		return
 	}
 
-	respondWithJSON(w, http.StatusOK, request)
+	// Generate chapter vars
+	chapterId, err := auth.GenerateUniqueChapterID(cfg.DB)
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, "Couldn't generate chapter ID")
+		return
+	}
+
+	// Create the new chapter
+	_, err = cfg.DB.CreateChapter(r.Context(), database.CreateChapterParams{
+		ID:          chapterId,
+		FictionID:   fictionId,
+		Title:       request.Title,
+		Body:        request.Body,
+		Published:   request.Published,
+		PublishedAt: sql.NullString{String: time.Now().Format(time.RFC3339), Valid: request.Published == 1},
+		CreatedAt:   time.Now().Format(time.RFC3339),
+		UpdatedAt:   time.Now().Format(time.RFC3339),
+	})
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, "Couldn't create chapter")
+		return
+	}
+	w.WriteHeader(http.StatusCreated)
 }
