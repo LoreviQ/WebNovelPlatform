@@ -8,6 +8,17 @@ import (
 	"database/sql"
 )
 
+type Chapter struct {
+	ID          string
+	FictionID   string
+	Title       string
+	Body        string
+	Published   int64
+	PublishedAt sql.NullString
+	CreatedAt   string
+	UpdatedAt   string
+}
+
 type Fiction struct {
 	ID          string
 	Title       string
