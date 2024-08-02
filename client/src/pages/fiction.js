@@ -100,7 +100,7 @@ function Fiction(preFetchedFiction) {
                         variant="outline-theme"
                         className="mb-2"
                         onClick={() => {
-                            navigate(`/fiction/${fictionid}/chapters/new`);
+                            navigate(`/fictions/${fictionid}/chapters/new`);
                         }}
                     >
                         Upload Chapters

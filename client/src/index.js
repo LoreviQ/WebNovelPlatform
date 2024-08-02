@@ -66,6 +66,14 @@ function AppRouter() {
                             </PrivateRouteFictionId>
                         }
                     />
+                    <Route
+                        path="fictions/:fictionid/chapters/new"
+                        element={
+                            <PrivateRouteFictionId>
+                                <App Page={Pages.NewChapter} />
+                            </PrivateRouteFictionId>
+                        }
+                    />
 
                     <Route path="401" element={<App Page={Pages.Error} pageProps={{ statusCode: 401 }} />} />
                     <Route path="403" element={<App Page={Pages.Error} pageProps={{ statusCode: 403 }} />} />

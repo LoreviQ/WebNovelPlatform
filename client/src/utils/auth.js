@@ -236,11 +236,11 @@ const FictionIDRouter = ({ children }) => {
     if (!fiction && !error) {
         return <App Page={LoadingAnimation} />;
     }
-    if (error === 404) {
-        return <App Page={Error} pageProps={{ statusCode: 404 }} />;
-    }
     if (error == 403 || error == 401) {
         return <PrivateRouteFictionId preFetchedFiction={fiction}>{children}</PrivateRouteFictionId>;
+    }
+    if (error) {
+        return <App Page={Error} pageProps={{ statusCode: error }} />;
     }
     return React.cloneElement(children, { preFetchedFiction: fiction });
 };
