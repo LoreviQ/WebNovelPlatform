@@ -81,7 +81,7 @@ func initialiseServer(cfg apiConfig, mux *http.ServeMux) *http.Server {
 	mux.HandleFunc("GET /v1/fictions/{fiction_id}/chapters", cfg.getChapters)
 	mux.HandleFunc("GET /v1/fictions/{fiction_id}/chapters/{chapter_id}", cfg.getChapter)
 	mux.HandleFunc("PUT /v1/fictions/{fiction_id}/chapters/{chapter_id}", cfg.AuthMiddleware(cfg.putChapter))
-	//mux.HandleFunc("DELETE /v1/fictions/{fiction_id}/chapters/{chapter_id}", cfg.deleteChapter)
+	mux.HandleFunc("DELETE /v1/fictions/{fiction_id}/chapters/{chapter_id}", cfg.AuthMiddleware(cfg.deleteChapter))
 
 	// GCS Endpoints
 	mux.HandleFunc("POST /v1/gcs-signed-url", cfg.AuthMiddleware(cfg.postSignedURL))

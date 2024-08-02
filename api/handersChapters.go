@@ -284,3 +284,36 @@ func (cfg apiConfig) putChapter(w http.ResponseWriter, r *http.Request, user dat
 		ID: chapter.ID,
 	})
 }
+
+// Delete Chapter Handler (DELETE /v1/fictions/{fiction_id}/chapters/{chapter_id})
+//
+// This handler is responsible for deleting a specific chapter from a fiction.
+// This is a protected endpoint, so the user must be authenticated to access it.
+func (cfg apiConfig) deleteChapter(w http.ResponseWriter, r *http.Request, user database.User) {
+	// Get the fiction ID and chapter ID from the URL
+	fictionId := r.PathValue("fiction_id")
+	chapterId := r.PathValue("chapter_id")
+
+	// Get fiction from database
+	fiction, err := cfg.DB.GetFictionById(r.Context(), fictionId)
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, "Couldn't get fiction")
+		return
+	}
+
+	// Check if user is the owner of the fiction
+	if fiction.Authorid != user.ID {
+		respondWithError(w, http.StatusForbidden, "You are not the owner of this fiction")
+		return
+	}
+
+	// Delete the chapter
+	err = cfg.DB.DeleteChapter(r.Context(), chapterId)
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, "Couldn't delete chapter")
+		return
+	}
+
+	// Respond with success
+	w.WriteHeader(http.StatusOK)
+}
