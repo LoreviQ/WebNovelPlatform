@@ -96,7 +96,7 @@ function Fiction() {
             {isAuthor ? (
                 <div className="d-grid gap-2">
                     <Button
-                        variant="outline-secondary"
+                        variant="outline-theme"
                         className="mb-2"
                         onClick={() => {
                             // Implement this
