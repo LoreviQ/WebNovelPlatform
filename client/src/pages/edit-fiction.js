@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { format } from "date-fns";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPen, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faPen, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
 import Container from "react-bootstrap/esm/Container";
 import Button from "react-bootstrap/Button";
 import Col from "react-bootstrap/Col";
@@ -246,8 +246,14 @@ function EditFiction() {
                             </Form.Group>
                         ) : null}
                         <div style={{ display: "flex", alignItems: "center" }}>
+                            <Button type="submit" className="mt-4 me-4" variant="outline-danger">
+                                <div style={{ display: "flex", alignItems: "center" }}>
+                                    <FontAwesomeIcon className="ms-1 mt-1 me-2" icon={faTrash} size="2x" />
+                                    <h2 className="mt-2 me-1">Delete</h2>
+                                </div>
+                            </Button>
                             <div style={{ flexGrow: 1 }}></div>
-                            <Button type="submit" className="mt-4 me-4" variant="theme">
+                            <Button type="submit" className="mt-4 me-4" variant="outline-primary">
                                 <div style={{ display: "flex", alignItems: "center" }}>
                                     <FontAwesomeIcon className="ms-1 mt-1 me-2" icon={faPlus} size="2x" />
                                     <h2 className="mt-2 me-1">Update</h2>
