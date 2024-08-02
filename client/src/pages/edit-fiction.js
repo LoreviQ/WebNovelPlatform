@@ -12,6 +12,7 @@ import * as formik from "formik";
 import * as yup from "yup";
 
 import { apiEndpoints, axiosAuthed, uploadFileToGCS } from "../utils/api";
+import buttons from "../utils/buttons";
 import LoadingAnimation from "../components/loading";
 
 function EditFiction() {
@@ -246,7 +247,14 @@ function EditFiction() {
                             </Form.Group>
                         ) : null}
                         <div style={{ display: "flex", alignItems: "center" }}>
-                            <Button type="submit" className="mt-4 me-4" variant="outline-danger">
+                            <Button
+                                className="mt-4 me-4"
+                                variant="outline-danger"
+                                onClick={() => {
+                                    buttons.deleteFiction(fictionid);
+                                    navigate(-1);
+                                }}
+                            >
                                 <div style={{ display: "flex", alignItems: "center" }}>
                                     <FontAwesomeIcon className="ms-1 mt-1 me-2" icon={faTrash} size="2x" />
                                     <h2 className="mt-2 me-1">Delete</h2>
