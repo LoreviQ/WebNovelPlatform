@@ -54,6 +54,7 @@ async function axiosAuthed(method, url, body = null) {
                 break;
             case "DELETE":
                 response = await axiosInstance.delete(url);
+                break;
             default:
                 throw new Error(`Unsupported method: ${method}`);
         }

@@ -15,6 +15,7 @@ import { faCircleCheck as faCircleCheckRegular } from "@fortawesome/free-regular
 
 import { useAuth } from "../utils/auth";
 import { apiEndpoints, axiosAuthed } from "../utils/api";
+import buttons from "../utils/buttons";
 import LoadingAnimation from "../components/loading";
 import Error from "./error";
 
@@ -23,6 +24,7 @@ function UserFictions() {
     const [error, setError] = useState(false);
     const [displayUser, setDisplayUser] = useState(null);
     const [fictions, setFictions] = useState(null);
+    const [reloadData, setReloadData] = useState(false);
     const { user } = useAuth();
     const { userid } = useParams();
     const navigate = useNavigate();
@@ -37,18 +39,7 @@ function UserFictions() {
                 alert("Failed to publish fiction: " + error);
                 return;
             }
-            navigate(0); // Reloads the current page
-        }
-    };
-    // Deletes the provided fiction
-    const deleteButton = async (fictionID) => {
-        const userInput = window.prompt(`Please type the fiction ID (${fictionID}) to confirm deletion:`);
-
-        if (userInput === fictionID.toString()) {
-            await axiosAuthed("DELETE", apiEndpoints.fiction(fictionID));
-            navigate(0); // Reloads the current page
-        } else if (userInput) {
-            window.alert("The fiction ID does not match.");
+            setReloadData(!reloadData);
         }
     };
 
@@ -93,7 +84,7 @@ function UserFictions() {
             }
         };
         fetchDisplayData();
-    }, []);
+    }, [reloadData]);
     if (error) {
         return <Error statusCode={error} />;
     }
@@ -204,7 +195,8 @@ function UserFictions() {
                                             title="Delete Fiction"
                                             onClick={(event) => {
                                                 event.stopPropagation();
-                                                deleteButton(fiction.id);
+                                                buttons.deleteFiction(fiction.id);
+                                                setReloadData(!reloadData);
                                             }}
                                         >
                                             <FontAwesomeIcon icon={faTrashCan} />
