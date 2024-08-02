@@ -33,7 +33,6 @@ function Fiction() {
                 return;
             }
             setFictionData(fData);
-
             const { data: cData, cError } = await axiosAuthed("GET", apiEndpoints.chapters(fictionid));
             if (cError) {
                 alert("Failed to fetch chapters");
@@ -43,7 +42,7 @@ function Fiction() {
             setChapters(cData);
         };
         fetchDislayData();
-    }, []);
+    }, [fictionid]);
 
     useEffect(() => {
         if (user && fictionData && fictionData.authorid === user.id) {
