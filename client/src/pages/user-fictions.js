@@ -23,7 +23,7 @@ function UserFictions() {
     const [error, setError] = useState(false);
     const [displayUser, setDisplayUser] = useState(null);
     const [fictions, setFictions] = useState(null);
-    const { user, awaitUser } = useAuth();
+    const { user } = useAuth();
     const { userid } = useParams();
     const navigate = useNavigate();
 
