@@ -63,8 +63,6 @@ func TestServerEndpoints(t *testing.T) {
 		testGetChapters(t, accessToken)
 		testPutChapter(t, id2, accessToken)
 		testDeleteChapter(t, id2, accessToken)
-		//testGetChapterFail(t)
-		//testDeleteChapterFail(t)
 	})
 }
 
