@@ -21,3 +21,6 @@ RETURNING *;
 
 -- name: DeleteChapter :exec
 DELETE FROM chapters WHERE id = ?;
+
+-- name: GetChapterIds :many
+SELECT id FROM chapters

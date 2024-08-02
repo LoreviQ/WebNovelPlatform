@@ -75,9 +75,8 @@ func testGetFiction(t *testing.T, accessToken string) {
 	}
 }
 
+// Test the POST /v1/fictions endpoint
 func testPostFiction(t *testing.T, accessToken string) {
-	// Test the POST /v1/fictions endpoint
-
 	// Create a new request to the /v1/fictions endpoint
 	body := bytes.NewBuffer([]byte(`{
 		"Title": "The Great Gatsby",

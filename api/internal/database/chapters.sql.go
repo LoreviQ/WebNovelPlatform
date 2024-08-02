@@ -81,6 +81,33 @@ func (q *Queries) GetChapterById(ctx context.Context, id string) (Chapter, error
 	return i, err
 }
 
+const getChapterIds = `-- name: GetChapterIds :many
+SELECT id FROM chapters
+`
+
+func (q *Queries) GetChapterIds(ctx context.Context) ([]string, error) {
+	rows, err := q.db.QueryContext(ctx, getChapterIds)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []string
+	for rows.Next() {
+		var id string
+		if err := rows.Scan(&id); err != nil {
+			return nil, err
+		}
+		items = append(items, id)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const getChaptersByFictionId = `-- name: GetChaptersByFictionId :many
 SELECT id, fiction_id, title, body, published, published_at, created_at, updated_at FROM chapters WHERE fiction_id = ?
 LIMIT ?
