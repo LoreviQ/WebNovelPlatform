@@ -66,6 +66,7 @@ function AppRouter() {
                             </PrivateRouteFictionId>
                         }
                     />
+
                     <Route path="401" element={<App Page={Pages.Error} pageProps={{ statusCode: 401 }} />} />
                     <Route path="403" element={<App Page={Pages.Error} pageProps={{ statusCode: 403 }} />} />
                     <Route path="404" element={<App Page={Pages.Error} pageProps={{ statusCode: 404 }} />} />

@@ -15,7 +15,7 @@ import { apiEndpoints, axiosAuthed, uploadFileToGCS } from "../utils/api";
 import buttons from "../utils/buttons";
 import LoadingAnimation from "../components/loading";
 
-function EditFiction() {
+function EditFiction(preFetchedFiction) {
     const { fictionid } = useParams();
     const { Formik } = formik;
     const navigate = useNavigate();
@@ -25,12 +25,12 @@ function EditFiction() {
     const [w1, w2] = [2, 10];
 
     const [formData, setFormData] = useState({
-        id: "",
-        title: "",
-        description: "",
-        published: false,
-        publishedAt: Date(),
-        imageLocation: "",
+        id: preFetchedFiction.id || "",
+        title: preFetchedFiction.title || "",
+        description: preFetchedFiction.description || "",
+        published: preFetchedFiction.published || false,
+        publishedAt: preFetchedFiction.publishedAt || Date(),
+        imageLocation: preFetchedFiction.imageLocation || "",
     });
 
     const validationSchema = yup.object().shape({
@@ -107,8 +107,9 @@ function EditFiction() {
                 imageLocation: data.imageLocation,
             });
         };
-
-        fetchFictionData();
+        if (formData.id === "") {
+            fetchFictionData();
+        }
     }, []);
     if (formData.id === "") {
         return <LoadingAnimation />;

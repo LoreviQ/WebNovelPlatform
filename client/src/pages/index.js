@@ -103,3 +103,4 @@ export { default as Fictions } from "./fictions";
 export { default as UserFictions } from "./user-fictions";
 export { default as SubmitFiction } from "./submit-fiction";
 export { default as EditFiction } from "./edit-fiction";
+export { default as NewChapter } from "./new-chapter";

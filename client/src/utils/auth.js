@@ -210,7 +210,11 @@ const PrivateRouteFictionId = ({ children, preFetchedFiction }) => {
     if (error) {
         return <App Page={Error} pageProps={{ statusCode: error }} />;
     }
-    return fiction.authorid === user.id ? children : <App Page={Error} pageProps={{ statusCode: 403 }} />;
+    return fiction.authorid === user.id ? (
+        React.cloneElement(children, { preFetchedFiction: fiction })
+    ) : (
+        <App Page={Error} pageProps={{ statusCode: 403 }} />
+    );
 };
 
 // Automatically applies the correct routing based on if the provided fiction id is published
@@ -238,7 +242,7 @@ const FictionIDRouter = ({ children }) => {
     if (error == 403 || error == 401) {
         return <PrivateRouteFictionId preFetchedFiction={fiction}>{children}</PrivateRouteFictionId>;
     }
-    return <>{children}</>;
+    return React.cloneElement(children, { preFetchedFiction: fiction });
 };
 
 export const useAuth = () => useContext(AuthContext);

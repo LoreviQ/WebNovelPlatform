@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import Container from "react-bootstrap/esm/Container";
 import Button from "react-bootstrap/esm/Button";
 import ListGroup from "react-bootstrap/esm/ListGroup";
@@ -8,11 +8,12 @@ import { apiEndpoints, axiosAuthed } from "../utils/api";
 import { useAuth } from "../utils/auth";
 import LoadingAnimation from "../components/loading";
 
-function Fiction() {
+function Fiction(preFetchedFiction) {
     const { fictionid } = useParams();
     const { user } = useAuth();
+    const navigate = useNavigate();
     const fictionHeaderRef = useRef(null);
-    const [fictionData, setFictionData] = useState(null);
+    const [fictionData, setFictionData] = useState(preFetchedFiction || null);
     const [chapters, setChapters] = useState(null);
     const [isExpanded, setIsExpanded] = useState(false);
     const [overflow, setOverflow] = useState(false);
@@ -99,8 +100,7 @@ function Fiction() {
                         variant="outline-theme"
                         className="mb-2"
                         onClick={() => {
-                            // Implement this
-                            alert("Not implemented");
+                            navigate(`/fiction/${fictionid}/chapters/new`);
                         }}
                     >
                         Upload Chapters
