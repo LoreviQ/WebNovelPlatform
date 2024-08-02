@@ -2,20 +2,25 @@ package auth
 
 import (
 	"context"
-	"math/rand"
+	"crypto/rand"
+	"math/big"
 
 	"github.com/LoreviQ/WebNovelPlatform/api/internal/database"
 )
 
 const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 
-// GenerateID generates a url-safe random string of the given length
-func generateID(length int) string {
+// generateID generates a url-safe random string of the given length
+func generateID(length int) (string, error) {
 	b := make([]byte, length)
 	for i := range b {
-		b[i] = charset[rand.Intn(len(charset))]
+		num, err := rand.Int(rand.Reader, big.NewInt(int64(len(charset))))
+		if err != nil {
+			return "", err
+		}
+		b[i] = charset[num.Int64()]
 	}
-	return string(b)
+	return string(b), nil
 }
 
 // CheckDuplicateID checks an id against a list of ids and returns true if the id is a duplicate
@@ -31,7 +36,10 @@ func checkDuplicateID(id string, ids []string) bool {
 // GenerateUniqueChapterID generates a unique chapter id
 func GenerateUniqueChapterID(db *database.Queries) (string, error) {
 	for {
-		id := generateID(6)
+		id, err := generateID(6)
+		if err != nil {
+			return "", err
+		}
 		ids, err := db.GetChapterIds(context.Background())
 		if err != nil {
 			return "", err
