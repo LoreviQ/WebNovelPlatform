@@ -85,14 +85,20 @@ func (cfg apiConfig) getChapter(w http.ResponseWriter, r *http.Request) {
 
 	// Get chapter from database
 	chapter, err := cfg.DB.GetChapterById(r.Context(), chapterId)
-	if err != nil {
+	if err == sql.ErrNoRows {
+		respondWithError(w, http.StatusNotFound, "Couldn't get chapter")
+		return
+	} else if err != nil {
 		respondWithError(w, http.StatusInternalServerError, "Couldn't get chapter")
 		return
 	}
 
 	// Get fiction from database
 	fiction, err := cfg.DB.GetFictionById(r.Context(), fictionId)
-	if err != nil {
+	if err == sql.ErrNoRows {
+		respondWithError(w, http.StatusNotFound, "Couldn't get fiction")
+		return
+	} else if err != nil {
 		respondWithError(w, http.StatusInternalServerError, "Couldn't get fiction")
 		return
 	}

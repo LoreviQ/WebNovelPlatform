@@ -244,3 +244,22 @@ func testPutChapter(t *testing.T, id, accessToken string) {
 		t.Errorf("Expected title %s, got %s", "Chapter 2", response.Title)
 	}
 }
+
+// Test the DELETE /v1/fictions/{fiction_id}/chapters/{chapter_id} endpoint
+func testDeleteChapter(t *testing.T, id, accessToken string) {
+	// Delete the second chapter
+	requestURL := fmt.Sprintf("http://localhost:8080/v1/fictions/the-chapters/chapters/%s", id)
+	headers := map[string]string{
+		"Authorization": fmt.Sprintf("Bearer %s", accessToken),
+	}
+	res := loopSendRequest(requestURL, http.MethodDelete, nil, headers, t)
+	if res.StatusCode != http.StatusOK {
+		t.Errorf("Expected status code %d, got %d", http.StatusOK, res.StatusCode)
+	}
+	// get the chapter to check if it was deleted
+	requestURL = fmt.Sprintf("http://localhost:8080/v1/fictions/the-chapters/chapters/%s", id)
+	res = loopSendRequest(requestURL, http.MethodGet, nil, headers, t)
+	if res.StatusCode != http.StatusNotFound {
+		t.Errorf("Expected status code %d, got %d", http.StatusNotFound, res.StatusCode)
+	}
+}
