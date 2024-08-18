@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { Container, Form, Button } from "react-bootstrap";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -7,12 +7,13 @@ import { SimpleEditor } from "../utils/textEditor";
 
 function NewChapter() {
     const [title, setTitle] = useState("");
-    const [content, setContent] = useState("");
     const [releaseDate, setReleaseDate] = useState(new Date());
+    const editorRef = useRef(null);
     const [editorHeight, setEditorHeight] = useState("300px");
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        const content = editorRef.current.getContent();
         console.log({ title, content, releaseDate });
     };
 
@@ -42,7 +43,7 @@ function NewChapter() {
                 </Form.Group>
                 <Form.Group controlId="chapterContent" className="my-4">
                     <Form.Label>Chapter Content</Form.Label>
-                    <SimpleEditor />
+                    <SimpleEditor ref={editorRef} />
                 </Form.Group>
                 <Form.Group controlId="releaseDate" className="my-4">
                     <Form.Label>Release Date</Form.Label>

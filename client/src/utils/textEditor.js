@@ -1,7 +1,6 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useState, forwardRef, useImperativeHandle } from "react";
 import classNames from "classnames";
-// => Tiptap packages
-import { useEditor, EditorContent, Editor, BubbleMenu } from "@tiptap/react";
+import { useEditor, EditorContent, BubbleMenu } from "@tiptap/react";
 import Document from "@tiptap/extension-document";
 import Paragraph from "@tiptap/extension-paragraph";
 import Text from "@tiptap/extension-text";
@@ -12,11 +11,10 @@ import Italic from "@tiptap/extension-italic";
 import Strike from "@tiptap/extension-strike";
 import Code from "@tiptap/extension-code";
 import History from "@tiptap/extension-history";
-// Custom
 import * as Icons from "./Icons";
 import { LinkModal } from "./LinkModal";
 
-export function SimpleEditor() {
+export const SimpleEditor = forwardRef((props, ref) => {
     const editor = useEditor({
         extensions: [
             Document,
@@ -34,11 +32,15 @@ export function SimpleEditor() {
         ],
         content: "Type here...",
     });
+
+    useImperativeHandle(ref, () => ({
+        getContent: () => editor.getHTML(),
+    }));
+
     const [modalIsOpen, setIsOpen] = useState(false);
     const [url, setUrl] = useState("");
 
     const openModal = useCallback(() => {
-        console.log(editor.chain().focus());
         setUrl(editor.getAttributes("link").href);
         setIsOpen(true);
     }, [editor]);
@@ -90,6 +92,7 @@ export function SimpleEditor() {
         <div className="editor">
             <div className="menu">
                 <button
+                    type="button"
                     className="menu-button"
                     onClick={() => editor.chain().focus().undo().run()}
                     disabled={!editor.can().undo()}
@@ -97,6 +100,7 @@ export function SimpleEditor() {
                     <Icons.RotateLeft />
                 </button>
                 <button
+                    type="button"
                     className="menu-button"
                     onClick={() => editor.chain().focus().redo().run()}
                     disabled={!editor.can().redo()}
@@ -104,6 +108,7 @@ export function SimpleEditor() {
                     <Icons.RotateRight />
                 </button>
                 <button
+                    type="button"
                     className={classNames("menu-button", {
                         "is-active": editor.isActive("link"),
                     })}
@@ -112,6 +117,7 @@ export function SimpleEditor() {
                     <Icons.Link />
                 </button>
                 <button
+                    type="button"
                     className={classNames("menu-button", {
                         "is-active": editor.isActive("bold"),
                     })}
@@ -120,6 +126,7 @@ export function SimpleEditor() {
                     <Icons.Bold />
                 </button>
                 <button
+                    type="button"
                     className={classNames("menu-button", {
                         "is-active": editor.isActive("underline"),
                     })}
@@ -128,14 +135,16 @@ export function SimpleEditor() {
                     <Icons.Underline />
                 </button>
                 <button
+                    type="button"
                     className={classNames("menu-button", {
-                        "is-active": editor.isActive("intalic"),
+                        "is-active": editor.isActive("italic"),
                     })}
                     onClick={toggleItalic}
                 >
                     <Icons.Italic />
                 </button>
                 <button
+                    type="button"
                     className={classNames("menu-button", {
                         "is-active": editor.isActive("strike"),
                     })}
@@ -144,6 +153,7 @@ export function SimpleEditor() {
                     <Icons.Strikethrough />
                 </button>
                 <button
+                    type="button"
                     className={classNames("menu-button", {
                         "is-active": editor.isActive("code"),
                     })}
@@ -158,14 +168,13 @@ export function SimpleEditor() {
                 tippyOptions={{ duration: 150 }}
                 editor={editor}
                 shouldShow={({ editor, view, state, oldState, from, to }) => {
-                    // only show the bubble menu for links.
                     return from === to && editor.isActive("link");
                 }}
             >
-                <button className="button" onClick={openModal}>
+                <button type="button" className="button" onClick={openModal}>
                     Edit
                 </button>
-                <button className="button-remove" onClick={removeLink}>
+                <button type="button" className="button-remove" onClick={removeLink}>
                     Remove
                 </button>
             </BubbleMenu>
@@ -184,4 +193,4 @@ export function SimpleEditor() {
             />
         </div>
     );
-}
+});
