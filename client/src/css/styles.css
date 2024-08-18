@@ -12688,11 +12688,10 @@ body {
   text-overflow: ellipsis;
 }
 
-.ql-container {
-  height: auto !important;
-}
-
-.ql-editor {
-  min-height: 300px !important;
-  height: auto !important;
+.ProseMirror {
+  height: 400px; /* Set your desired height */
+  overflow-y: auto; /* Add scroll if content exceeds height */
+  padding: 10px; /* Optional: Add some padding for better readability */
+  border: 1px solid #ccc; /* Optional: Add a border for better visibility */
+  box-sizing: border-box; /* Ensure padding and border are included in the height */
 }

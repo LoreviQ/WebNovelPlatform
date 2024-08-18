@@ -179,7 +179,7 @@ export const SimpleEditor = forwardRef((props, ref) => {
                 </button>
             </BubbleMenu>
 
-            <EditorContent editor={editor} />
+            <EditorContent editor={editor} className="editor-content" />
 
             <LinkModal
                 url={url}
