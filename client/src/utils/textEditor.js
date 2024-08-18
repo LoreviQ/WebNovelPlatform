@@ -1,6 +1,7 @@
 import React, { useCallback, useState, forwardRef, useImperativeHandle } from "react";
 import classNames from "classnames";
 import { useEditor, EditorContent, BubbleMenu } from "@tiptap/react";
+import Placeholder from "@tiptap/extension-placeholder";
 import Document from "@tiptap/extension-document";
 import Paragraph from "@tiptap/extension-paragraph";
 import Text from "@tiptap/extension-text";
@@ -29,8 +30,11 @@ export const SimpleEditor = forwardRef((props, ref) => {
             Italic,
             Strike,
             Code,
+            Placeholder.configure({
+                placeholder: "Type here...",
+            }),
         ],
-        content: "Type here...",
+        content: "",
     });
 
     useImperativeHandle(ref, () => ({

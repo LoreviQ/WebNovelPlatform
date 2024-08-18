@@ -12695,3 +12695,11 @@ body {
   border: 1px solid #ccc; /* Optional: Add a border for better visibility */
   box-sizing: border-box; /* Ensure padding and border are included in the height */
 }
+
+.tiptap p.is-editor-empty:first-child::before {
+  color: #adb5bd;
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
