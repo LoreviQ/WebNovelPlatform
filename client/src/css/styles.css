@@ -12687,3 +12687,12 @@ body {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+.ql-container {
+  height: auto !important;
+}
+
+.ql-editor {
+  min-height: 300px !important;
+  height: auto !important;
+}
