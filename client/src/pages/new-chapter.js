@@ -6,15 +6,27 @@ import "react-datepicker/dist/react-datepicker.css";
 import { SimpleEditor } from "../utils/textEditor";
 
 function NewChapter() {
+    const { fictionid } = useParams();
     const [title, setTitle] = useState("");
     const [releaseDate, setReleaseDate] = useState(new Date());
     const editorRef = useRef(null);
     const [editorHeight, setEditorHeight] = useState("300px");
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        const content = editorRef.current.getContent();
-        console.log({ title, content, releaseDate });
+    const formSubmission = async (event) => {
+        event.preventDefault();
+        try {
+            const { data, error } = await axiosAuthed("POST", apiEndpoints.chapters(fictionid), {
+                title: title,
+                body: editorRef.current.getContent(),
+                published: 1,
+            });
+            if (error) {
+                throw new Error("Failed POST request to API");
+            }
+            navigate(-1);
+        } catch (error) {
+            alert("Failed to submit fiction, error: " + error);
+        }
     };
 
     useEffect(() => {
@@ -31,7 +43,7 @@ function NewChapter() {
 
     return (
         <Container fluid className="my-4 ms-2">
-            <Form onSubmit={handleSubmit}>
+            <Form onSubmit={formSubmission}>
                 <Form.Group controlId="chapterTitle">
                     <Form.Label>Chapter Title</Form.Label>
                     <Form.Control

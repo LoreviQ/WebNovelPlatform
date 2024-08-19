@@ -41,7 +41,7 @@ function SubmitFiction() {
                 imageLocation: uploadResponse,
             });
             if (error) {
-                throw new Error("Failed PUT request to API");
+                throw new Error("Failed POST request to API");
             }
             navigate(-1);
         } catch (error) {
