@@ -41,6 +41,7 @@ func (cfg *apiConfig) postLogin(w http.ResponseWriter, r *http.Request) {
 	// AUTHENTICATE USER
 	user, err := auth.AuthenticateUser(request.Email, []byte(request.Password), cfg.DB)
 	if err != nil {
+		log.Printf("Error Authenticating User: %s", err)
 		respondWithError(w, http.StatusUnauthorized, "Invalid email or password")
 		return
 	}
