@@ -1,9 +1,11 @@
 import React, { useRef, useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import { Container, Form, Button } from "react-bootstrap";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
 import { SimpleEditor } from "../utils/textEditor";
+import { apiEndpoints, axiosAuthed } from "../utils/api";
 
 function NewChapter() {
     const { fictionid } = useParams();
@@ -11,6 +13,7 @@ function NewChapter() {
     const [releaseDate, setReleaseDate] = useState(new Date());
     const editorRef = useRef(null);
     const [editorHeight, setEditorHeight] = useState("300px");
+    const navigate = useNavigate();
 
     const formSubmission = async (event) => {
         event.preventDefault();
