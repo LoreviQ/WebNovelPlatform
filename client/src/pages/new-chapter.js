@@ -1,27 +1,39 @@
 import React, { useRef, useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Container, Form, Button } from "react-bootstrap";
+import { Container, Form, Button, Row, Col } from "react-bootstrap";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import * as formik from "formik";
+import * as yup from "yup";
 
 import { SimpleEditor } from "../utils/textEditor";
 import { apiEndpoints, axiosAuthed } from "../utils/api";
+import { set } from "date-fns";
 
 function NewChapter() {
     const { fictionid } = useParams();
-    const [title, setTitle] = useState("");
-    const [releaseDate, setReleaseDate] = useState(new Date());
-    const editorRef = useRef(null);
     const [editorHeight, setEditorHeight] = useState("300px");
     const navigate = useNavigate();
+    const { Formik } = formik;
 
-    const formSubmission = async (event) => {
-        event.preventDefault();
+    const [formData, setFormData] = useState({
+        title: "",
+        body: "",
+        releaseDate: new Date(),
+        publishImmediately: false,
+    });
+
+    const validationSchema = yup.object().shape({
+        title: yup.string().required("Title is required"),
+        body: yup.string(),
+    });
+
+    const formSubmission = async (values) => {
         try {
             const { data, error } = await axiosAuthed("POST", apiEndpoints.chapters(fictionid), {
-                title: title,
-                body: editorRef.current.getContent(),
-                published: 1,
+                title: values.title,
+                body: values.body,
+                published: 0,
             });
             if (error) {
                 throw new Error("Failed POST request to API");
@@ -46,32 +58,74 @@ function NewChapter() {
 
     return (
         <Container fluid className="my-4 ms-2">
-            <Form onSubmit={formSubmission}>
-                <Form.Group controlId="chapterTitle">
-                    <Form.Label>Chapter Title</Form.Label>
-                    <Form.Control
-                        type="text"
-                        placeholder="Enter chapter title"
-                        value={title}
-                        onChange={(e) => setTitle(e.target.value)}
-                    />
-                </Form.Group>
-                <Form.Group controlId="chapterContent" className="my-4">
-                    <Form.Label>Chapter Content</Form.Label>
-                    <SimpleEditor ref={editorRef} />
-                </Form.Group>
-                <Form.Group controlId="releaseDate" className="my-4">
-                    <Form.Label>Release Date</Form.Label>
-                    <div>
-                        <DatePicker selected={releaseDate} onChange={(date) => setReleaseDate(date)} />
-                    </div>
-                </Form.Group>
-                <div className="d-grid gap-2">
-                    <Button variant="outline-theme" type="submit">
-                        Submit
-                    </Button>
-                </div>
-            </Form>
+            <Formik
+                validationSchema={validationSchema}
+                onSubmit={formSubmission}
+                initialValues={formData}
+                enableReinitialize
+            >
+                {({ handleSubmit, handleChange, values, touched, errors, setFieldValue }) => (
+                    <Form noValidate onSubmit={handleSubmit}>
+                        <Form.Group controlId="chapterTitle">
+                            <Form.Label>Chapter Title</Form.Label>
+                            <Form.Control
+                                type="text"
+                                name="title"
+                                placeholder="Enter chapter title"
+                                value={values.title}
+                                onChange={handleChange}
+                                isValid={touched.title && !errors.title}
+                                isInvalid={!!errors.title}
+                            />
+                            <Form.Control.Feedback type="invalid">{errors.title}</Form.Control.Feedback>
+                        </Form.Group>
+                        <Form.Group controlId="chapterContent" className="my-4">
+                            <Form.Label>Chapter Content</Form.Label>
+                            <SimpleEditor
+                                name="body"
+                                onChange={(e) => {
+                                    setFieldValue("body", e);
+                                }}
+                            />
+                        </Form.Group>
+                        <Row className="my-4">
+                            <Col>
+                                <Form.Group controlId="releaseDate">
+                                    <Form.Label>Release Date</Form.Label>
+                                    <div>
+                                        <DatePicker
+                                            selected={values.releaseDate}
+                                            name="releaseDate"
+                                            onChange={(date) => setFieldValue("releaseDate", date)}
+                                            showTimeSelect
+                                            dateFormat="Pp"
+                                        />
+                                    </div>
+                                </Form.Group>
+                            </Col>
+                            <Col>
+                                <Form.Group controlId="publishImmediately">
+                                    <Form.Label></Form.Label>
+                                    <Form.Check
+                                        type="switch"
+                                        label="Publish Immediately"
+                                        name="publishImmediately"
+                                        checked={values.publishImmediately}
+                                        onChange={(e) => {
+                                            setFieldValue("publishImmediately", e.target.checked);
+                                        }}
+                                    />
+                                </Form.Group>
+                            </Col>
+                        </Row>
+                        <div className="d-grid gap-2">
+                            <Button variant="outline-theme" type="submit">
+                                Submit
+                            </Button>
+                        </div>
+                    </Form>
+                )}
+            </Formik>
         </Container>
     );
 }
