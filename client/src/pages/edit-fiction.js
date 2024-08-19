@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { format } from "date-fns";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPen, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faPen, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
 import Container from "react-bootstrap/esm/Container";
 import Button from "react-bootstrap/Button";
 import Col from "react-bootstrap/Col";
@@ -12,9 +12,10 @@ import * as formik from "formik";
 import * as yup from "yup";
 
 import { apiEndpoints, axiosAuthed, uploadFileToGCS } from "../utils/api";
+import buttons from "../utils/buttons";
 import LoadingAnimation from "../components/loading";
 
-function EditFiction() {
+function EditFiction(preFetchedFiction) {
     const { fictionid } = useParams();
     const { Formik } = formik;
     const navigate = useNavigate();
@@ -24,12 +25,12 @@ function EditFiction() {
     const [w1, w2] = [2, 10];
 
     const [formData, setFormData] = useState({
-        id: "",
-        title: "",
-        description: "",
-        published: false,
-        publishedAt: Date(),
-        imageLocation: "",
+        id: preFetchedFiction.id || "",
+        title: preFetchedFiction.title || "",
+        description: preFetchedFiction.description || "",
+        published: preFetchedFiction.published || false,
+        publishedAt: preFetchedFiction.publishedAt || Date(),
+        imageLocation: preFetchedFiction.imageLocation || "",
     });
 
     const validationSchema = yup.object().shape({
@@ -106,8 +107,9 @@ function EditFiction() {
                 imageLocation: data.imageLocation,
             });
         };
-
-        fetchFictionData();
+        if (formData.id === "") {
+            fetchFictionData();
+        }
     }, []);
     if (formData.id === "") {
         return <LoadingAnimation />;
@@ -246,8 +248,21 @@ function EditFiction() {
                             </Form.Group>
                         ) : null}
                         <div style={{ display: "flex", alignItems: "center" }}>
+                            <Button
+                                className="mt-4 me-4"
+                                variant="outline-danger"
+                                onClick={() => {
+                                    buttons.deleteFiction(fictionid);
+                                    navigate(-1);
+                                }}
+                            >
+                                <div style={{ display: "flex", alignItems: "center" }}>
+                                    <FontAwesomeIcon className="ms-1 mt-1 me-2" icon={faTrash} size="2x" />
+                                    <h2 className="mt-2 me-1">Delete</h2>
+                                </div>
+                            </Button>
                             <div style={{ flexGrow: 1 }}></div>
-                            <Button type="submit" className="mt-4 me-4" variant="theme">
+                            <Button type="submit" className="mt-4 me-4" variant="outline-primary">
                                 <div style={{ display: "flex", alignItems: "center" }}>
                                     <FontAwesomeIcon className="ms-1 mt-1 me-2" icon={faPlus} size="2x" />
                                     <h2 className="mt-2 me-1">Update</h2>

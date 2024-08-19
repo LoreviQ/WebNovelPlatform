@@ -27,13 +27,15 @@ axiosInstance.interceptors.request.use(
 );
 
 const apiEndpoints = {
-    user: (userID) => `/v1/users/${userID}`, // (userID, mandatory)
+    user: (userID) => `/v1/users/${userID}`,
     userProfile: "/v1/users/profile",
-    fiction: (fictionID) => `/v1/fictions/${fictionID}`, // (fictionID, mandatory)
-    fictions: (query) => `/v1/fictions${query ? query : ""}`, // (Search query, optional)
+    fiction: (fictionID) => `/v1/fictions/${fictionID}`,
+    fictions: (query = "") => `/v1/fictions${query}`, // (Search query, optional)
     userFictions: (userID) => `/v1/users/${userID}/fictions`, // (userID || 'me', mandatory)
-    publishFiction: (fictionID) => `/v1/fictions/${fictionID}/publish`, // (fictionID, mandatory)
+    publishFiction: (fictionID) => `/v1/fictions/${fictionID}/publish`,
     gcsSignedUrl: "/v1/gcs-signed-url",
+    chapters: (fictionID) => `/v1/fictions/${fictionID}/chapters`,
+    chapter: (fictionID, chapterID) => `/v1/fictions/${fictionID}/chapters/${chapterID}`,
 };
 
 // exported function that uses axiosInstance to make authenticated requests
@@ -52,6 +54,7 @@ async function axiosAuthed(method, url, body = null) {
                 break;
             case "DELETE":
                 response = await axiosInstance.delete(url);
+                break;
             default:
                 throw new Error(`Unsupported method: ${method}`);
         }
