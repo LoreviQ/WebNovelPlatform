@@ -6,7 +6,8 @@ import ListGroup from "react-bootstrap/esm/ListGroup";
 import Row from "react-bootstrap/esm/Row";
 import Col from "react-bootstrap/esm/Col";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faCheck, faXmark, faSort, faSortUp, faSortDown } from "@fortawesome/free-solid-svg-icons";
+import { format } from "date-fns";
 
 import { apiEndpoints, axiosAuthed } from "../utils/api";
 import { useAuth } from "../utils/auth";
@@ -22,11 +23,55 @@ function Fiction(preFetchedFiction) {
     const [isExpanded, setIsExpanded] = useState(false);
     const [overflow, setOverflow] = useState(false);
     const [isAuthor, setIsAuthor] = useState(false);
+    const [sortKey, setSortKey] = useState(null);
+    const [sortDirection, setSortDirection] = useState("asc");
 
     const toggleExpand = () => {
         if (overflow) {
             setIsExpanded(!isExpanded);
         }
+    };
+
+    const sortChapters = (key) => {
+        let direction = sortDirection;
+        if (sortKey === key) {
+            direction = sortDirection === "asc" ? "desc" : "asc";
+        } else {
+            direction = "asc";
+        }
+        setSortDirection(direction);
+
+        const sorted = [...chapters].sort((a, b) => {
+            let aValue, bValue;
+            switch (key) {
+                case "title":
+                    aValue = a.title.toLowerCase();
+                    bValue = b.title.toLowerCase();
+                    break;
+                case "published_at":
+                    aValue = a.published_at;
+                    bValue = b.published_at;
+                    break;
+                case "published":
+                    aValue = a.published;
+                    bValue = b.published;
+                    break;
+                default:
+                    return 0;
+            }
+            if (aValue < bValue) return direction === "asc" ? -1 : 1;
+            if (aValue > bValue) return direction === "asc" ? 1 : -1;
+            return 0;
+        });
+        setChapters(sorted);
+        setSortKey(key);
+    };
+
+    const getSortIcon = (key) => {
+        if (sortKey === key) {
+            return sortDirection === "asc" ? faSortUp : faSortDown;
+        }
+        return faSort;
     };
 
     useEffect(() => {
@@ -115,27 +160,28 @@ function Fiction(preFetchedFiction) {
                 <h1>No Chapters!</h1>
             ) : (
                 <ListGroup as="ul">
-                    <ListGroup.Item
-                        as="li"
-                        key={"headings"}
-                        action
-                        onClick={() => navigate(`/`)}
-                        style={{ padding: 0, cursor: "pointer" }}
-                    >
+                    <ListGroup.Item as="li" key={"headings"} action style={{ padding: 0, cursor: "pointer" }}>
                         <Row
                             className="ms-auto me-auto align-items-center"
                             style={{ backgroundColor: "var(--bs-tertiary-bg" }}
                         >
-                            <Col xs={isAuthor ? 7 : 8}>
-                                <div className="fw-bold">Title</div>
+                            <Col xs={isAuthor ? 6 : 8} onClick={() => sortChapters("title")}>
+                                <div className="fw-bold">
+                                    Title <FontAwesomeIcon className="ms-2" icon={getSortIcon("title")} />
+                                </div>
                             </Col>
-                            <Col xs={4}>
-                                <div className="fw-bold">Release Date</div>
+                            <Col xs={4} onClick={() => sortChapters("published_at")}>
+                                <div className="fw-bold">
+                                    Release Date <FontAwesomeIcon className="ms-2" icon={getSortIcon("published_at")} />
+                                </div>
                             </Col>
                             {isAuthor ? (
                                 <>
-                                    <Col xs={1} className="d-flex justify-content-center">
-                                        <div className="fw-bold">Published</div>
+                                    <Col xs={2} className="d-flex" onClick={() => sortChapters("published")}>
+                                        <div className="fw-bold">
+                                            Published{" "}
+                                            <FontAwesomeIcon className="ms-2" icon={getSortIcon("published")} />
+                                        </div>
                                     </Col>
                                 </>
                             ) : null}
@@ -150,19 +196,22 @@ function Fiction(preFetchedFiction) {
                             style={{ padding: 0, cursor: "pointer" }}
                         >
                             <Row className="ms-auto me-auto align-items-center">
-                                <Col xs={isAuthor ? 7 : 8}>
+                                <Col xs={isAuthor ? 6 : 8}>
                                     <div>{chapter.title}</div>
                                 </Col>
                                 <Col xs={4} style={{ backgroundColor: "var(--bs-secondary-bg)" }}>
-                                    <div>{chapter.published ? chapter.published_at : "-"}</div>
+                                    <div>
+                                        {chapter.published ? format(chapter.published_at, "do MMMM yyyy - hh:mm") : "-"}
+                                    </div>
                                 </Col>
+
                                 {isAuthor ? (
                                     <>
-                                        <Col xs={1} className="d-flex justify-content-center">
+                                        <Col xs={2} className="d-flex">
                                             {chapter.published ? (
-                                                <FontAwesomeIcon icon={faCheck} />
+                                                <FontAwesomeIcon className="ms-4" icon={faCheck} />
                                             ) : (
-                                                <FontAwesomeIcon icon={faXmark} />
+                                                <FontAwesomeIcon className="ms-4" icon={faXmark} />
                                             )}
                                         </Col>
                                     </>
