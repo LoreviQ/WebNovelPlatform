@@ -100,6 +100,7 @@ function NewChapter() {
                                             onChange={(date) => setFieldValue("scheduledDate", date)}
                                             showTimeSelect
                                             dateFormat="Pp"
+                                            disabled={values.publishImmediately}
                                         />
                                     </div>
                                 </Form.Group>
@@ -114,6 +115,7 @@ function NewChapter() {
                                         checked={values.publishImmediately}
                                         onChange={(e) => {
                                             setFieldValue("publishImmediately", e.target.checked);
+                                            setFieldValue("scheduledDate", new Date());
                                         }}
                                     />
                                 </Form.Group>
