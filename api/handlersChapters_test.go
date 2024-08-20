@@ -83,7 +83,8 @@ func testPostChapter(t *testing.T, accessToken string) (string, string) {
 	body := bytes.NewBuffer([]byte(`{
 		"title": "Chapter 1",
 		"body": "This is the first chapter",
-		"published": 1
+		"scheduled_at": "2021-01-01T00:00:00Z",
+		"publish_immidiately": 1
 	}`))
 	requestURL := "http://localhost:8080/v1/fictions/the-chapters/chapters"
 	headers := map[string]string{
@@ -106,7 +107,8 @@ func testPostChapter(t *testing.T, accessToken string) (string, string) {
 	body = bytes.NewBuffer([]byte(`{
 		"title": "Chapter 2",
 		"body": "This is the second chapter",
-		"published": 0
+		"scheduled_at": "2024-10-01T00:00:00Z",
+		"publish_immidiately": 0
 	}`))
 	res = loopSendRequest(requestURL, http.MethodPost, body, headers, t)
 	if res.StatusCode != http.StatusCreated {

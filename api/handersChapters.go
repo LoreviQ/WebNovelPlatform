@@ -34,9 +34,10 @@ func (cfg apiConfig) postChapter(w http.ResponseWriter, r *http.Request, user da
 
 	// Parse the request body
 	request, err := decodeRequest(w, r, struct {
-		Title     string `json:"title"`
-		Body      string `json:"body"`
-		Published int64  `json:"published"`
+		Title               string `json:"title"`
+		Body                string `json:"body"`
+		ScheduledAt         string `json:"scheduled_at"`
+		PublishImmideiately int64  `json:"publish_immidiately"`
 	}{})
 	if err != nil {
 		respondWithError(w, http.StatusBadRequest, "failed to decode request body")
@@ -56,8 +57,9 @@ func (cfg apiConfig) postChapter(w http.ResponseWriter, r *http.Request, user da
 		FictionID:   fictionId,
 		Title:       request.Title,
 		Body:        request.Body,
-		Published:   request.Published,
-		PublishedAt: sql.NullString{String: time.Now().Format(time.RFC3339), Valid: request.Published == 1},
+		Published:   request.PublishImmideiately,
+		PublishedAt: sql.NullString{String: time.Now().Format(time.RFC3339), Valid: request.PublishImmideiately == 1},
+		ScheduledAt: sql.NullString{String: request.ScheduledAt, Valid: request.PublishImmideiately != 1},
 		CreatedAt:   time.Now().Format(time.RFC3339),
 		UpdatedAt:   time.Now().Format(time.RFC3339),
 	})
