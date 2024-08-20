@@ -8,7 +8,11 @@ SELECT * FROM chapters WHERE id = ?;
 
 -- name: GetChaptersByFictionId :many
 SELECT * FROM chapters WHERE fiction_id = ?
-ORDER BY published_at DESC
+ORDER BY 
+  CASE 
+    WHEN published = 1 THEN published_at 
+    ELSE scheduled_at 
+  END DESC
 LIMIT ? OFFSET ?;
 
 -- name: GetChaptersByFictionIdIfPublished :many
