@@ -198,6 +198,44 @@ func (q *Queries) GetChaptersByFictionIdIfPublished(ctx context.Context, arg Get
 	return items, nil
 }
 
+const getScheduledChaptersToPublish = `-- name: GetScheduledChaptersToPublish :many
+SELECT id, fiction_id, title, body, published, published_at, scheduled_at, created_at, updated_at FROM chapters
+WHERE scheduled_at <= NOW() AND published = 0
+`
+
+func (q *Queries) GetScheduledChaptersToPublish(ctx context.Context) ([]Chapter, error) {
+	rows, err := q.db.QueryContext(ctx, getScheduledChaptersToPublish)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Chapter
+	for rows.Next() {
+		var i Chapter
+		if err := rows.Scan(
+			&i.ID,
+			&i.FictionID,
+			&i.Title,
+			&i.Body,
+			&i.Published,
+			&i.PublishedAt,
+			&i.ScheduledAt,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const updateChapter = `-- name: UpdateChapter :one
 UPDATE chapters SET updated_at = ?, title = ?, body = ?, published = ?, published_at = ?, scheduled_at = ?
 WHERE id = ?

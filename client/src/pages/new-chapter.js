@@ -34,7 +34,7 @@ function NewChapter() {
                 title: values.title,
                 body: values.body,
                 scheduled_at: values.scheduledDate,
-                publish_immidiately: values.publishImmediately,
+                publish_immidiately: +values.publishImmediately,
             });
             if (error) {
                 throw new Error("Failed POST request to API");

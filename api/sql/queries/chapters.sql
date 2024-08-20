@@ -23,4 +23,8 @@ RETURNING *;
 DELETE FROM chapters WHERE id = ?;
 
 -- name: GetChapterIds :many
-SELECT id FROM chapters
+SELECT id FROM chapters;
+
+-- name: GetScheduledChaptersToPublish :many
+SELECT * FROM chapters
+WHERE scheduled_at <= NOW() AND published = 0;
