@@ -49,8 +49,8 @@ function Fiction(preFetchedFiction) {
                     bValue = b.title.toLowerCase();
                     break;
                 case "published_at":
-                    aValue = a.published_at;
-                    bValue = b.published_at;
+                    aValue = a.published ? a.published_at : a.scheduled_at;
+                    bValue = b.published ? b.published_at : b.scheduled_at;
                     break;
                 case "published":
                     aValue = a.published;
@@ -90,17 +90,14 @@ function Fiction(preFetchedFiction) {
                 return;
             }
             setChapters(cData);
+            if (user && fData && fData.authorid === user.id) {
+                setIsAuthor(true);
+            } else {
+                setIsAuthor(false);
+            }
         };
         fetchDislayData();
-    }, [fictionid]);
-
-    useEffect(() => {
-        if (user && fictionData && fictionData.authorid === user.id) {
-            setIsAuthor(true);
-        } else {
-            setIsAuthor(false);
-        }
-    }, [user, fictionData]);
+    }, [user, fictionid]);
 
     useEffect(() => {
         if (!fictionData) {
@@ -116,7 +113,7 @@ function Fiction(preFetchedFiction) {
         return <LoadingAnimation />;
     }
     return (
-        <Container fluid className="my-4 ms-2">
+        <Container fluid className="py-4 px-4">
             <div
                 ref={fictionHeaderRef}
                 className={`fictionHeader ${isExpanded ? "fictionHeaderExpanded" : "fictionHeaderTruncated"}`}
@@ -192,7 +189,7 @@ function Fiction(preFetchedFiction) {
                             as="li"
                             key={chapter.id}
                             action
-                            onClick={() => navigate(`/`)}
+                            onClick={() => navigate(`/fictions/${fictionid}/chapters/${chapter.id}`)}
                             style={{ padding: 0, cursor: "pointer" }}
                         >
                             <Row className="ms-auto me-auto align-items-center">
@@ -201,7 +198,9 @@ function Fiction(preFetchedFiction) {
                                 </Col>
                                 <Col xs={4} style={{ backgroundColor: "var(--bs-secondary-bg)" }}>
                                     <div>
-                                        {chapter.published ? format(chapter.published_at, "do MMMM yyyy - hh:mm") : "-"}
+                                        {chapter.published
+                                            ? format(chapter.published_at, "do MMMM yyyy - hh:mm")
+                                            : format(chapter.scheduled_at, "do MMMM yyyy - hh:mm")}
                                     </div>
                                 </Col>
 
