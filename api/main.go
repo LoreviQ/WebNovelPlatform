@@ -20,8 +20,13 @@ type apiConfig struct {
 }
 
 func main() {
+	// initialise configuration
 	cfg := setupConfig()
 	server := initialiseServer(cfg, http.NewServeMux())
+
+	// Start the scheduled event checker
+	cfg.startScheduledEventChecker()
+
 	// Serve Server
 	log.Printf("Serving on port: %s\n", cfg.port)
 	log.Panic(server.ListenAndServe())
