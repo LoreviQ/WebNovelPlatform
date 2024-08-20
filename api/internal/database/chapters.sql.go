@@ -114,7 +114,11 @@ func (q *Queries) GetChapterIds(ctx context.Context) ([]string, error) {
 
 const getChaptersByFictionId = `-- name: GetChaptersByFictionId :many
 SELECT id, fiction_id, title, body, published, published_at, scheduled_at, created_at, updated_at FROM chapters WHERE fiction_id = ?
-ORDER BY published_at DESC
+ORDER BY 
+  CASE 
+    WHEN published = 1 THEN published_at 
+    ELSE scheduled_at 
+  END DESC
 LIMIT ? OFFSET ?
 `
 
