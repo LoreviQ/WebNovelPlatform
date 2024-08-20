@@ -19,7 +19,7 @@ function NewChapter() {
     const [formData, setFormData] = useState({
         title: "",
         body: "",
-        releaseDate: new Date(),
+        scheduledDate: new Date(),
         publishImmediately: false,
     });
 
@@ -33,7 +33,8 @@ function NewChapter() {
             const { data, error } = await axiosAuthed("POST", apiEndpoints.chapters(fictionid), {
                 title: values.title,
                 body: values.body,
-                published: 0,
+                scheduled_at: values.scheduledDate,
+                publish_immidiately: values.publishImmediately,
             });
             if (error) {
                 throw new Error("Failed POST request to API");
@@ -90,13 +91,13 @@ function NewChapter() {
                         </Form.Group>
                         <Row className="my-4">
                             <Col>
-                                <Form.Group controlId="releaseDate">
+                                <Form.Group controlId="scheduledDate">
                                     <Form.Label>Release Date</Form.Label>
                                     <div>
                                         <DatePicker
-                                            selected={values.releaseDate}
-                                            name="releaseDate"
-                                            onChange={(date) => setFieldValue("releaseDate", date)}
+                                            selected={values.scheduledDate}
+                                            name="scheduledDate"
+                                            onChange={(date) => setFieldValue("scheduledDate", date)}
                                             showTimeSelect
                                             dateFormat="Pp"
                                         />
