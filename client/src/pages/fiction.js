@@ -90,17 +90,14 @@ function Fiction(preFetchedFiction) {
                 return;
             }
             setChapters(cData);
+            if (user && fData && fData.authorid === user.id) {
+                setIsAuthor(true);
+            } else {
+                setIsAuthor(false);
+            }
         };
         fetchDislayData();
-    }, [fictionid]);
-
-    useEffect(() => {
-        if (user && fictionData && fictionData.authorid === user.id) {
-            setIsAuthor(true);
-        } else {
-            setIsAuthor(false);
-        }
-    }, [user, fictionData]);
+    }, [user, fictionid]);
 
     useEffect(() => {
         if (!fictionData) {
@@ -201,7 +198,9 @@ function Fiction(preFetchedFiction) {
                                 </Col>
                                 <Col xs={4} style={{ backgroundColor: "var(--bs-secondary-bg)" }}>
                                     <div>
-                                        {chapter.published ? format(chapter.published_at, "do MMMM yyyy - hh:mm") : "-"}
+                                        {chapter.published
+                                            ? format(chapter.published_at, "do MMMM yyyy - hh:mm")
+                                            : format(chapter.scheduled_at, "do MMMM yyyy - hh:mm")}
                                     </div>
                                 </Col>
 
