@@ -3,7 +3,7 @@ import ReactDOM from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import App from "./App";
 import * as Pages from "./pages";
-import { AuthProvider, PrivateRoute, UserIDRouter, PrivateRouteFictionId, FictionIDRouter } from "./utils/auth";
+import { AuthProvider, UserIDRouter, PrivateRouteFictionId, FictionIDRouter, ChapterIDRouter } from "./utils/auth";
 
 import "./css/styles.css";
 
@@ -72,6 +72,14 @@ function AppRouter() {
                             <PrivateRouteFictionId>
                                 <App Page={Pages.NewChapter} />
                             </PrivateRouteFictionId>
+                        }
+                    />
+                    <Route
+                        path="fictions/:fictionid/chapters/:chapterid"
+                        element={
+                            <ChapterIDRouter>
+                                <App Page={Pages.Chapter} />
+                            </ChapterIDRouter>
                         }
                     />
 
