@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"log"
 	"net/http"
 	"time"
 
@@ -47,6 +48,7 @@ func (cfg apiConfig) postChapter(w http.ResponseWriter, r *http.Request, user da
 	// Generate chapter vars
 	chapterId, err := auth.GenerateUniqueChapterID(cfg.DB)
 	if err != nil {
+		log.Printf("Couldn't generate chapter ID: %v", err)
 		respondWithError(w, http.StatusInternalServerError, "Couldn't generate chapter ID")
 		return
 	}
@@ -64,6 +66,7 @@ func (cfg apiConfig) postChapter(w http.ResponseWriter, r *http.Request, user da
 		UpdatedAt:   time.Now().Format(time.RFC3339),
 	})
 	if err != nil {
+		log.Printf("Couldn't create chapter: %v", err)
 		respondWithError(w, http.StatusInternalServerError, "Couldn't create chapter")
 		return
 	}

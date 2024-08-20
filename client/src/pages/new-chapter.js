@@ -33,7 +33,8 @@ function NewChapter() {
             const { data, error } = await axiosAuthed("POST", apiEndpoints.chapters(fictionid), {
                 title: values.title,
                 body: values.body,
-                published: 0,
+                scheduled_at: values.scheduledDate,
+                publish_immidiately: values.publishImmediately,
             });
             if (error) {
                 throw new Error("Failed POST request to API");
