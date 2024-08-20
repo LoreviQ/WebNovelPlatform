@@ -200,7 +200,7 @@ func (q *Queries) GetChaptersByFictionIdIfPublished(ctx context.Context, arg Get
 
 const getScheduledChaptersToPublish = `-- name: GetScheduledChaptersToPublish :many
 SELECT id, fiction_id, title, body, published, published_at, scheduled_at, created_at, updated_at FROM chapters
-WHERE scheduled_at <= NOW() AND published = 0
+WHERE scheduled_at <= datetime('now') AND published = 0
 `
 
 func (q *Queries) GetScheduledChaptersToPublish(ctx context.Context) ([]Chapter, error) {
