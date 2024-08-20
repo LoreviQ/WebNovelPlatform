@@ -8,11 +8,9 @@ import * as yup from "yup";
 
 import { SimpleEditor } from "../utils/textEditor";
 import { apiEndpoints, axiosAuthed } from "../utils/api";
-import { set } from "date-fns";
 
 function NewChapter() {
     const { fictionid } = useParams();
-    const [editorHeight, setEditorHeight] = useState("300px");
     const navigate = useNavigate();
     const { Formik } = formik;
 
@@ -44,18 +42,6 @@ function NewChapter() {
             alert("Failed to submit fiction, error: " + error);
         }
     };
-
-    useEffect(() => {
-        const handleResize = () => {
-            const height = window.innerHeight - 456; // Adjust based on your layout
-            setEditorHeight(`${height}px`);
-        };
-
-        window.addEventListener("resize", handleResize);
-        handleResize(); // Initial call
-
-        return () => window.removeEventListener("resize", handleResize);
-    }, []);
 
     return (
         <Container fluid className="my-4 ms-2">
