@@ -3,6 +3,10 @@ import { useParams, useNavigate } from "react-router-dom";
 import Container from "react-bootstrap/esm/Container";
 import Button from "react-bootstrap/esm/Button";
 import ListGroup from "react-bootstrap/esm/ListGroup";
+import Row from "react-bootstrap/esm/Row";
+import Col from "react-bootstrap/esm/Col";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
 
 import { apiEndpoints, axiosAuthed } from "../utils/api";
 import { useAuth } from "../utils/auth";
@@ -111,6 +115,32 @@ function Fiction(preFetchedFiction) {
                 <h1>No Chapters!</h1>
             ) : (
                 <ListGroup as="ul">
+                    <ListGroup.Item
+                        as="li"
+                        key={"headings"}
+                        action
+                        onClick={() => navigate(`/`)}
+                        style={{ padding: 0, cursor: "pointer" }}
+                    >
+                        <Row
+                            className="ms-auto me-auto align-items-center"
+                            style={{ backgroundColor: "var(--bs-tertiary-bg" }}
+                        >
+                            <Col xs={isAuthor ? 7 : 8}>
+                                <div className="fw-bold">Title</div>
+                            </Col>
+                            <Col xs={4}>
+                                <div className="fw-bold">Release Date</div>
+                            </Col>
+                            {isAuthor ? (
+                                <>
+                                    <Col xs={1} className="d-flex justify-content-center">
+                                        <div className="fw-bold">Published</div>
+                                    </Col>
+                                </>
+                            ) : null}
+                        </Row>
+                    </ListGroup.Item>
                     {chapters.map((chapter) => (
                         <ListGroup.Item
                             as="li"
@@ -119,12 +149,25 @@ function Fiction(preFetchedFiction) {
                             onClick={() => navigate(`/`)}
                             style={{ padding: 0, cursor: "pointer" }}
                         >
-                            <div style={{ display: "flex", alignItems: "center" }}>
-                                <div className="ms-2 me-auto">
-                                    <div className="fw-bold">{chapter.title}</div>
-                                    <div className="ms-2 userFictionsTextTruncate">{chapter.description}</div>
-                                </div>
-                            </div>
+                            <Row className="ms-auto me-auto align-items-center">
+                                <Col xs={isAuthor ? 7 : 8}>
+                                    <div>{chapter.title}</div>
+                                </Col>
+                                <Col xs={4} style={{ backgroundColor: "var(--bs-secondary-bg)" }}>
+                                    <div>{chapter.published ? chapter.published_at : "-"}</div>
+                                </Col>
+                                {isAuthor ? (
+                                    <>
+                                        <Col xs={1} className="d-flex justify-content-center">
+                                            {chapter.published ? (
+                                                <FontAwesomeIcon icon={faCheck} />
+                                            ) : (
+                                                <FontAwesomeIcon icon={faXmark} />
+                                            )}
+                                        </Col>
+                                    </>
+                                ) : null}
+                            </Row>
                         </ListGroup.Item>
                     ))}
                 </ListGroup>

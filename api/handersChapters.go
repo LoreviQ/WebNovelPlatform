@@ -142,7 +142,7 @@ func (cfg apiConfig) getChapter(w http.ResponseWriter, r *http.Request) {
 // This is a conditionally protected endpoint
 //   - If the fiction is published, it can be accessed by anyone
 //   - If the fiction is not published, the user must be the owner of the fiction to access it
-//   - The function will onyl return the chapters that are published unless the user is the owner of the fiction
+//   - The function will only return the chapters that are published unless the user is the owner of the fiction
 func (cfg apiConfig) getChapters(w http.ResponseWriter, r *http.Request) {
 	// Get the fiction ID from the URL
 	fictionId := r.PathValue("fiction_id")
