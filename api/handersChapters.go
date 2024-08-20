@@ -175,6 +175,7 @@ func (cfg apiConfig) getChapters(w http.ResponseWriter, r *http.Request) {
 	chapters, err := cfg.DB.GetChaptersByFictionId(r.Context(), database.GetChaptersByFictionIdParams{
 		FictionID: fictionId,
 		Limit:     20,
+		Offset:    0,
 	})
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, "Couldn't get chapters")

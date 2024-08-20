@@ -189,7 +189,7 @@ function Fiction(preFetchedFiction) {
                             as="li"
                             key={chapter.id}
                             action
-                            onClick={() => navigate(`/`)}
+                            onClick={() => navigate(`/fictions/${fictionid}/chapters/${chapter.id}`)}
                             style={{ padding: 0, cursor: "pointer" }}
                         >
                             <Row className="ms-auto me-auto align-items-center">

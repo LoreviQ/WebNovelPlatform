@@ -114,16 +114,18 @@ func (q *Queries) GetChapterIds(ctx context.Context) ([]string, error) {
 
 const getChaptersByFictionId = `-- name: GetChaptersByFictionId :many
 SELECT id, fiction_id, title, body, published, published_at, scheduled_at, created_at, updated_at FROM chapters WHERE fiction_id = ?
-LIMIT ?
+ORDER BY published_at DESC
+LIMIT ? OFFSET ?
 `
 
 type GetChaptersByFictionIdParams struct {
 	FictionID string
 	Limit     int64
+	Offset    int64
 }
 
 func (q *Queries) GetChaptersByFictionId(ctx context.Context, arg GetChaptersByFictionIdParams) ([]Chapter, error) {
-	rows, err := q.db.QueryContext(ctx, getChaptersByFictionId, arg.FictionID, arg.Limit)
+	rows, err := q.db.QueryContext(ctx, getChaptersByFictionId, arg.FictionID, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}
