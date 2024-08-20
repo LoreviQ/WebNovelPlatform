@@ -27,4 +27,4 @@ SELECT id FROM chapters;
 
 -- name: GetScheduledChaptersToPublish :many
 SELECT * FROM chapters
-WHERE scheduled_at <= NOW() AND published = 0;
+WHERE scheduled_at <= datetime('now') AND published = 0;
