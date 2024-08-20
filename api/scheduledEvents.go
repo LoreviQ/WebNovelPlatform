@@ -30,7 +30,7 @@ func (cfg apiConfig) checkAndCompleteScheduledEvents() {
 
 // publishScheduledChpaters publishes any chapters that are scheduled to be published
 func publishScheduledChpaters(db *database.Queries) error {
-	chapters, err := db.GetScheduledChaptersToPublish(context.Background())
+	chapters, err := db.GetScheduledChaptersToPublish(context.Background(), sql.NullString{String: time.Now().Format(time.RFC3339), Valid: true})
 	if err != nil {
 		return err
 	}
