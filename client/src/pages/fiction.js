@@ -49,8 +49,8 @@ function Fiction(preFetchedFiction) {
                     bValue = b.title.toLowerCase();
                     break;
                 case "published_at":
-                    aValue = a.published_at;
-                    bValue = b.published_at;
+                    aValue = a.published ? a.published_at : a.scheduled_at;
+                    bValue = b.published ? b.published_at : b.scheduled_at;
                     break;
                 case "published":
                     aValue = a.published;
