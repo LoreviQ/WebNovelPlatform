@@ -19,7 +19,7 @@ function NewChapter() {
     const [formData, setFormData] = useState({
         title: "",
         body: "",
-        releaseDate: new Date(),
+        scheduledDate: new Date(),
         publishImmediately: false,
     });
 
@@ -90,13 +90,13 @@ function NewChapter() {
                         </Form.Group>
                         <Row className="my-4">
                             <Col>
-                                <Form.Group controlId="releaseDate">
+                                <Form.Group controlId="scheduledDate">
                                     <Form.Label>Release Date</Form.Label>
                                     <div>
                                         <DatePicker
-                                            selected={values.releaseDate}
-                                            name="releaseDate"
-                                            onChange={(date) => setFieldValue("releaseDate", date)}
+                                            selected={values.scheduledDate}
+                                            name="scheduledDate"
+                                            onChange={(date) => setFieldValue("scheduledDate", date)}
                                             showTimeSelect
                                             dateFormat="Pp"
                                         />
