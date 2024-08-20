@@ -44,7 +44,7 @@ function NewChapter() {
     };
 
     return (
-        <Container fluid className="my-4 ms-2">
+        <Container fluid className="py-4 px-4">
             <Formik
                 validationSchema={validationSchema}
                 onSubmit={formSubmission}

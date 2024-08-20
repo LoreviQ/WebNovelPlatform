@@ -115,7 +115,7 @@ function EditFiction(preFetchedFiction) {
         return <LoadingAnimation />;
     }
     return (
-        <Container fluid className="my-4 ms-2">
+        <Container fluid className="py-4 px-4">
             <div style={{ display: "flex", alignItems: "center" }}>
                 <div className="image-edit-container" style={{ position: "relative", display: "inline-block" }}>
                     <img

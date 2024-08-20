@@ -32,7 +32,7 @@ function Index() {
         return <LoadingAnimation />;
     }
     return (
-        <Container fluid className="my-4 ms-2">
+        <Container fluid className="py-4 px-4">
             <Carousel interval={10000} style={{ backgroundColor: "white", height: "400px" }}>
                 {carouselFics.map((fiction, index) => (
                     <Carousel.Item
