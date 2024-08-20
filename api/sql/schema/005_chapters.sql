@@ -6,6 +6,7 @@ CREATE TABLE chapters (
     body TEXT NOT NULL,
     published INTEGER NOT NULL,
     published_at TEXT,
+    scheduled_at TEXT,
     created_at TEXT NOT NULL,
     updated_at TEXT NOT NULL,
     FOREIGN KEY (fiction_id) REFERENCES fictions(id)

@@ -15,7 +15,7 @@ import History from "@tiptap/extension-history";
 import * as Icons from "./Icons";
 import { LinkModal } from "./LinkModal";
 
-export const SimpleEditor = forwardRef((props, ref) => {
+export const SimpleEditor = forwardRef(({ onChange, ...props }, ref) => {
     const editor = useEditor({
         extensions: [
             Document,
@@ -35,6 +35,12 @@ export const SimpleEditor = forwardRef((props, ref) => {
             }),
         ],
         content: "",
+        onUpdate: ({ editor }) => {
+            const content = editor.getHTML();
+            if (onChange) {
+                onChange(content);
+            }
+        },
     });
 
     useImperativeHandle(ref, () => ({
@@ -93,7 +99,7 @@ export const SimpleEditor = forwardRef((props, ref) => {
     }
 
     return (
-        <div className="editor">
+        <div className={classNames("editor", props.className)}>
             <div className="menu">
                 <button
                     type="button"

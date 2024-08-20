@@ -1,0 +1,6 @@
+#!/bin/bash
+
+
+cd sql/schema
+goose turso "libsql://webnoveldb-loreviq.turso.io?authToken=eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MTU3MjUyMTksImlkIjoiY2YzYjY3YWYtNDA3Ni00MzcyLWFmNzQtYjQzNjdmM2ExODNiIn0.bM5pkLQYoI2qkzjKyhWoibBQTnWAsh986FhJCSVTr5L77SJjLvkV6qBxjfn46heWjBnNiCchGJLXW420TaeGAA" down
+goose turso "libsql://webnoveldb-test-loreviq.turso.io?authToken=eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MTU3MjUzMTEsImlkIjoiMWExYjkzMzgtOTA0Yy00MDgwLWEyMDgtYjkyNzMzM2U5ODhmIn0.YnLPYEbLpi4US_QQ6XgHEcg-vgj2wjh8nflAZJoP3TdyqwEfsKXvqGZA4SLJ1YjqYmFM6Kr2NWzbW9b88P8RDg" down
