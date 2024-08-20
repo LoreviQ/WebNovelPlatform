@@ -15,6 +15,7 @@ type Chapter struct {
 	Body        string
 	Published   int64
 	PublishedAt sql.NullString
+	ScheduledAt sql.NullString
 	CreatedAt   string
 	UpdatedAt   string
 }
