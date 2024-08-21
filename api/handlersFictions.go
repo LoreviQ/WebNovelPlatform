@@ -105,6 +105,11 @@ func (cfg *apiConfig) getFictions(w http.ResponseWriter, r *http.Request) {
 	respondWithJSON(w, http.StatusOK, responseSlice)
 }
 
+// Get Fiction Handler (GET /v1/fictions/{id})
+//
+// Returns the fiction data for the provided ID
+// This endpoint is conditionally protected by the IsPublishedMiddleware
+// If the fiction is not published, the user must be the author to access it
 func (cfg *apiConfig) getFiction(w http.ResponseWriter, r *http.Request, user database.User) {
 	// GET FICTION ID
 	id := r.PathValue("id")
@@ -131,6 +136,7 @@ func (cfg *apiConfig) getFiction(w http.ResponseWriter, r *http.Request, user da
 		ID          string         `json:"id"`
 		Title       string         `json:"title"`
 		Authorid    string         `json:"authorid"`
+		Author      string         `json:"author"`
 		Description string         `json:"description"`
 		CreatedAt   string         `json:"created_at"`
 		UpdatedAt   string         `json:"updated_at"`
@@ -142,6 +148,7 @@ func (cfg *apiConfig) getFiction(w http.ResponseWriter, r *http.Request, user da
 		ID:          fiction.ID,
 		Title:       fiction.Title,
 		Authorid:    fiction.Authorid,
+		Author:      fiction.AuthorName,
 		Description: fiction.Description,
 		CreatedAt:   fiction.CreatedAt,
 		UpdatedAt:   fiction.UpdatedAt,
@@ -287,7 +294,7 @@ func (cfg *apiConfig) putFiction(w http.ResponseWriter, r *http.Request, user da
 	}
 
 	// UPDATE FICTION
-	fiction, err = cfg.DB.UpdateFiction(r.Context(), database.UpdateFictionParams{
+	updatedFiction, err := cfg.DB.UpdateFiction(r.Context(), database.UpdateFictionParams{
 		UpdatedAt:   time.Now().UTC().Format(time.RFC3339),
 		Title:       request.Title,
 		Description: request.Description,
@@ -313,11 +320,11 @@ func (cfg *apiConfig) putFiction(w http.ResponseWriter, r *http.Request, user da
 		Description string `json:"description"`
 		CreatedAt   string `json:"created_at"`
 	}{
-		ID:          fiction.ID,
-		Title:       fiction.Title,
-		Authorid:    fiction.Authorid,
-		Description: fiction.Description,
-		CreatedAt:   fiction.CreatedAt,
+		ID:          updatedFiction.ID,
+		Title:       updatedFiction.Title,
+		Authorid:    updatedFiction.Authorid,
+		Description: updatedFiction.Description,
+		CreatedAt:   updatedFiction.CreatedAt,
 	})
 }
 
@@ -475,7 +482,7 @@ func (cfg *apiConfig) publishFiction(w http.ResponseWriter, r *http.Request, use
 	}
 
 	// PUBLISH FICTION
-	fiction, err = cfg.DB.PublishFiction(r.Context(), database.PublishFictionParams{
+	_, err = cfg.DB.PublishFiction(r.Context(), database.PublishFictionParams{
 		PublishedAt: sql.NullString{
 			String: time.Now().UTC().Format(time.RFC3339),
 			Valid:  true,
