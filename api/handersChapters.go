@@ -52,18 +52,31 @@ func (cfg apiConfig) postChapter(w http.ResponseWriter, r *http.Request, user da
 		respondWithError(w, http.StatusInternalServerError, "Couldn't generate chapter ID")
 		return
 	}
+	maxChapter, err := cfg.DB.GetMaxChapterNumber(r.Context(), fictionId)
+	if err != nil {
+		log.Printf("Couldn't get max chapter number: %v", err)
+		respondWithError(w, http.StatusInternalServerError, "Couldn't get max chapter number")
+		return
+	}
+	var maxChapterNum int64
+	if maxChapter != nil {
+		maxChapterNum = maxChapter.(int64)
+	} else {
+		maxChapterNum = 0
+	}
 
 	// Create the new chapter
 	chapter, err := cfg.DB.CreateChapter(r.Context(), database.CreateChapterParams{
-		ID:          chapterId,
-		FictionID:   fictionId,
-		Title:       request.Title,
-		Body:        request.Body,
-		Published:   request.PublishImmideiately,
-		PublishedAt: sql.NullString{String: time.Now().Format(time.RFC3339), Valid: request.PublishImmideiately == 1},
-		ScheduledAt: sql.NullString{String: request.ScheduledAt, Valid: request.PublishImmideiately != 1},
-		CreatedAt:   time.Now().Format(time.RFC3339),
-		UpdatedAt:   time.Now().Format(time.RFC3339),
+		ID:            chapterId,
+		ChapterNumber: maxChapterNum + 1,
+		FictionID:     fictionId,
+		Title:         request.Title,
+		Body:          request.Body,
+		Published:     request.PublishImmideiately,
+		PublishedAt:   sql.NullString{String: time.Now().Format(time.RFC3339), Valid: request.PublishImmideiately == 1},
+		ScheduledAt:   sql.NullString{String: request.ScheduledAt, Valid: request.PublishImmideiately != 1},
+		CreatedAt:     time.Now().Format(time.RFC3339),
+		UpdatedAt:     time.Now().Format(time.RFC3339),
 	})
 	if err != nil {
 		log.Printf("Couldn't create chapter: %v", err)

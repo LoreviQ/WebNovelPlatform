@@ -9,15 +9,16 @@ import (
 )
 
 type Chapter struct {
-	ID          string
-	FictionID   string
-	Title       string
-	Body        string
-	Published   int64
-	PublishedAt sql.NullString
-	ScheduledAt sql.NullString
-	CreatedAt   string
-	UpdatedAt   string
+	ID            string
+	ChapterNumber int64
+	FictionID     string
+	Title         string
+	Body          string
+	Published     int64
+	PublishedAt   sql.NullString
+	ScheduledAt   sql.NullString
+	CreatedAt     string
+	UpdatedAt     string
 }
 
 type Fiction struct {

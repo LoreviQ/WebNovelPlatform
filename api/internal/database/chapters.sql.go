@@ -11,26 +11,28 @@ import (
 )
 
 const createChapter = `-- name: CreateChapter :one
-INSERT INTO chapters (id, fiction_id, title, body, published, published_at, scheduled_at, created_at, updated_at)
-VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-RETURNING id, fiction_id, title, body, published, published_at, scheduled_at, created_at, updated_at
+INSERT INTO chapters (id, chapter_number, fiction_id, title, body, published, published_at, scheduled_at, created_at, updated_at)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+RETURNING id, chapter_number, fiction_id, title, body, published, published_at, scheduled_at, created_at, updated_at
 `
 
 type CreateChapterParams struct {
-	ID          string
-	FictionID   string
-	Title       string
-	Body        string
-	Published   int64
-	PublishedAt sql.NullString
-	ScheduledAt sql.NullString
-	CreatedAt   string
-	UpdatedAt   string
+	ID            string
+	ChapterNumber int64
+	FictionID     string
+	Title         string
+	Body          string
+	Published     int64
+	PublishedAt   sql.NullString
+	ScheduledAt   sql.NullString
+	CreatedAt     string
+	UpdatedAt     string
 }
 
 func (q *Queries) CreateChapter(ctx context.Context, arg CreateChapterParams) (Chapter, error) {
 	row := q.db.QueryRowContext(ctx, createChapter,
 		arg.ID,
+		arg.ChapterNumber,
 		arg.FictionID,
 		arg.Title,
 		arg.Body,
@@ -43,6 +45,7 @@ func (q *Queries) CreateChapter(ctx context.Context, arg CreateChapterParams) (C
 	var i Chapter
 	err := row.Scan(
 		&i.ID,
+		&i.ChapterNumber,
 		&i.FictionID,
 		&i.Title,
 		&i.Body,
@@ -65,7 +68,7 @@ func (q *Queries) DeleteChapter(ctx context.Context, id string) error {
 }
 
 const getChapterById = `-- name: GetChapterById :one
-SELECT id, fiction_id, title, body, published, published_at, scheduled_at, created_at, updated_at FROM chapters WHERE id = ?
+SELECT id, chapter_number, fiction_id, title, body, published, published_at, scheduled_at, created_at, updated_at FROM chapters WHERE id = ?
 `
 
 func (q *Queries) GetChapterById(ctx context.Context, id string) (Chapter, error) {
@@ -73,6 +76,7 @@ func (q *Queries) GetChapterById(ctx context.Context, id string) (Chapter, error
 	var i Chapter
 	err := row.Scan(
 		&i.ID,
+		&i.ChapterNumber,
 		&i.FictionID,
 		&i.Title,
 		&i.Body,
@@ -113,7 +117,7 @@ func (q *Queries) GetChapterIds(ctx context.Context) ([]string, error) {
 }
 
 const getChaptersByFictionId = `-- name: GetChaptersByFictionId :many
-SELECT id, fiction_id, title, body, published, published_at, scheduled_at, created_at, updated_at FROM chapters WHERE fiction_id = ?
+SELECT id, chapter_number, fiction_id, title, body, published, published_at, scheduled_at, created_at, updated_at FROM chapters WHERE fiction_id = ?
 ORDER BY 
   CASE 
     WHEN published = 1 THEN published_at 
@@ -139,6 +143,7 @@ func (q *Queries) GetChaptersByFictionId(ctx context.Context, arg GetChaptersByF
 		var i Chapter
 		if err := rows.Scan(
 			&i.ID,
+			&i.ChapterNumber,
 			&i.FictionID,
 			&i.Title,
 			&i.Body,
@@ -162,7 +167,7 @@ func (q *Queries) GetChaptersByFictionId(ctx context.Context, arg GetChaptersByF
 }
 
 const getChaptersByFictionIdIfPublished = `-- name: GetChaptersByFictionIdIfPublished :many
-SELECT id, fiction_id, title, body, published, published_at, scheduled_at, created_at, updated_at FROM chapters WHERE fiction_id = ? AND published = 1
+SELECT id, chapter_number, fiction_id, title, body, published, published_at, scheduled_at, created_at, updated_at FROM chapters WHERE fiction_id = ? AND published = 1
 LIMIT ?
 `
 
@@ -182,6 +187,7 @@ func (q *Queries) GetChaptersByFictionIdIfPublished(ctx context.Context, arg Get
 		var i Chapter
 		if err := rows.Scan(
 			&i.ID,
+			&i.ChapterNumber,
 			&i.FictionID,
 			&i.Title,
 			&i.Body,
@@ -204,8 +210,21 @@ func (q *Queries) GetChaptersByFictionIdIfPublished(ctx context.Context, arg Get
 	return items, nil
 }
 
+const getMaxChapterNumber = `-- name: GetMaxChapterNumber :one
+SELECT MAX(chapter_number) AS largest_chapter_number
+FROM chapters
+WHERE fiction_id = ?
+`
+
+func (q *Queries) GetMaxChapterNumber(ctx context.Context, fictionID string) (interface{}, error) {
+	row := q.db.QueryRowContext(ctx, getMaxChapterNumber, fictionID)
+	var largest_chapter_number interface{}
+	err := row.Scan(&largest_chapter_number)
+	return largest_chapter_number, err
+}
+
 const getScheduledChaptersToPublish = `-- name: GetScheduledChaptersToPublish :many
-SELECT id, fiction_id, title, body, published, published_at, scheduled_at, created_at, updated_at FROM chapters
+SELECT id, chapter_number, fiction_id, title, body, published, published_at, scheduled_at, created_at, updated_at FROM chapters
 WHERE scheduled_at <= ? AND published = 0
 `
 
@@ -220,6 +239,7 @@ func (q *Queries) GetScheduledChaptersToPublish(ctx context.Context, scheduledAt
 		var i Chapter
 		if err := rows.Scan(
 			&i.ID,
+			&i.ChapterNumber,
 			&i.FictionID,
 			&i.Title,
 			&i.Body,
@@ -243,23 +263,25 @@ func (q *Queries) GetScheduledChaptersToPublish(ctx context.Context, scheduledAt
 }
 
 const updateChapter = `-- name: UpdateChapter :one
-UPDATE chapters SET updated_at = ?, title = ?, body = ?, published = ?, published_at = ?, scheduled_at = ?
+UPDATE chapters SET chapter_number = ?, updated_at = ?, title = ?, body = ?, published = ?, published_at = ?, scheduled_at = ?
 WHERE id = ?
-RETURNING id, fiction_id, title, body, published, published_at, scheduled_at, created_at, updated_at
+RETURNING id, chapter_number, fiction_id, title, body, published, published_at, scheduled_at, created_at, updated_at
 `
 
 type UpdateChapterParams struct {
-	UpdatedAt   string
-	Title       string
-	Body        string
-	Published   int64
-	PublishedAt sql.NullString
-	ScheduledAt sql.NullString
-	ID          string
+	ChapterNumber int64
+	UpdatedAt     string
+	Title         string
+	Body          string
+	Published     int64
+	PublishedAt   sql.NullString
+	ScheduledAt   sql.NullString
+	ID            string
 }
 
 func (q *Queries) UpdateChapter(ctx context.Context, arg UpdateChapterParams) (Chapter, error) {
 	row := q.db.QueryRowContext(ctx, updateChapter,
+		arg.ChapterNumber,
 		arg.UpdatedAt,
 		arg.Title,
 		arg.Body,
@@ -271,6 +293,7 @@ func (q *Queries) UpdateChapter(ctx context.Context, arg UpdateChapterParams) (C
 	var i Chapter
 	err := row.Scan(
 		&i.ID,
+		&i.ChapterNumber,
 		&i.FictionID,
 		&i.Title,
 		&i.Body,
