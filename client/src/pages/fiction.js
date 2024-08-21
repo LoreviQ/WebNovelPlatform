@@ -134,6 +134,7 @@ function Fiction(preFetchedFiction) {
                 />
                 <div style={{ flex: 1 }}>
                     <h1 style={{ textAlign: "center", transform: "translateX(-12.5%)" }}>{fictionData.title}</h1>
+                    <p>By {fictionData.author}</p>
                     <p style={{ textAlign: "left", margin: "0 auto", whiteSpace: "pre-line" }}>
                         {fictionData.description}
                     </p>

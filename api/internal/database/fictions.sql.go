@@ -65,12 +65,28 @@ func (q *Queries) DeleteFiction(ctx context.Context, id string) error {
 }
 
 const getFictionById = `-- name: GetFictionById :one
-SELECT id, title, authorid, description, created_at, updated_at, published_at, published, image_url FROM fictions WHERE id = ?
+SELECT fictions.id, fictions.title, fictions.authorid, fictions.description, fictions.created_at, fictions.updated_at, fictions.published_at, fictions.published, fictions.image_url, users.name AS author_name
+FROM fictions
+JOIN users ON users.id = fictions.authorid
+WHERE fictions.id = ?
 `
 
-func (q *Queries) GetFictionById(ctx context.Context, id string) (Fiction, error) {
+type GetFictionByIdRow struct {
+	ID          string
+	Title       string
+	Authorid    string
+	Description string
+	CreatedAt   string
+	UpdatedAt   string
+	PublishedAt sql.NullString
+	Published   int64
+	ImageUrl    sql.NullString
+	AuthorName  string
+}
+
+func (q *Queries) GetFictionById(ctx context.Context, id string) (GetFictionByIdRow, error) {
 	row := q.db.QueryRowContext(ctx, getFictionById, id)
-	var i Fiction
+	var i GetFictionByIdRow
 	err := row.Scan(
 		&i.ID,
 		&i.Title,
@@ -81,6 +97,7 @@ func (q *Queries) GetFictionById(ctx context.Context, id string) (Fiction, error
 		&i.PublishedAt,
 		&i.Published,
 		&i.ImageUrl,
+		&i.AuthorName,
 	)
 	return i, err
 }

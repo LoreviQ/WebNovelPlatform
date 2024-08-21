@@ -221,7 +221,6 @@ const PrivateRouteFictionId = ({ children, preFetchedFiction }) => {
 const FictionIDRouter = ({ children }) => {
     const { fictionid } = useParams(); // Get fictionid from URL
     const [fiction, setFiction] = useState(null);
-    const [processing, setProcessing] = useState(true);
     const [error, setError] = useState(null);
 
     useEffect(() => {
@@ -229,7 +228,6 @@ const FictionIDRouter = ({ children }) => {
             const { data, error } = await axiosAuthed("GET", apiEndpoints.fiction(fictionid));
             setFiction(data);
             setError(error);
-            setProcessing(false);
         };
         checkAuthorization();
     }, []);
@@ -245,5 +243,31 @@ const FictionIDRouter = ({ children }) => {
     return React.cloneElement(children, { preFetchedFiction: fiction });
 };
 
+// Automatically applies the correct routing based on if the provided chapter id is published
+const ChapterIDRouter = ({ children }) => {
+    const { fictionid, chapterid } = useParams(); // Get fictionid and chapterid from URL
+    const [chapter, setChapter] = useState(null);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        const checkAuthorization = async () => {
+            const { data, error } = await axiosAuthed("GET", apiEndpoints.chapter(fictionid, chapterid));
+            setChapter(data);
+            setError(error);
+        };
+        checkAuthorization();
+    }, []);
+    if (!chapter && !error) {
+        return <App Page={LoadingAnimation} />;
+    }
+    if (error == 403 || error == 401) {
+        return <PrivateRouteFictionId>{children}</PrivateRouteFictionId>;
+    }
+    if (error) {
+        return <App Page={Error} pageProps={{ statusCode: error }} />;
+    }
+    return React.cloneElement(children, { preFetchedChapter: chapter });
+};
+
 export const useAuth = () => useContext(AuthContext);
-export { PrivateRoute, PrivateRouteUserID, UserIDRouter, PrivateRouteFictionId, FictionIDRouter };
+export { PrivateRoute, PrivateRouteUserID, UserIDRouter, PrivateRouteFictionId, FictionIDRouter, ChapterIDRouter };

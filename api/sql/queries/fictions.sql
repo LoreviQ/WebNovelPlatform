@@ -4,7 +4,10 @@ VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
 RETURNING *;
 
 -- name: GetFictionById :one
-SELECT * FROM fictions WHERE id = ?;
+SELECT fictions.*, users.name AS author_name
+FROM fictions
+JOIN users ON users.id = fictions.authorid
+WHERE fictions.id = ?;
 
 -- name: GetFictionByIdIfPublished :one
 SELECT * FROM fictions WHERE id = ? and published = 1;
