@@ -75,10 +75,14 @@ func (cfg apiConfig) postChapter(w http.ResponseWriter, r *http.Request, user da
 	}
 	log.Printf("Max chapter number: %d", maxChapterNum)
 
+	// Calculate the new chapter number
+	newChapterNumber := maxChapterNum + 1
+	log.Printf("New chapter number: %d", newChapterNumber)
+
 	// Create the new chapter
 	chapter, err := cfg.DB.CreateChapter(r.Context(), database.CreateChapterParams{
 		ID:            chapterId,
-		ChapterNumber: maxChapterNum + 1,
+		ChapterNumber: newChapterNumber,
 		FictionID:     fictionId,
 		Title:         request.Title,
 		Body:          request.Body,

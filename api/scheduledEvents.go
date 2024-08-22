@@ -36,13 +36,14 @@ func publishScheduledChpaters(db *database.Queries) error {
 	}
 	for _, chapter := range chapters {
 		_, err := db.UpdateChapter(context.Background(), database.UpdateChapterParams{
-			UpdatedAt:   time.Now().Format(time.RFC3339),
-			Title:       chapter.Title,
-			Body:        chapter.Body,
-			Published:   1,
-			PublishedAt: sql.NullString{String: time.Now().Format(time.RFC3339), Valid: true},
-			ScheduledAt: sql.NullString{String: "", Valid: false},
-			ID:          chapter.ID,
+			ChapterNumber: chapter.ChapterNumber,
+			UpdatedAt:     time.Now().Format(time.RFC3339),
+			Title:         chapter.Title,
+			Body:          chapter.Body,
+			Published:     1,
+			PublishedAt:   sql.NullString{String: time.Now().Format(time.RFC3339), Valid: true},
+			ScheduledAt:   sql.NullString{String: "", Valid: false},
+			ID:            chapter.ID,
 		})
 		if err != nil {
 			return err
