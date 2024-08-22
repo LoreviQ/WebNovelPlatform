@@ -66,6 +66,7 @@ func (cfg apiConfig) postChapter(w http.ResponseWriter, r *http.Request, user da
 	} else {
 		maxChapterNum = 0
 	}
+	log.Print(maxChapterNum)
 
 	// Create the new chapter
 	chapter, err := cfg.DB.CreateChapter(r.Context(), database.CreateChapterParams{
