@@ -1,7 +1,10 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import DOMPurify from "dompurify";
 import Container from "react-bootstrap/esm/Container";
+import Button from "react-bootstrap/Button";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faChevronLeft, faChevronRight, faXmark } from "@fortawesome/free-solid-svg-icons";
 
 import { apiEndpoints, axiosAuthed } from "../utils/api";
 import { useAuth } from "../utils/auth";
@@ -12,6 +15,7 @@ function Chapter(preFetchedFiction, preFetchedChapter) {
     const [fictionData, setFictionData] = useState(preFetchedFiction || null);
     const [chapterData, setChapterData] = useState(preFetchedChapter || null);
     const [isAuthor, setIsAuthor] = useState(false);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchDislayData = async () => {
@@ -54,7 +58,37 @@ function Chapter(preFetchedFiction, preFetchedChapter) {
                     By <a href={`/user/${fictionData.authorid}/fictions`}>{fictionData.author}</a>
                 </p>
             </div>
-            <h1 style={{ display: "flex", justifyContent: "center" }}>{chapterData.title}</h1>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <Button
+                    className="me-4"
+                    variant="theme"
+                    onClick={() => navigate(`/fictions/${fictionid}/chapters/${chapterData.prev_id}`)}
+                    disabled={!chapterData.prev_id}
+                >
+                    <div style={{ display: "flex", alignItems: "center" }}>
+                        <FontAwesomeIcon
+                            className="ms-1 mt-1 me-2"
+                            icon={chapterData.prev_id ? faChevronLeft : faXmark}
+                            size="2x"
+                        />
+                    </div>
+                </Button>
+                <h1>{chapterData.title}</h1>
+                <Button
+                    className="me-4"
+                    variant="theme"
+                    onClick={() => navigate(`/fictions/${fictionid}/chapters/${chapterData.next_id}`)}
+                    disabled={!chapterData.next_id}
+                >
+                    <div style={{ display: "flex", alignItems: "center" }}>
+                        <FontAwesomeIcon
+                            className="ms-1 mt-1 me-2"
+                            icon={chapterData.next_id ? faChevronRight : faXmark}
+                            size="2x"
+                        />
+                    </div>
+                </Button>
+            </div>
             <hr />
             <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(chapterData.body) }} />
         </Container>
