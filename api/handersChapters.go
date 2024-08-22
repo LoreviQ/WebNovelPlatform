@@ -224,20 +224,22 @@ func (cfg apiConfig) getChapters(w http.ResponseWriter, r *http.Request) {
 
 	// Respond with chapters
 	type chapterResponse struct {
-		ID          string `json:"id"`
-		Title       string `json:"title"`
-		Published   int64  `json:"published"`
-		PublishedAt string `json:"published_at"`
-		ScheduledAt string `json:"scheduled_at"`
+		ID            string `json:"id"`
+		ChapterNumber int64  `json:"chapter_number"`
+		Title         string `json:"title"`
+		Published     int64  `json:"published"`
+		PublishedAt   string `json:"published_at"`
+		ScheduledAt   string `json:"scheduled_at"`
 	}
 	responseSlice := make([]chapterResponse, 0, len(chapters))
 	for _, chapter := range chapters {
 		responseSlice = append(responseSlice, chapterResponse{
-			ID:          chapter.ID,
-			Title:       chapter.Title,
-			Published:   chapter.Published,
-			PublishedAt: chapter.PublishedAt.String,
-			ScheduledAt: chapter.ScheduledAt.String,
+			ID:            chapter.ID,
+			ChapterNumber: chapter.ChapterNumber,
+			Title:         chapter.Title,
+			Published:     chapter.Published,
+			PublishedAt:   chapter.PublishedAt.String,
+			ScheduledAt:   chapter.ScheduledAt.String,
 		})
 	}
 	respondWithJSON(w, http.StatusOK, responseSlice)
