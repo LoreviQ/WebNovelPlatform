@@ -70,8 +70,8 @@ func (q *Queries) DeleteChapter(ctx context.Context, id string) error {
 const getChapterById = `-- name: GetChapterById :one
 SELECT 
     c.id, c.chapter_number, c.fiction_id, c.title, c.body, c.published, c.published_at, c.scheduled_at, c.created_at, c.updated_at,
-    (SELECT id FROM chapters WHERE chapter_number < c.chapter_number ORDER BY chapter_number DESC LIMIT 1) AS previous_id,
-    (SELECT id FROM chapters WHERE chapter_number > c.chapter_number ORDER BY chapter_number ASC LIMIT 1) AS next_id
+    COALESCE((SELECT id FROM chapters WHERE chapter_number < c.chapter_number ORDER BY chapter_number DESC LIMIT 1), '') AS previous_id,
+    COALESCE((SELECT id FROM chapters WHERE chapter_number > c.chapter_number ORDER BY chapter_number ASC LIMIT 1), '') AS next_id
 FROM 
     chapters c
 WHERE 
@@ -89,8 +89,8 @@ type GetChapterByIdRow struct {
 	ScheduledAt   sql.NullString
 	CreatedAt     string
 	UpdatedAt     string
-	PreviousID    string
-	NextID        string
+	PreviousID    interface{}
+	NextID        interface{}
 }
 
 func (q *Queries) GetChapterById(ctx context.Context, id string) (GetChapterByIdRow, error) {

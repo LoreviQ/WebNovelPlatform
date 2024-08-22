@@ -6,8 +6,8 @@ RETURNING *;
 -- name: GetChapterById :one
 SELECT 
     c.*,
-    (SELECT id FROM chapters WHERE chapter_number < c.chapter_number ORDER BY chapter_number DESC LIMIT 1) AS previous_id,
-    (SELECT id FROM chapters WHERE chapter_number > c.chapter_number ORDER BY chapter_number ASC LIMIT 1) AS next_id
+    COALESCE((SELECT id FROM chapters WHERE chapter_number < c.chapter_number ORDER BY chapter_number DESC LIMIT 1), '') AS previous_id,
+    COALESCE((SELECT id FROM chapters WHERE chapter_number > c.chapter_number ORDER BY chapter_number ASC LIMIT 1), '') AS next_id
 FROM 
     chapters c
 WHERE 
