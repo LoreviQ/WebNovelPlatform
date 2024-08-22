@@ -68,12 +68,34 @@ func (q *Queries) DeleteChapter(ctx context.Context, id string) error {
 }
 
 const getChapterById = `-- name: GetChapterById :one
-SELECT id, chapter_number, fiction_id, title, body, published, published_at, scheduled_at, created_at, updated_at FROM chapters WHERE id = ?
+SELECT 
+    c.id, c.chapter_number, c.fiction_id, c.title, c.body, c.published, c.published_at, c.scheduled_at, c.created_at, c.updated_at,
+    (SELECT id FROM chapters WHERE chapter_number < c.chapter_number ORDER BY chapter_number DESC LIMIT 1) AS previous_id,
+    (SELECT id FROM chapters WHERE chapter_number > c.chapter_number ORDER BY chapter_number ASC LIMIT 1) AS next_id
+FROM 
+    chapters c
+WHERE 
+    c.id = ?
 `
 
-func (q *Queries) GetChapterById(ctx context.Context, id string) (Chapter, error) {
+type GetChapterByIdRow struct {
+	ID            string
+	ChapterNumber int64
+	FictionID     string
+	Title         string
+	Body          string
+	Published     int64
+	PublishedAt   sql.NullString
+	ScheduledAt   sql.NullString
+	CreatedAt     string
+	UpdatedAt     string
+	PreviousID    string
+	NextID        string
+}
+
+func (q *Queries) GetChapterById(ctx context.Context, id string) (GetChapterByIdRow, error) {
 	row := q.db.QueryRowContext(ctx, getChapterById, id)
-	var i Chapter
+	var i GetChapterByIdRow
 	err := row.Scan(
 		&i.ID,
 		&i.ChapterNumber,
@@ -85,6 +107,8 @@ func (q *Queries) GetChapterById(ctx context.Context, id string) (Chapter, error
 		&i.ScheduledAt,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.PreviousID,
+		&i.NextID,
 	)
 	return i, err
 }

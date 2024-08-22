@@ -4,7 +4,14 @@ VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 RETURNING *;
 
 -- name: GetChapterById :one
-SELECT * FROM chapters WHERE id = ?;
+SELECT 
+    c.*,
+    (SELECT id FROM chapters WHERE chapter_number < c.chapter_number ORDER BY chapter_number DESC LIMIT 1) AS previous_id,
+    (SELECT id FROM chapters WHERE chapter_number > c.chapter_number ORDER BY chapter_number ASC LIMIT 1) AS next_id
+FROM 
+    chapters c
+WHERE 
+    c.id = ?;
 
 -- name: GetChaptersByFictionId :many
 SELECT * FROM chapters WHERE fiction_id = ?

@@ -156,12 +156,16 @@ func (cfg apiConfig) getChapter(w http.ResponseWriter, r *http.Request) {
 		Published   int64  `json:"published"`
 		PublishedAt string `json:"published_at"`
 		Author      string `json:"authorid"`
+		NextID      string `json:"next_id"`
+		PrevID      string `json:"prev_id"`
 	}{
 		Title:       chapter.Title,
 		Body:        chapter.Body,
 		Published:   chapter.Published,
 		PublishedAt: chapter.PublishedAt.String,
 		Author:      fiction.Authorid,
+		NextID:      chapter.NextID,
+		PrevID:      chapter.PreviousID,
 	})
 }
 
