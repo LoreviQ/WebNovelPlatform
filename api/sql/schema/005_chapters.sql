@@ -1,6 +1,7 @@
 -- +goose Up
 CREATE TABLE chapters (
     id TEXT PRIMARY KEY,
+    chapter_number INTEGER NOT NULL UNIQUE,
     fiction_id TEXT NOT NULL,
     title TEXT NOT NULL,
     body TEXT NOT NULL,
