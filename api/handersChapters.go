@@ -39,6 +39,7 @@ func (cfg apiConfig) postChapter(w http.ResponseWriter, r *http.Request, user da
 		Body                string `json:"body"`
 		ScheduledAt         string `json:"scheduled_at"`
 		PublishImmideiately int64  `json:"publish_immidiately"`
+		ChapterNumber       int64  `json:"chapter_number"`
 	}{})
 	if err != nil {
 		respondWithError(w, http.StatusBadRequest, "failed to decode request body")
@@ -58,6 +59,7 @@ func (cfg apiConfig) postChapter(w http.ResponseWriter, r *http.Request, user da
 		respondWithError(w, http.StatusInternalServerError, "Couldn't get max chapter number")
 		return
 	}
+	log.Print(maxChapter)
 	var maxChapterNum int64
 	if maxChapter != nil {
 		maxChapterNum = maxChapter.(int64)
