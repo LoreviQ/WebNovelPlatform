@@ -59,14 +59,21 @@ func (cfg apiConfig) postChapter(w http.ResponseWriter, r *http.Request, user da
 		respondWithError(w, http.StatusInternalServerError, "Couldn't get max chapter number")
 		return
 	}
-	log.Print(maxChapter)
+	log.Printf("Max chapter from DB: %v", maxChapter)
+
 	var maxChapterNum int64
 	if maxChapter != nil {
-		maxChapterNum = maxChapter.(int64)
+		var ok bool
+		maxChapterNum, ok = maxChapter.(int64)
+		if !ok {
+			log.Printf("Unexpected type for maxChapter: %T", maxChapter)
+			respondWithError(w, http.StatusInternalServerError, "Couldn't get max chapter number")
+			return
+		}
 	} else {
 		maxChapterNum = 0
 	}
-	log.Print(maxChapterNum)
+	log.Printf("Max chapter number: %d", maxChapterNum)
 
 	// Create the new chapter
 	chapter, err := cfg.DB.CreateChapter(r.Context(), database.CreateChapterParams{
