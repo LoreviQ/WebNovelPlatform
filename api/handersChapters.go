@@ -121,6 +121,7 @@ func (cfg apiConfig) getChapter(w http.ResponseWriter, r *http.Request) {
 		respondWithError(w, http.StatusNotFound, "Couldn't get chapter")
 		return
 	} else if err != nil {
+		log.Printf("Couldn't get chapter: %v", err)
 		respondWithError(w, http.StatusInternalServerError, "Couldn't get chapter")
 		return
 	}
@@ -131,6 +132,7 @@ func (cfg apiConfig) getChapter(w http.ResponseWriter, r *http.Request) {
 		respondWithError(w, http.StatusNotFound, "Couldn't get fiction")
 		return
 	} else if err != nil {
+		log.Printf("Couldn't get fiction: %v", err)
 		respondWithError(w, http.StatusInternalServerError, "Couldn't get fiction")
 		return
 	}
