@@ -254,7 +254,7 @@ Email me at oliver.tj@protonmail.com
 [license-shield]: https://img.shields.io/github/license/LoreviQ/WebNovelPlatform.svg?style=for-the-badge
 [license-url]: https://github.com/LoreviQ/WebNovelPlatform/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
-[linkedin-url]: https://www.linkedin.com/in/oliver-tj
+[linkedin-url]: https://www.linkedin.com/in/oliver-tj-/
 [product-screenshot]: https://webnovelclient-y5hewbdc4a-nw.a.run.app/demo.webm
 [Next.js]: https://img.shields.io/badge/next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white
 [Next-url]: https://nextjs.org/
